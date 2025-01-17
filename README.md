@@ -1,0 +1,2 @@
+# Qoraal
+Embedded Application Framework
