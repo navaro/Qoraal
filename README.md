@@ -14,6 +14,8 @@
 
 Qoraal embodies **layered architecture**, where modules coexist side by side, allowing for a seamless and flexible development experience.
 
+Lets get into it.
+
 > Keep your scanners peeled—there’s more to come.
 
 ---
@@ -25,3 +27,6 @@ Qoraal embodies **layered architecture**, where modules coexist side by side, al
    ```bash
    make
    ./build/qoraal
+3. in the shell that will open:
+   ```. runme.sh
+
