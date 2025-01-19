@@ -72,9 +72,9 @@ system_service_ctrl (uint32_t code, uintptr_t arg)
                         "SYS   : : system STARTING...\r\n");
         os_sem_reset (&_system_stop_sem, 0) ;
         svc_tasks_schedule (&_system_startup_task, system_startup_cb, 0,
-                SERVICE_PRIO_QUEUE2, SVC_TASK_MS2TICKS(2000)) ;        
+                SERVICE_PRIO_QUEUE2, SVC_TASK_MS2TICKS(5000)) ;        
         svc_tasks_schedule (&_system_periodic_task, system_periodic_cb, 0,
-                SERVICE_PRIO_QUEUE4, SVC_TASK_S2TICKS(30)) ;     
+                SERVICE_PRIO_QUEUE4, SVC_TASK_S2TICKS(40)) ;     
         break ;
 
     case SVC_SERVICE_CTRL_STOP: {
@@ -100,10 +100,10 @@ system_service_ctrl (uint32_t code, uintptr_t arg)
 int32_t
 system_service_run (uintptr_t arg)
 {
-    DBG_MESSAGE_SYSTEM (DBG_MESSAGE_SEVERITY_REPORT, "SYS   : : system STARTED");
+    DBG_MESSAGE_SYSTEM (DBG_MESSAGE_SEVERITY_INFO, "SYS   : : system STARTED");
 
     while (1) {
-        if (os_sem_wait_timeout (&_system_stop_sem, OS_S2TICKS(60)) == EOK) {
+        if (os_sem_wait_timeout (&_system_stop_sem, OS_S2TICKS(90)) == EOK) {
             return EOK ;
         }
 

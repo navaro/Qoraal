@@ -51,7 +51,6 @@ main (void)
 
     qoraal_svc_start () ;
 
-    DBG_MESSAGE_SERVICES (DBG_MESSAGE_SEVERITY_REPORT, "Qoraal system started...") ;
 
     wait_for_exit () ;
     return 0;

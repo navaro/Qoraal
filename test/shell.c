@@ -15,6 +15,7 @@
 #define DBG_MESSAGE_SHELL(severity, fmt_str, ...)   DBG_MESSAGE_T_REPORT (SVC_LOGGER_TYPE(severity,0), QORAAL_SERVICE_SHELL, fmt_str, ##__VA_ARGS__)
 
 #define SHELL_VERSION_STR   "Navaro Qoraal Demo v '" __DATE__ "'"
+#define SHELL_HELLO         "Enter 'help' or '?' to view available commands. "
 #define SHELL_PROMPT        "[Qoraal] #> "
 
 /*===========================================================================*/
@@ -27,6 +28,9 @@ static int32_t  shell_get_line (char * buffer, uint32_t len) ;
 
 SVC_SHELL_CMD_DECL("exit", qshell_exit, "");
 SVC_SHELL_CMD_DECL("version", qshell_version, "");
+SVC_SHELL_CMD_DECL("hello", qshell_hello, "");
+
+
 
 /*===========================================================================*/
 /* Service Local Variables and Types                                         */
@@ -91,7 +95,7 @@ shell_service_ctrl (uint32_t code, uintptr_t arg)
 int32_t
 shell_service_run (uintptr_t arg)
 {
-    DBG_MESSAGE_SHELL (DBG_MESSAGE_SEVERITY_REPORT, "SHELL : : shell STARTED");
+    DBG_MESSAGE_SHELL (DBG_MESSAGE_SEVERITY_INFO, "SHELL : : shell STARTED");
 
     SVC_SHELL_IF_T  qshell_if ;
     svc_shell_if_init (&qshell_if, 0, shell_out, 0) ;
@@ -101,6 +105,7 @@ shell_service_run (uintptr_t arg)
      * the "exit" command is executed.
      */
     svc_shell_script_run (&qshell_if, "", "version", strlen("version")) ;
+    svc_shell_script_run (&qshell_if, "", "hello", strlen("hello")) ;
     do {
         char line[1024];
         printf (SHELL_PROMPT) ;
@@ -191,6 +196,23 @@ static int32_t
 qshell_version (SVC_SHELL_IF_T * pif, char** argv, int argc)
 {
     svc_shell_print (pif, SVC_SHELL_OUT_STD, "%s\r\n", SHELL_VERSION_STR) ;
+    return SVC_SHELL_CMD_E_OK ;
+}
+
+/**
+ * @brief       qshell_hello
+ * @details     Outputs hello text of the Qoraal shell.
+ *
+ * @param[in]   pif     Shell interface pointer.
+ * @param[in]   argv    Command-line arguments.
+ * @param[in]   argc    Number of command-line arguments.
+ *
+ * @return      status  The result of the command execution.
+ */
+static int32_t
+qshell_hello (SVC_SHELL_IF_T * pif, char** argv, int argc)
+{
+    svc_shell_print (pif, SVC_SHELL_OUT_STD, "%s\r\n\r\n", SHELL_HELLO) ;
     return SVC_SHELL_CMD_E_OK ;
 }
 

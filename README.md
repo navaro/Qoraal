@@ -1,19 +1,27 @@
 # Qoraal
-Embedded Application Framework
+### Embedded Application Framework
 
-Leveled vs. layered programming, that is the question.
+---
 
-Leveled programming is all about hierarchical abstractions where each "level" has a specific, singular focus. Layered programming, on the other hand, is flexible and organic, with components interacting more freely. Layers are more about logical groupings than rigid hierarchies.
+## Overview
 
-Let’s get into it.
+**Leveled vs. Layered Programming**—that is the question.
 
-Qoraal is all about layered architecture, where modules coexist side by side. Keep your scanners peeled, there’s more to come.
+- **Leveled programming**: Focuses on hierarchical abstractions, where each "level" has a specific and singular purpose.
+- **Layered programming**: Embraces flexibility and organic design, with components interacting freely. Layers represent logical groupings rather than rigid hierarchies.
 
+### What’s Qoraal About?
 
-qoraal
-qoraal-engine
-qoraal-http
-qoraal-flash
-qoraal-image
+Qoraal embodies **layered architecture**, where modules coexist side by side, allowing for a seamless and flexible development experience.
 
+> Keep your scanners peeled—there’s more to come.
 
+---
+
+## Quick Start
+
+1. Open a Codespace or your development environment.
+2. Run the following commands to build and execute Qoraal:
+   ```bash
+   make
+   ./build/qoraal
