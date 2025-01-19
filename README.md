@@ -14,7 +14,7 @@
 
 Qoraal embodies **layered architecture**, where modules coexist side by side, allowing for a seamless and flexible development experience.
 
-Lets get into it.
+S lets get into it!
 
 
 
