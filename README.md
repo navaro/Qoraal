@@ -16,7 +16,7 @@ Qoraal embodies **layered architecture**, where modules coexist side by side, al
 
 Lets get into it.
 
-> Keep your scanners peeled—there’s more to come.
+
 
 ---
 
@@ -31,3 +31,4 @@ Lets get into it.
    ```bash
    . runme.sh
 
+> Keep your scanners peeled—there’s more to come.
