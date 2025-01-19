@@ -28,5 +28,6 @@ Lets get into it.
    make
    ./build/qoraal
 3. in the shell that will open:
-   ```. runme.sh
+   ```bash
+   . runme.sh
 
