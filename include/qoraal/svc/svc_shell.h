@@ -28,6 +28,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include "svc_services.h"
+#include "svc_wdt.h"
 
 /*===========================================================================*/
 /* Client pre-compile time settings.                                         */
@@ -107,7 +108,7 @@ typedef struct  SVC_SHELL_IF_S {
     SVC_SHELL_IN_FP         in ;
     int32_t                 status ;
     uint32_t                recurse ;
-    //SVC_WDT_HANDLE_T      hwdt ;
+    SVC_WDT_HANDLE_T        wdt ;
 } SVC_SHELL_IF_T ;
 
 
@@ -150,9 +151,12 @@ typedef struct SVC_SHELL_CMD_LIST_S {
          __qshell_cmds_end__ = .;
 */
 #if 1
+#define CONCAT_LINE_HELPER(x, y) x##y
+#define CONCAT_LINE(x, y) CONCAT_LINE_HELPER(x, y)
+
 #define SVC_SHELL_CMD_DECL(name, function, usage)        \
     static int32_t  function (SVC_SHELL_IF_T * pif, char** argv, int argc) ; \
-    const SVC_SHELL_CMD_T __qoraalcmd_##function         \
+    static const SVC_SHELL_CMD_T CONCAT_LINE(__qoraalcmd_, __LINE__)            \
     __attribute__((used, section(".qshell.cmds." #function), aligned(1))) = \
     {                                                    \
         name,                                            \
@@ -185,9 +189,9 @@ extern "C" {
     extern int32_t      svc_shell_cmd_run (SVC_SHELL_IF_T * pif, char** argv, int argc) ;
     extern int32_t      svc_shell_script_run (SVC_SHELL_IF_T * pif, const char* name, char* start, int length) ;
     extern int32_t      svc_shell_script_clear_last_error (SVC_SHELL_IF_T * pif) ;
-    extern void         svc_shell_wdt_kick (void) ;
-    extern void         svc_shell_wdt_activate (void) ;
-    extern void         svc_shell_wdt_deactivate (void) ;
+    extern void         svc_shell_wdt_kick (SVC_SHELL_IF_T * pif) ;
+    extern void         svc_shell_wdt_activate (SVC_SHELL_IF_T * pif) ;
+    extern void         svc_shell_wdt_deactivate (SVC_SHELL_IF_T * pif) ;
 
     extern uint32_t     svc_shell_cmd_help (char *buffer, size_t len) ;
     extern uint32_t     svc_shell_install (SVC_SHELL_CMD_LIST_T * list) ;

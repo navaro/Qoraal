@@ -10,11 +10,13 @@
 #include "qoraal/svc/svc_services.h"
 #include "qoraal/svc/svc_tasks.h"
 #include "qoraal/svc/svc_shell.h"
-#include "main.h"
+#include "services.h"
 
+/*===========================================================================*/
+/* Macros and Defines                                                        */
+/*===========================================================================*/
 
-
-
+#define DBG_MESSAGE_SYSTEM(severity, fmt_str, ...)   DBG_MESSAGE_T_LOG (SVC_LOGGER_TYPE(severity,0), QORAAL_SERVICE_SYSTEM, fmt_str, ##__VA_ARGS__)
 
 /*===========================================================================*/
 /* Service local variables and types.                                        */
@@ -30,26 +32,28 @@ static SVC_TASKS_DECL       (_system_periodic_task) ;
 
 static void     system_startup_cb (SVC_TASKS_T *task, uintptr_t parm, uint32_t reason) ;
 static void     system_periodic_cb (SVC_TASKS_T *task, uintptr_t parm, uint32_t reason) ;
-static int32_t  qshell_status (SVC_SHELL_IF_T * pif, char** argv, int argc) ;
-
+static int32_t  qshell_system_status (SVC_SHELL_IF_T * pif, char** argv, int argc) ;
 
 SVC_SHELL_CMD_LIST_START(system, QORAAL_SERVICE_SYSTEM)
-SVC_SHELL_CMD_LIST( "status", qshell_status,  "")
+SVC_SHELL_CMD_LIST( "status", qshell_system_status,  "")
 SVC_SHELL_CMD_LIST_END()
 
+/*===========================================================================*/
+/* Service Functions                                                         */
+/*===========================================================================*/
 
 /**
  * @brief       system_service_ctrl
  * @details
- * @note        For code SVC_SERVICE_CTRL_STATUS, if the return value is E_NOIMPL the status 
- *              will be determined by the svc_services module.
+ * @note        For code SVC_SERVICE_CTRL_STATUS, if the return value is E_NOIMPL 
+ *              the status will be determined by the svc_services module.
  *
  * @param[in] code
  * @param[in] arg
  *
  * @return              status
  *
- * @system_service
+ * @services
  */
 int32_t
 system_service_ctrl (uint32_t code, uintptr_t arg)
@@ -63,18 +67,18 @@ system_service_ctrl (uint32_t code, uintptr_t arg)
         break ;
 
     case SVC_SERVICE_CTRL_START:
-        DBG_MESSAGE_DEMO (DBG_MESSAGE_SEVERITY_REPORT, 
-                        "SVC   : : system STARTING...\r\n");
+        DBG_MESSAGE_SYSTEM (DBG_MESSAGE_SEVERITY_REPORT, 
+                        "SYS   : : system STARTING...\r\n");
         os_sem_reset (&_system_stop_sem, 0) ;
         svc_tasks_schedule (&_system_startup_task, system_startup_cb, 0,
                 SERVICE_PRIO_QUEUE2, SVC_TASK_MS2TICKS(2000)) ;        
         svc_tasks_schedule (&_system_periodic_task, system_periodic_cb, 0,
-                SERVICE_PRIO_QUEUE4, SVC_TASK_S2TICKS(30)) ;        
+                SERVICE_PRIO_QUEUE4, SVC_TASK_S2TICKS(30)) ;     
         break ;
 
     case SVC_SERVICE_CTRL_STOP:
-        DBG_MESSAGE_DEMO (DBG_MESSAGE_SEVERITY_REPORT, 
-                        "SVC   : : system STOPPING...\r\n");
+        DBG_MESSAGE_SYSTEM (DBG_MESSAGE_SEVERITY_REPORT, 
+                        "SYS   : : system STOPPING...\r\n");
         os_sem_signal (&_system_stop_sem) ;
         svc_tasks_cancel (&_system_startup_task) ;
         svc_tasks_cancel (&_system_periodic_task) ;
@@ -90,24 +94,23 @@ system_service_ctrl (uint32_t code, uintptr_t arg)
     return res ;
 }
 
-
 int32_t
 system_service_run (uintptr_t arg)
 {
-    DBG_MESSAGE_DEMO (DBG_MESSAGE_SEVERITY_REPORT, "SVC   : : system STARTED\r\n");
+    DBG_MESSAGE_SYSTEM (DBG_MESSAGE_SEVERITY_REPORT, "SYS   : : system STARTED");
 
     while (1) {
         if (os_sem_wait_timeout (&_system_stop_sem, OS_S2TICKS(60)) == EOK) {
             return EOK ;
         }
 
-        DBG_MESSAGE_DEMO (DBG_MESSAGE_SEVERITY_REPORT, 
-                        "SVC   : : system RUNNING...");
+        DBG_MESSAGE_SYSTEM (DBG_MESSAGE_SEVERITY_REPORT, 
+                        "SYS   : : system RUNNING...");
 
     }
 
-    DBG_MESSAGE_DEMO (DBG_MESSAGE_SEVERITY_REPORT, 
-                    "SVC   : : system COMPLETE...");
+    DBG_MESSAGE_SYSTEM (DBG_MESSAGE_SEVERITY_REPORT, 
+                    "SYS   : : system COMPLETE...");
 
     return EOK ;
 }
@@ -119,8 +122,8 @@ system_startup_cb (SVC_TASKS_T *task, uintptr_t parm, uint32_t reason)
 {
     if (reason == SERVICE_CALLBACK_REASON_RUN) {
 
-        DBG_MESSAGE_DEMO (DBG_MESSAGE_SEVERITY_REPORT, 
-                        "SVC   : : system STARTUP TASK...");
+        DBG_MESSAGE_SYSTEM (DBG_MESSAGE_SEVERITY_REPORT, 
+                        "SYS   : : system STARTUP TASK...");
 
     }
 
@@ -132,8 +135,8 @@ system_periodic_cb (SVC_TASKS_T *task, uintptr_t parm, uint32_t reason)
 {
     if (reason == SERVICE_CALLBACK_REASON_RUN) {
 
-        DBG_MESSAGE_DEMO (DBG_MESSAGE_SEVERITY_LOG, 
-                        "SVC   : : system PERIODIC TASK...");
+        DBG_MESSAGE_SYSTEM (DBG_MESSAGE_SEVERITY_LOG, 
+                        "SYS   : : system PERIODIC TASK...");
 
         svc_tasks_schedule (&_system_periodic_task, system_periodic_cb, 0,
                 SERVICE_PRIO_QUEUE4, SVC_TASK_S2TICKS(60)) ;        
@@ -144,7 +147,7 @@ system_periodic_cb (SVC_TASKS_T *task, uintptr_t parm, uint32_t reason)
 }
 
 int32_t
-qshell_status (SVC_SHELL_IF_T * pif, char** argv, int argc)
+qshell_system_status (SVC_SHELL_IF_T * pif, char** argv, int argc)
 {
     int32_t res = SVC_SHELL_CMD_E_OK ;
 
@@ -152,3 +155,4 @@ qshell_status (SVC_SHELL_IF_T * pif, char** argv, int argc)
     
     return res ;
 }
+

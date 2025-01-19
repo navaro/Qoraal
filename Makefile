@@ -28,8 +28,9 @@ QORAAL_SRCS := \
 # Test source files
 TEST_SRCS := \
     test/main.c \
-    test/main_demo.c \
-    test/main_system.c
+    test/demo.c \
+    test/shell.c \
+    test/system.c
 
 # Build settings
 CFLAGS = -O0  -g

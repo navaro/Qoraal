@@ -101,7 +101,8 @@ typedef struct OS_THREAD_WA_S {
 /* 
  * The actual function that runs in the new thread. 
  */
-static void * task_start (void * arg)
+static void * 
+task_start (void * arg)
 {
         OS_THREAD_WA_T * wa = (OS_THREAD_WA_T*) arg ;
 
@@ -123,7 +124,9 @@ static void * task_start (void * arg)
     return 0 ;
 }
 
-int map_custom_to_posix_priority(int custom_priority) {
+int 
+map_custom_to_posix_priority (int custom_priority) 
+{
     // Define custom priority range
     const int lowest_custom_priority = OS_THREAD_PRIO_LOWEST;
     const int highest_custom_priority = OS_THREAD_PRIO_HIGHEST;
@@ -137,7 +140,9 @@ int map_custom_to_posix_priority(int custom_priority) {
                       (highest_custom_priority - lowest_custom_priority);
 }
 
-int map_posix_to_custom_priority(int posix_priority) {
+int 
+map_posix_to_custom_priority (int posix_priority) 
+{
     // Define custom priority range
     const int lowest_custom_priority = OS_THREAD_PRIO_LOWEST;
     const int highest_custom_priority = OS_THREAD_PRIO_HIGHEST;
@@ -310,7 +315,9 @@ os_thread_current (void)
     return (p_thread_t) pthread_self();
 }
 
-void os_thread_join(p_thread_t *thread) {
+void 
+os_thread_join (p_thread_t *thread) 
+{
     OS_THREAD_WA_T *wa = (OS_THREAD_WA_T *)*thread;
     if (!wa) {
         return;
@@ -437,7 +444,7 @@ os_thread_tls_free (int32_t  index)
 }
 
 int32_t
-os_thread_tls_set(int32_t idx, uint32_t value)
+os_thread_tls_set (int32_t idx, uint32_t value)
 {
     if ((idx < 0 ) || (idx >= MAX_TLS_ID)) {
         return E_PARM ;
@@ -451,7 +458,7 @@ os_thread_tls_set(int32_t idx, uint32_t value)
 }
 
 uint32_t
-os_thread_tls_get(int32_t idx)
+os_thread_tls_get (int32_t idx)
 {
     if ((idx < 0 ) || (idx >= MAX_TLS_ID)) {
         return 0 ;
@@ -464,14 +471,14 @@ os_thread_tls_get(int32_t idx)
 }
 
 p_sem_t*
-os_thread_thdsem_get(void)
+os_thread_thdsem_get (void)
 {
     /* Nothing analogous, return NULL. */
     return NULL;
 }
 
 int32_t*
-os_thread_errno(void)
+os_thread_errno (void)
 {
     p_thread_t* thread = os_thread_current () ;
     OS_THREAD_WA_T* wa = (OS_THREAD_WA_T*)*thread;
@@ -574,13 +581,11 @@ int
 os_sys_started (void)
 {
     return _os_started ;
-
 }
 
 void
 os_sys_lock (void)
 {
-
 
 }
 
@@ -588,7 +593,6 @@ os_sys_lock (void)
 void
 os_sys_unlock (void)
 {
-
 
 }
 
@@ -627,7 +631,7 @@ os_sys_us_timestamp (void)
 }
 
 void
-os_sys_stop(void)
+os_sys_stop (void)
 {
     if (_os_started) {
 #if !defined CFG_OS_OS_TIMER_DISABLE
@@ -653,7 +657,8 @@ os_sys_is_irq (void)
 } 
 
 #if !defined CFG_OS_MUTEX_DISABLE
-int32_t os_mutex_init(p_mutex_t* mutex)
+int32_t 
+os_mutex_init (p_mutex_t* mutex)
 {
     if (mutex == NULL) {
         return EFAIL;
@@ -684,14 +689,16 @@ int32_t os_mutex_init(p_mutex_t* mutex)
 #endif
 
 #if !defined CFG_OS_MUTEX_DISABLE
-int32_t os_mutex_create(p_mutex_t* mutex)
+int32_t 
+os_mutex_create (p_mutex_t* mutex)
 {
-    return os_mutex_init(mutex);
+    return os_mutex_init (mutex);
 }
 #endif
 
 #if !defined CFG_OS_MUTEX_DISABLE
-void os_mutex_delete(p_mutex_t* mutex)
+void 
+os_mutex_delete (p_mutex_t* mutex)
 {
     if (mutex && *mutex) {
         pthread_mutex_destroy((pthread_mutex_t*)*mutex);
@@ -703,7 +710,7 @@ void os_mutex_delete(p_mutex_t* mutex)
 
 #if !defined CFG_OS_MUTEX_DISABLE
 int32_t 
-os_mutex_lock(p_mutex_t *mutex) 
+os_mutex_lock (p_mutex_t *mutex) 
 {
     if (mutex == NULL || *mutex == NULL) {
         return EFAIL;
@@ -714,7 +721,7 @@ os_mutex_lock(p_mutex_t *mutex)
 
 #if !defined CFG_OS_MUTEX_DISABLE
 void 
-os_mutex_unlock(p_mutex_t *mutex) 
+os_mutex_unlock (p_mutex_t *mutex) 
 {
     if (mutex && *mutex) {
         pthread_mutex_unlock((pthread_mutex_t *)*mutex);
@@ -724,7 +731,7 @@ os_mutex_unlock(p_mutex_t *mutex)
 
 #if !defined CFG_OS_MUTEX_DISABLE
 int32_t 
-os_mutex_trylock(p_mutex_t *mutex) 
+os_mutex_trylock (p_mutex_t *mutex) 
 {
     if (mutex == NULL || *mutex == NULL) {
         return EFAIL;
@@ -733,7 +740,8 @@ os_mutex_trylock(p_mutex_t *mutex)
 }
 #endif
 
-int32_t os_sem_init(p_sem_t* sem, int32_t cnt)
+int32_t 
+os_sem_init (p_sem_t* sem, int32_t cnt)
 {
     if (sem == NULL) {
         return EFAIL;
@@ -742,14 +750,16 @@ int32_t os_sem_init(p_sem_t* sem, int32_t cnt)
     return sem_init((sem_t*)(*sem), 0, cnt) == 0 ? EOK : EFAIL;
 }
 
-void os_sem_deinit(p_sem_t* sem)
+void 
+os_sem_deinit (p_sem_t* sem)
 {
     if (sem && *sem) {
         sem_destroy((sem_t*)(*sem));
     }
 }
 
-int32_t os_sem_create(p_sem_t* sem, int32_t cnt)
+int32_t 
+os_sem_create (p_sem_t* sem, int32_t cnt)
 {
     *sem = qoraal_malloc(sizeof(sem_t));
     if (*sem == NULL) {
@@ -759,7 +769,8 @@ int32_t os_sem_create(p_sem_t* sem, int32_t cnt)
     return os_sem_init(sem, cnt);
 }
 
-int32_t os_sem_reset(p_sem_t* sem, int32_t cnt)
+int32_t 
+os_sem_reset (p_sem_t* sem, int32_t cnt)
 {
     if (sem == NULL || *sem == NULL) {
         return EFAIL;
@@ -769,7 +780,8 @@ int32_t os_sem_reset(p_sem_t* sem, int32_t cnt)
     return os_sem_init(sem, cnt);
 }
 
-void os_sem_delete(p_sem_t* sem)
+void 
+os_sem_delete (p_sem_t* sem)
 {
     if (sem && *sem) {
         sem_destroy((sem_t*)(*sem));
@@ -778,7 +790,8 @@ void os_sem_delete(p_sem_t* sem)
     }
 }
 
-int32_t os_sem_wait(p_sem_t* sem)
+int32_t 
+os_sem_wait (p_sem_t* sem)
 {
     if (sem == NULL || *sem == NULL) {
         return EFAIL;
@@ -786,7 +799,8 @@ int32_t os_sem_wait(p_sem_t* sem)
     return sem_wait((sem_t*)(*sem)) == 0 ? EOK : EFAIL;
 }
 
-int32_t os_sem_wait_timeout(p_sem_t* sem, uint32_t ticks)
+int32_t 
+os_sem_wait_timeout (p_sem_t* sem, uint32_t ticks)
 {
     if (sem == NULL || *sem == NULL) {
         return EFAIL;
@@ -800,14 +814,16 @@ int32_t os_sem_wait_timeout(p_sem_t* sem, uint32_t ticks)
     return sem_timedwait((sem_t*)(*sem), &t) == 0 ? EOK : EFAIL;
 }
 
-void os_sem_signal(p_sem_t* sem)
+void 
+os_sem_signal (p_sem_t* sem)
 {
     if (sem && *sem) {
         sem_post((sem_t*)(*sem));
     }
 }
 
-int32_t os_sem_count(p_sem_t* sem)
+int32_t
+os_sem_count (p_sem_t* sem)
 {
     if (sem == NULL || *sem == NULL) {
         return EFAIL;
@@ -820,43 +836,51 @@ int32_t os_sem_count(p_sem_t* sem)
     return sval;
 }
 
-int32_t os_bsem_init(p_sem_t* sem, int32_t taken)
+int32_t 
+os_bsem_init (p_sem_t* sem, int32_t taken)
 {
-    return os_sem_init(sem, taken ? 0 : 1);
+    return os_sem_init (sem, taken ? 0 : 1);
 }
 
-int32_t os_bsem_create(p_sem_t* sem, int32_t taken)
+int32_t 
+os_bsem_create (p_sem_t* sem, int32_t taken)
 {
     return os_bsem_init(sem, taken);
 }
 
-int32_t os_bsem_reset(p_sem_t* sem, int32_t taken)
+int32_t 
+os_bsem_reset (p_sem_t* sem, int32_t taken)
 {
     return os_sem_reset(sem, taken ? 0 : 1);
 }
 
-void os_bsem_delete(p_sem_t* sem)
+void 
+os_bsem_delete (p_sem_t* sem)
 {
     os_sem_delete(sem);
 }
 
-int32_t os_bsem_wait(p_sem_t* sem)
+int32_t 
+os_bsem_wait (p_sem_t* sem)
 {
     return os_sem_wait(sem);
 }
 
-int32_t os_bsem_wait_timeout(p_sem_t* sem, uint32_t ticks)
+int32_t 
+os_bsem_wait_timeout (p_sem_t* sem, uint32_t ticks)
 {
     return os_sem_wait_timeout(sem, ticks);
 }
 
-void os_bsem_signal(p_sem_t* sem)
+void 
+os_bsem_signal (p_sem_t* sem)
 {
     os_sem_signal(sem);
 }
 
 #if !defined CFG_OS_EVENT_DISABLE
-int32_t os_event_init(p_event_t* event)
+int32_t 
+os_event_init (p_event_t* event)
 {
     if (event == NULL) {
         return EFAIL;
@@ -876,7 +900,8 @@ int32_t os_event_init(p_event_t* event)
 #endif
 
 #if !defined CFG_OS_EVENT_DISABLE
-void os_event_deinit(p_event_t* event)
+void 
+os_event_deinit (p_event_t* event)
 {
     if (event && *event) {
         os_event_t* pevent = (os_event_t*)(*event);
@@ -887,7 +912,8 @@ void os_event_deinit(p_event_t* event)
 #endif
 
 #if !defined CFG_OS_EVENT_DISABLE
-int32_t os_event_create(p_event_t* event)
+int32_t 
+os_event_create (p_event_t* event)
 {
     *event = qoraal_malloc(sizeof(os_event_t));
     if (*event == NULL) {
@@ -899,7 +925,8 @@ int32_t os_event_create(p_event_t* event)
 #endif
 
 #if !defined CFG_OS_EVENT_DISABLE
-void os_event_delete(p_event_t* event)
+void 
+os_event_delete (p_event_t* event)
 {
     if (event && *event) {
         os_event_deinit (event) ;
@@ -910,7 +937,8 @@ void os_event_delete(p_event_t* event)
 #endif
 
 #if !defined CFG_OS_EVENT_DISABLE
-void os_event_signal(p_event_t* event, uint32_t mask)
+void 
+os_event_signal (p_event_t* event, uint32_t mask)
 {
     if (event && *event) {
         os_event_t* pevent = (os_event_t*)(*event);
@@ -923,14 +951,16 @@ void os_event_signal(p_event_t* event, uint32_t mask)
 #endif
 
 #if !defined CFG_OS_EVENT_DISABLE
-void os_event_signal_isr(p_event_t* event, uint32_t mask)
+void 
+os_event_signal_isr (p_event_t* event, uint32_t mask)
 {
     os_event_signal(event, mask) ;
 }
 #endif
 
 #if !defined CFG_OS_EVENT_DISABLE
-void os_event_clear(p_event_t* event, uint32_t mask)
+void 
+os_event_clear (p_event_t* event, uint32_t mask)
 {
     if (event && *event) {
         os_event_t* pevent = (os_event_t*)(*event);
@@ -942,7 +972,8 @@ void os_event_clear(p_event_t* event, uint32_t mask)
 #endif
 
 #if !defined CFG_OS_EVENT_DISABLE
-uint32_t os_event_wait(p_event_t* event, uint32_t clear_on_exit, uint32_t mask, uint32_t all)
+uint32_t 
+os_event_wait (p_event_t* event, uint32_t clear_on_exit, uint32_t mask, uint32_t all)
 {
     if (event == NULL || *event == NULL) {
         return 0;
@@ -966,7 +997,8 @@ uint32_t os_event_wait(p_event_t* event, uint32_t clear_on_exit, uint32_t mask, 
 #endif
 
 #if !defined CFG_OS_EVENT_DISABLE
-uint32_t os_event_wait_timeout(p_event_t* event, uint32_t clear_on_exit, uint32_t mask, uint32_t all, uint32_t ticks)
+uint32_t 
+os_event_wait_timeout (p_event_t* event, uint32_t clear_on_exit, uint32_t mask, uint32_t all, uint32_t ticks)
 {
     if (event == NULL || *event == NULL) {
         return 0;
@@ -1015,13 +1047,17 @@ typedef struct TimerManager {
 TimerManager    os_timer_manager;
 pthread_t       os_timer_thread;
 
-uint64_t get_current_time_ms() {
+uint64_t 
+get_current_time_ms (void) 
+{
     struct timespec ts;
     clock_gettime(CLOCK_REALTIME, &ts);
     return (uint64_t)ts.tv_sec * 1000 + ts.tv_nsec / 1e6;
 }
 
-void *timer_thread(void *arg) {
+void *
+timer_thread (void *arg) 
+{
     TimerManager *manager = &os_timer_manager ;
 
     while (true) {
@@ -1071,7 +1107,9 @@ void *timer_thread(void *arg) {
     return NULL;
 }
 
-void start_timer_manager(void) {
+void 
+start_timer_manager (void) 
+{
     os_timer_manager.head = NULL;
 
     pthread_mutexattr_t attr;
@@ -1093,7 +1131,9 @@ void start_timer_manager(void) {
     pthread_create(&os_timer_thread, NULL, timer_thread, 0);
 }
 
-void stop_timer_manager(void) {
+void 
+stop_timer_manager (void) 
+{
     pthread_mutex_lock(&os_timer_manager.mutex);
     if (!os_timer_manager.quit) {
         os_timer_manager.quit = true;
@@ -1116,7 +1156,9 @@ void stop_timer_manager(void) {
     pthread_cond_destroy(&os_timer_manager.cond);
 }
 
-int32_t os_timer_init(p_timer_t *timer, p_timer_function_t fp, void *parm) {
+int32_t 
+os_timer_init (p_timer_t *timer, p_timer_function_t fp, void *parm) 
+{
     os_timer_t *new_timer = (os_timer_t *)(*timer);
 
     new_timer->expire = 0;
@@ -1129,7 +1171,9 @@ int32_t os_timer_init(p_timer_t *timer, p_timer_function_t fp, void *parm) {
     return EOK;
 }
 
-int32_t os_timer_create(p_timer_t *timer, p_timer_function_t fp, void *parm) {
+int32_t 
+os_timer_create (p_timer_t *timer, p_timer_function_t fp, void *parm) 
+{
     os_timer_t *new_timer = (os_timer_t *)qoraal_malloc(sizeof(os_timer_t));
     if (!new_timer) {
         return E_NOMEM;
@@ -1138,7 +1182,8 @@ int32_t os_timer_create(p_timer_t *timer, p_timer_function_t fp, void *parm) {
     return os_timer_init(timer,  fp, parm) ;
 }
 
-void os_timer_reset(p_timer_t *timer) {
+void os_timer_reset (p_timer_t *timer) 
+{
     os_timer_t *reset_timer = (os_timer_t *)(*timer);
     if (!reset_timer) return;
 
@@ -1165,15 +1210,17 @@ void os_timer_reset(p_timer_t *timer) {
     pthread_mutex_unlock(&os_timer_manager.mutex);
 }
 
-void os_timer_set(p_timer_t *timer, uint32_t ticks, p_timer_function_t fp, void *parm) {
+void 
+os_timer_set (p_timer_t *timer, uint32_t ticks) 
+{
     os_timer_t *new_timer = (os_timer_t *)(*timer);
     if (!new_timer) return;
 
     os_timer_reset(timer); // Ensure the timer is not already in the list
 
     new_timer->expire = get_current_time_ms() + ticks;
-    new_timer->callback = fp;
-    new_timer->callback_param = parm;
+    //new_timer->callback = fp;
+    //new_timer->callback_param = parm;
     new_timer->is_set = true;
 
     pthread_mutex_lock(&os_timer_manager.mutex);
@@ -1190,18 +1237,22 @@ void os_timer_set(p_timer_t *timer, uint32_t ticks, p_timer_function_t fp, void 
     pthread_mutex_unlock(&os_timer_manager.mutex);
 }
 
-void os_timer_set_i(p_timer_t *timer, uint32_t ticks, p_timer_function_t fp, void *parm) {
-    os_timer_set(timer, ticks, fp, parm); // Same as os_timer_set
+void 
+os_timer_set_i (p_timer_t *timer, uint32_t ticks) 
+{
+    os_timer_set(timer, ticks); // Same as os_timer_set
 }
 
-int32_t os_timer_is_set(p_timer_t *timer) {
+int32_t 
+os_timer_is_set (p_timer_t *timer) 
+{
     os_timer_t *check_timer = (os_timer_t *)(*timer);
     return check_timer && check_timer->is_set;
 }
 
-
-
-void os_timer_delete(p_timer_t *timer) {
+void 
+os_timer_delete (p_timer_t *timer) 
+{
     if (!timer || !*timer) return; // Ensure the timer is valid
     os_timer_reset(timer);
     qoraal_free(*timer);

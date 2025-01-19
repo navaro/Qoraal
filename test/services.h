@@ -28,15 +28,14 @@
 /* Client pre-compile time settings.                                         */
 /*===========================================================================*/
 
-#define DBG_MESSAGE_DEMO(severity, fmt_str, ...)   DBG_MESSAGE_T_LOG (SVC_LOGGER_TYPE(severity,0), 0, fmt_str, ##__VA_ARGS__)
+#define DBG_MESSAGE_SERVICES(severity, fmt_str, ...)   DBG_MESSAGE_T_LOG (SVC_LOGGER_TYPE(severity,0), 0, fmt_str, ##__VA_ARGS__)
 
 
 typedef enum  {
-
     QORAAL_SERVICE_SYSTEM = SVC_SERVICES_USER,
     QORAAL_SERVICE_DEMO,
+    QORAAL_SERVICE_SHELL,
 	QORAAL_SERVICE_LAST,
-
 } QORAAL_SERVICES ;
 
 /*===========================================================================*/
@@ -52,6 +51,9 @@ extern "C" {
 
     extern int32_t      system_service_ctrl (uint32_t code, uintptr_t arg) ;
     extern int32_t      system_service_run (uintptr_t arg) ;
+
+    extern int32_t      shell_service_ctrl (uint32_t code, uintptr_t arg) ;
+    extern int32_t      shell_service_run (uintptr_t arg) ;
 
     extern int32_t      demo_service_ctrl (uint32_t code, uintptr_t arg) ;
 

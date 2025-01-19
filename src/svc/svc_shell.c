@@ -37,10 +37,13 @@ static SVC_WDT_HANDLE_T     _qshell_hwdt ;
 
 #if 1 // !defined CFG_NBOOT
 SVC_SHELL_CMD_DECL( "help", qshell_help, "[filter]");
-SVC_SHELL_CMD_DECL( "?", qshell_help2, 0);
+SVC_SHELL_CMD_DECL( "?", qshell_help, 0);
 #endif
 SVC_SHELL_CMD_DECL( "rem", qshell_rem, 0);
 SVC_SHELL_CMD_DECL( "nop", qshell_nop, "[res]");
+SVC_SHELL_CMD_DECL( "wdt_kick", qshell_wdt_kick, "");
+SVC_SHELL_CMD_DECL( "wdt_deactivate", qshell_wdt_deactivate, "");
+SVC_SHELL_CMD_DECL( "wdt_activate", qshell_wdt_activate, "");
 
 
 char _qshell_buffer[SVC_SHELL_PRINT_BUFFER_SIZE]  ;
@@ -297,26 +300,6 @@ int32_t svc_shell_scan_int (const char * str, uint32_t * val)
     return SVC_SHELL_CMD_E_OK ;
 }
 
-
-void
-svc_shell_wdt_kick (void)
-{
-    svc_wdt_handler_kick (&_qshell_hwdt) ;
-}
-
-void
-svc_shell_wdt_activate (void)
-{
-    svc_wdt_activate (&_qshell_hwdt) ;
-}
-
-
-void
-svc_shell_wdt_deactivate (void)
-{
-    svc_wdt_deactivate (&_qshell_hwdt) ;
-}
-
 int32_t      
 svc_shell_if_init (SVC_SHELL_IF_T * pif, void* ctx, SVC_SHELL_OUT_FP out, SVC_SHELL_IN_FP in)
 {
@@ -324,7 +307,8 @@ svc_shell_if_init (SVC_SHELL_IF_T * pif, void* ctx, SVC_SHELL_OUT_FP out, SVC_SH
     pif->out = out ;
     pif->in = in ;
     pif->status = 0 ;
-    //svc_wdt_register (&pif->wdt, TIMEOUT_60_SEC) ;
+
+    svc_wdt_register (&pif->wdt, TIMEOUT_60_SEC) ;
     return EOK ;
 }
 
@@ -341,7 +325,7 @@ svc_shell_cmd_run (SVC_SHELL_IF_T * pif, char** argv, int argc)
         return SVC_SHELL_CMD_E_OK ;
     }
 
-    svc_wdt_activate (&_qshell_hwdt) ;
+    svc_wdt_activate (&pif->wdt) ;
 
     cmd = _cmd_first(&it);
     while (cmd) {
@@ -407,7 +391,7 @@ svc_shell_cmd_run (SVC_SHELL_IF_T * pif, char** argv, int argc)
 
     }
 
-    svc_wdt_deactivate (&_qshell_hwdt) ;
+    svc_wdt_deactivate (&pif->wdt) ;
 
     return res ;
 }
@@ -545,11 +529,43 @@ qshell_help(SVC_SHELL_IF_T * pif, char** argv, int argc)
 }
 
 int32_t
-qshell_help2(SVC_SHELL_IF_T * pif, char** argv, int argc)
+qshell_wdt_kick (SVC_SHELL_IF_T * pif, char** argv, int argc)
 {
-    return qshell_help(pif, argv, argc) ;
+    svc_wdt_handler_kick (&pif->wdt) ;
+    return SVC_SHELL_CMD_E_OK ;
 }
 
+int32_t
+qshell_wdt_activate (SVC_SHELL_IF_T * pif, char** argv, int argc)
+{
+    svc_wdt_activate (&pif->wdt) ;
+    return SVC_SHELL_CMD_E_OK ;
+}
+
+int32_t
+qshell_wdt_deactivate (SVC_SHELL_IF_T * pif, char** argv, int argc)
+{
+    svc_wdt_deactivate (&pif->wdt) ;
+    return SVC_SHELL_CMD_E_OK ;
+}
+
+void         
+svc_shell_wdt_kick (SVC_SHELL_IF_T * pif)
+{
+    svc_wdt_handler_kick (&pif->wdt) ;
+}
+
+void         
+svc_shell_wdt_activate (SVC_SHELL_IF_T * pif)
+{
+    svc_wdt_activate (&pif->wdt) ;
+}
+
+void         
+svc_shell_wdt_deactivate (SVC_SHELL_IF_T * pif)
+{
+    svc_wdt_deactivate (&pif->wdt) ;
+}
 
 size_t
 svc_shell_cmd_split(char *buffer, size_t len, char *argv[], size_t argv_size)

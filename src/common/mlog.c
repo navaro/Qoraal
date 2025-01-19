@@ -36,16 +36,16 @@ typedef struct MLOG_INST_S {
 
 
 typedef struct _MEMLOG_IT_S {
-    QORAAL_LOG_IT_T platform_it ;
-    void * it ;
-    uint16_t log ;
+    QORAAL_LOG_IT_T     platform_it ;
+    void *              it ;
+    uint16_t            log ;
 } _MEMLOG_IT_T ;
 
-static char*                _mlog_print_buffer[MLOG_LOGS_MSG_SIZE_MAX]  ;
-static MLOG_INST_T  *     	_mlog_inst[2] = {0} ;
-static uint16_t             _memlog_started = 0 ;
-static uint16_t             _memlog_cnt = 0 ;
-static OS_MUTEX_DECL        (_mlog_mutex) ;
+static char*            _mlog_print_buffer[MLOG_LOGS_MSG_SIZE_MAX]  ;
+static MLOG_INST_T  *   _mlog_inst[2] = {0} ;
+static uint16_t         _memlog_started = 0 ;
+static uint16_t         _memlog_cnt = 0 ;
+static OS_MUTEX_DECL    (_mlog_mutex) ;
 
 CBUFFER_QUEUE_T*
 get_cqueue (MLOG_TYPE_T log)
@@ -56,7 +56,6 @@ get_cqueue (MLOG_TYPE_T log)
     }
     return 0 ;
 }
-
 
 int32_t 
 mlog_reset (MLOG_TYPE_T log)
@@ -203,7 +202,6 @@ int32_t
 mlog_vdbg (uint16_t type, uint16_t id, const char* msg, va_list args)
 {
     return mlog_append(type, id, MLOG_DBG, msg, args) ;
-
 }
 
 int32_t 
@@ -239,7 +237,6 @@ mlog_assert (const char* msg, ...)
     va_start (args, msg) ;
     int32_t res = _append (0, 0, MLOG_ASSERT, msg, args) ;
     return res ;
-
 }
 
 int32_t 
@@ -289,7 +286,6 @@ mlog_count (uint16_t log, uint16_t type)
 
     }
 
-
     return count ;
 }
 
@@ -325,7 +321,7 @@ mlog_itertor_first (MLOG_TYPE_T log, uint16_t type)
 void* 
 mlog_itertor_last (MLOG_TYPE_T log, uint16_t type)
 {
-if (!_memlog_started)  return 0 ;    
+    if (!_memlog_started)  return 0 ;    
     CBUFFER_QUEUE_T * queue  ;
     CBUFFER_ITEM_T* it = 0 ;
 

@@ -40,7 +40,7 @@ static p_thread_t               _svc_events_thread = 0 ;
 static OS_THREAD_WORKING_AREA   (wa_svc_events_thread, WORKING_THREAD_SIZE);
 static OS_EVENT_DECL            (_svc_events_event) ;
 
-static bool _events_stop = false ;
+static bool                     _events_stop = false ;
 
 static void
 svc_events_thread(void *arg) 

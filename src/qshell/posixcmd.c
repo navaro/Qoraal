@@ -47,8 +47,6 @@
 #include "qoraal/svc/svc_services.h"
 #include "qoraal/svc/svc_shell.h"
 
-
-
 /*
  * Declare commands for use with the shell. Use the SVC_SHELL_CMD_DECL for the
  * commands to be accessible from the command shell interface.
@@ -56,11 +54,10 @@
 SVC_SHELL_CMD_DECL("ls", qshell_ls, "");
 SVC_SHELL_CMD_DECL("cd", qshell_cd, "<path>");
 SVC_SHELL_CMD_DECL("source", qshell_source, "<file>");
-SVC_SHELL_CMD_DECL(".", qshell_source2, "<file>");
+SVC_SHELL_CMD_DECL(".", qshell_source, "<file>");
 SVC_SHELL_CMD_DECL("cat", qshell_cat, "<file>");
 SVC_SHELL_CMD_DECL("pwd", qshell_pwd, "");
 SVC_SHELL_CMD_DECL("echo", qshell_echo, "[string]");
-
 
 static int32_t
 qshell_ls (SVC_SHELL_IF_T * pif, char** argv, int argc)
@@ -202,13 +199,6 @@ qshell_source (SVC_SHELL_IF_T * pif, char** argv, int argc)
     }
 
     return res ;
-
-}
-
-static int32_t
-qshell_source2 (SVC_SHELL_IF_T * pif, char** argv, int argc)
-{
-    return qshell_source(pif, argv, argc) ;
 }
 
 static int32_t
@@ -251,7 +241,6 @@ qshell_echo (SVC_SHELL_IF_T * pif, char** argv, int argc)
     }
 
     return SVC_SHELL_CMD_E_OK ;
-
 }
 
 

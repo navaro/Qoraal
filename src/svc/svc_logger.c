@@ -40,28 +40,26 @@
 
 #define SERVICE_LOGGER_TASK                     1
 
-static int32_t _logger_debug_sending = 0 ;
-
-static SVC_TASK_PRIO_T      _logger_task_prio ;
 static LOGGGER_CHANNEL_FILTER_T     _logger_filter =  {SVC_LOGGER_MASK, SVC_LOGGER_SEVERITY_NEVER} ;
 #if !defined CFG_COMMON_MEMLOG_DISABLE
 static LOGGGER_CHANNEL_FILTER_T     _logger_filter_mem = {SVC_LOGGER_MASK, SVC_LOGGER_SEVERITY_LOG} ;
 #endif
+
+static SVC_TASK_PRIO_T      _logger_task_prio ;
 static uint16_t             _logger_id = 0 ;
+static int32_t              _logger_debug_sending = 0 ;
 
 static LISTS_LINKED_DECL    (_logger_channels) ;
 static OS_MUTEX_DECL        (_logger_mutex) ;
 
 #define LOG_MESSAGE_SIZE    0
 typedef struct LOGGER_TASK_S {
-
     SVC_TASKS_T             task ;
     LOGGERT_TYPE_T          type ;
     uint8_t                 facility ;
     uint8_t                 reserved ;
     uint16_t                id ;
     char                    message[0] ;
-
 } LOGGER_TASK_T ;
 
 
@@ -108,9 +106,7 @@ svc_logger_init (SVC_TASK_PRIO_T  prio)
 int32_t
 svc_logger_start (void)
 {
-
     return EOK ;
-
 }
 
 
@@ -357,8 +353,6 @@ svc_logger_would_log (LOGGERT_TYPE_T type, uint8_t facility)
             return 1 ;
         }
 
-
-
     return 0 ;
 }
 
@@ -380,13 +374,9 @@ int32_t
 svc_logger_type_vlog (LOGGERT_TYPE_T type, uint8_t facility, const char *format_str, va_list    args)
 {
     if (svc_logger_would_log(type, facility)) {
-
-
         return svc_logger_vlogx (type, facility, format_str, args) ;
 
     }
-
-
 
     return EOK ;
 }
@@ -408,7 +398,6 @@ svc_logger_type_log (LOGGERT_TYPE_T type, uint8_t facility, const char *format_s
     va_list         args;
     va_start(args, format_str);
     return svc_logger_type_vlog (type, facility, format_str, args) ;
-
 }
 
 /**
@@ -431,27 +420,6 @@ svc_logger_printf (const char *format_str, ...)
             SVC_LOGGER_TYPE(SVC_LOGGER_SEVERITY_REPORT,0), 0,
             format_str, args) ;
 }
-
-/**
- * @brief   Adds a message to the logger queue with severity log.
- * @note    Intended to be used like printf
- *
- * @param[in] type          logger type, severity, facility and flags defined in svc_logger.h
- * @param[in] format_str    format string
- *
- * @return              Error.
- *
- * @svc
- */
-int32_t
-svc_logger_log (const char *format_str, ...)
-{
-    va_list         args;
-    va_start(args, format_str);
-    return svc_logger_type_vlog (SVC_LOGGER_TYPE(DBG_MESSAGE_SEVERITY_LOG,0),
-            0, format_str, args) ;
-}
-
 
 /**
  * @brief   Adds a message to the logger queue with severity report.
@@ -521,106 +489,9 @@ svc_logger_put (const char *str, uint32_t len)
 
 }
 
-/**
-* @brief   Adds a message to the logger queue.
-*
-* @param[in] format_str    format string
-*
-* @return              Error.
-*
-* @svc
-*/
-int32_t
-svc_logger_vlog_state (int inst, const char *format_str, va_list    args)
-{
-    LOGGER_TASK_T* task  ;
-    static uint32_t cnt = 0 ;
-    uint32_t seconds ;
-    uint32_t mseconds ;
-    uint32_t len  ;
-
-    if (
-                (SVC_LOGGER_SEVERITY_WARNING <= SVC_LOGGER_GET_SEVERITY(_logger_filter.type))
-#if !defined CFG_COMMON_MEMLOG_DISABLE
-                || (mlog_started() && (SVC_LOGGER_SEVERITY_WARNING <= SVC_LOGGER_GET_SEVERITY(_logger_filter_mem.type)))
-#endif
-            ) {
-
-
-        uint32_t message_size =  LOG_MESSAGE_SIZE ;
-        if (!message_size) {
-            int32_t strlen =  vsnprintf(0, 0, (char*)format_str, args);
-            if (strlen < 0) return 0 ;
-            message_size = strlen + 32 ;
-
-        }
-
-        task = (LOGGER_TASK_T*)qoraal_malloc(sizeof(LOGGER_TASK_T) + message_size) ;
-
-        if (task == 0) {
-            return E_NOMEM ;
-        }
-        memset(task, 0, sizeof(LOGGER_TASK_T));
-
-        //msg = &task->msg ;
-
-         //msg->type = NSHELL_NOTIFY_LOG_STATE ;
-         task->id = (uint32_t)inst ;
-         mseconds = (unsigned int)os_sys_timestamp() ;
-         seconds = mseconds / 1000;
-         mseconds %= 1000 ;
-
-         task->type = SVC_LOGGER_TYPE (SVC_LOGGER_SEVERITY_WARNING, 0) ;
-         task->facility = 0 ;
-
-
-        if (inst >= 0 ) {
-            len = snprintf ((char*)task->message, message_size, "<%d>[%.5u.%.3u - %.3u] ", inst, (unsigned int)seconds, (unsigned int)mseconds, (unsigned int)cnt++) ;
-        } else {
-            len = snprintf ((char*)task->message, message_size, "<->[%.5u.%.3u - %.3u] ", (unsigned int)seconds, (unsigned int)mseconds, (unsigned int)cnt++) ;
-        }
-        len += vsnprintf ((char*)&(task->message[len]), message_size - len, (char*)format_str, args) ;
-
-
-        //msg->length = sizeof (NSHELL_NOTIFY_LOG_T) - message_size + len + 1 ;
-
-#if !defined CFG_COMMON_MEMLOG_DISABLE
-        if (mlog_started() && (SVC_LOGGER_SEVERITY_WARNING <= SVC_LOGGER_GET_SEVERITY(_logger_filter_mem.type))) {
-            mlog_dbg (SVC_LOGGER_GET_SEVERITY(task->type), _logger_id++, (char*)task->message) ;
-        }
-#endif
-
-#if defined SERVICE_LOGGER_TASK && SERVICE_LOGGER_TASK
-        if (SVC_LOGGER_SEVERITY_WARNING <= SVC_LOGGER_GET_SEVERITY(_logger_filter.type)) {
-            svc_tasks_init_task ((SVC_TASKS_T*)task) ;
-            if (
-                    (SVC_LOGGER_SEVERITY_REPORT > SVC_LOGGER_GET_SEVERITY(_logger_filter.type)) ||
-                    !linked_head (&_logger_channels) ||
-                    (svc_tasks_schedule ((SVC_TASKS_T*)task, logger_task_callback, 0, _logger_task_prio, 0) != EOK)
-                ) {
-                qoraal_free(task) ;
-
-            } else {
-                //chSysLock();
-                //_logger_debug_sending++;
-                //chSysUnlock();
-
-            }
-#else
-            logger_state_task_callback ((SVC_TASKS_T*)task, (uint32_t)0, SERVICE_CALLBACK_REASON_RUN) ;
-
-#endif
-        }
-
-    }
-
-    return EOK ;
-}
-
-
 
 int32_t
-svc_logger_type_mem (uint32_t type, const char* mem, uint32_t size, const char * head, const char * tail)
+svc_logger_type_mem (LOGGERT_TYPE_T type, uint8_t facility, const char* mem, uint32_t size, const char * head, const char * tail)
 {
     //uint32_t severity = SVC_LOGGER_GET_SEVERITY(type) ;
     int32_t status = 0 ;
@@ -653,7 +524,7 @@ svc_logger_type_mem (uint32_t type, const char* mem, uint32_t size, const char *
         memset(task, 0, sizeof(LOGGER_TASK_T));
         task->id = _logger_id++ ;
         task->type = type ;
-        task->facility = 0 ;
+        task->facility = facility ;
         len = snprintf(task->message, message_size, head);
 
 #if 0
@@ -869,6 +740,5 @@ svs_logger_severity_str (LOGGERT_TYPE_T type)
     }
 
     return names[severity] ;
-
 }
 

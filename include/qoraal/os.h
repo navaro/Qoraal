@@ -37,7 +37,7 @@
 #include <stdint.h>
 
 /*===========================================================================*/
-/* RTOS constants.                                                       */
+/* RTOS constants.                                                           */
 /*===========================================================================*/
 
 /**
@@ -246,8 +246,8 @@ extern "C" {
 #endif    
     extern int32_t      os_timer_create (p_timer_t* timer, p_timer_function_t fp, void * parm) ;
     extern void         os_timer_delete (p_timer_t *timer) ;
-    extern void         os_timer_set (p_timer_t* timer, uint32_t ticks, p_timer_function_t fp, void * parm) ;
-    extern void         os_timer_set_i (p_timer_t* timer, uint32_t ticks, p_timer_function_t fp, void * parm) ;
+    extern void         os_timer_set (p_timer_t* timer, uint32_t ticks) ;
+    extern void         os_timer_set_i (p_timer_t* timer, uint32_t ticks) ;
     extern int32_t      os_timer_is_set (p_timer_t* timer) ;
     extern void         os_timer_reset (p_timer_t* timer) ;
 

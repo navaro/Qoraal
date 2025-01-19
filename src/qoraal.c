@@ -70,7 +70,6 @@ qoraal_svc_init (SVC_SERVICE_T * list)
     svc_shell_init () ;
     svc_service_services_init (list) ;
 
-
     return EOK ;
 }
 

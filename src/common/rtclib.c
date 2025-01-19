@@ -318,11 +318,8 @@ rtc_get_jday (RTCLIB_DATE_T d)        /* convert date to day number */
 RTCLIB_DATE_T
 rtc_get_gdate(uint32_t jday)  /* convert day number to y,m,d format */
 {
-  RTCLIB_DATE_T pd;
-
-
-  int32_t  I,J,K,L,N;
-
+    RTCLIB_DATE_T pd;
+    int32_t  I,J,K,L,N;
 
     L= jday+68569 ;
     N= 4*L/146097 ;
@@ -339,8 +336,7 @@ rtc_get_gdate(uint32_t jday)  /* convert day number to y,m,d format */
     pd.month = J ;
     pd.day = K ;
 
-
-  return pd;
+    return pd;
 }
 
 uint32_t
@@ -352,7 +348,9 @@ rtc_time (void)        /* convert date to day number */
         RTCLIB_TIME_T time = {.time = RTCLOCK_FIRST_TIME} ;
 
         return rtc_mktime (date, time) ;
+
     }
+    
     return now ;
 }
 

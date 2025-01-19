@@ -38,7 +38,7 @@ static stack_t                      _svc_service_handlers ;
 #define GET_SVC_SERVICE_HANDLE(pservice) \
             (SCV_SERVICE_HANDLE)( ((uintptr_t)pservice - (uintptr_t)_svc_service_list) / sizeof(SVC_SERVICE_T))
 
-static int32_t      _service_start (SVC_SERVICE_T* pservice, SVC_SERVICE_COMPLETE_CB cb, uint32_t cb_parm) ;
+static int32_t      _service_start (SVC_SERVICE_T* pservice, SVC_SERVICE_COMPLETE_CB cb, uintptr_t cb_parm) ;
 static void         _service_changed (int32_t status, SVC_SERVICE_T* pservice) ;
 
 /**
@@ -328,7 +328,7 @@ _service_changed(int32_t status, SVC_SERVICE_T* pservice)
         (start!=NULL_LLO)
             ; ) {
 
-        start->fp (status, pservice->service) ;
+        start->fp (pservice->service, status) ;
         start = (SVC_SERVICE_HANDLER_T*)stack_next ((plists_t)start, OFFSETOF(SVC_SERVICE_HANDLER_T, next));
 
     }
@@ -406,7 +406,7 @@ svc_service_system_halt (void)
 
 
 int32_t
-_service_start (SVC_SERVICE_T* pservice, SVC_SERVICE_COMPLETE_CB cb, uint32_t cb_parm)
+_service_start (SVC_SERVICE_T* pservice, SVC_SERVICE_COMPLETE_CB cb, uintptr_t cb_parm)
 {
     int res ;
     uint32_t status ;
@@ -511,7 +511,7 @@ _service_start (SVC_SERVICE_T* pservice, SVC_SERVICE_COMPLETE_CB cb, uint32_t cb
  * @svc
  */
 int32_t
-svc_service_start (SCV_SERVICE_HANDLE handle, uint32_t arg, SVC_SERVICE_COMPLETE_CB cb, uint32_t cb_parm)
+svc_service_start (SCV_SERVICE_HANDLE handle, uintptr_t arg, SVC_SERVICE_COMPLETE_CB cb, uintptr_t cb_parm)
 {
     int res = E_UNEXP ;
     int32_t status ;
@@ -555,7 +555,7 @@ svc_service_start (SCV_SERVICE_HANDLE handle, uint32_t arg, SVC_SERVICE_COMPLETE
  * @svc
  */
 int32_t
-svc_service_stop (SCV_SERVICE_HANDLE handle, SVC_SERVICE_COMPLETE_CB cb, uint32_t cb_parm)
+svc_service_stop (SCV_SERVICE_HANDLE handle, SVC_SERVICE_COMPLETE_CB cb, uintptr_t cb_parm)
 {
     int res = EOK ;
     int32_t status ;
@@ -657,7 +657,7 @@ restart_cb(SVC_SERVICES_T id, uintptr_t cb_parm)
  * @svc
  */
 int32_t
-svc_service_start_timeout (SCV_SERVICE_HANDLE handle, uint32_t arg, uint32_t timeout)
+svc_service_start_timeout (SCV_SERVICE_HANDLE handle, uintptr_t arg, uint32_t timeout)
 {
     int32_t res =  E_UNEXP;
     OS_SEMAPHORE_DECL (sem) ;
@@ -760,7 +760,7 @@ svc_service_stop_timeout (SCV_SERVICE_HANDLE handle, uint32_t timeout)
  * @svc
  */
 int32_t
-svc_service_ctrl (SCV_SERVICE_HANDLE handle, uint32_t cmd, uint32_t parm)
+svc_service_ctrl (SCV_SERVICE_HANDLE handle, uint32_t cmd, uintptr_t parm)
 {
     int res = EOK ;
     int32_t status ;
@@ -818,7 +818,7 @@ svc_service_ctrl (SCV_SERVICE_HANDLE handle, uint32_t cmd, uint32_t parm)
  * @svc
  */
 void
-svc_service_ctrl_broadcast (uint32_t cmd, uint32_t parm)
+svc_service_ctrl_broadcast (uint32_t cmd, uintptr_t parm)
 {
     if (!_svc_service_list)  return  ;
 

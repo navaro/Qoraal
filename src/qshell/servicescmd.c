@@ -117,7 +117,7 @@ qshell_ctrl (SVC_SHELL_IF_T * pif, char** argv, int argc)
     }
 
     bool stop = strcasecmp("stop", argv[2]) == 0 ;
-    bool start = strcasecmp("stop", argv[2]) == 0 ;
+    bool start = strcasecmp("start", argv[2]) == 0 ;
     bool restart = strcasecmp("restart", argv[2]) == 0 ;
 
     if (!stop && !start && !restart) {
@@ -158,7 +158,8 @@ qshell_ctrl (SVC_SHELL_IF_T * pif, char** argv, int argc)
 static int32_t
 qshell_logmsg (SVC_SHELL_IF_T * pif, char** argv, int argc)
 {
-    uint32_t level = 5 ;
+    uint32_t level = SVC_LOGGER_SEVERITY_REPORT ;
+
     if (argc < 2) {
         return SVC_SHELL_CMD_E_PARMS ;
     }
@@ -191,7 +192,7 @@ qshell_sleep(SVC_SHELL_IF_T * pif, char** argv, int argc)
             time.hour, time.minute, time.second, os_sys_timestamp(), STATS_TIMER_GET(),
             STATS_TIMER_GET() - elapsed) ;
 #else
-    os_thread_sleep(timeout) ;
+    os_thread_sleep (timeout) ;
 #endif
     return SVC_SHELL_CMD_E_OK ;
 }
@@ -209,7 +210,7 @@ static int32_t
 qshell_dmesg (SVC_SHELL_IF_T * pif, char** argv, int argc)
 {
 #define LOG_MSG_SIZE    (sizeof(QORAAL_LOG_MSG_T) + 200)
-    QORAAL_LOG_MSG_T *  msg =  qoraal_malloc(LOG_MSG_SIZE) ;
+    QORAAL_LOG_MSG_T *  msg = qoraal_malloc(LOG_MSG_SIZE) ;
     unsigned int cnt = 16 ;
     unsigned int severity = 6 ;
     QORAAL_LOG_IT_T * it = 0 ;
@@ -254,7 +255,6 @@ qshell_dmesg (SVC_SHELL_IF_T * pif, char** argv, int argc)
             if (it->prev(it) != EOK) break ;
 
         }
-
         mlog_platform_it_destroy (it) ;
 
     }

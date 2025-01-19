@@ -121,7 +121,8 @@ typedef struct OS_THREAD_WA_S {
     uint32_t                    stack[0] ;
 } OS_THREAD_WA_T ;
 
-void task_start (unsigned long arg)
+void 
+task_start (unsigned long arg)
 {
     OS_THREAD_WA_T * wa = (OS_THREAD_WA_T*) arg ;
 
@@ -570,7 +571,6 @@ os_thread_tls_alloc (int32_t * index)
     return EOK;
 }
 
-
 void
 os_thread_tls_free (int32_t  index)
 {
@@ -582,7 +582,7 @@ os_thread_tls_free (int32_t  index)
 }
 
 int32_t
-os_thread_tls_set(int32_t idx, uint32_t value)
+os_thread_tls_set (int32_t idx, uint32_t value)
 {
     if ((idx < 0 ) || (idx >= MAX_TLS_ID)) {
         return E_PARM ;
@@ -609,7 +609,7 @@ os_thread_tls_set(int32_t idx, uint32_t value)
 }
 
 uint32_t
-os_thread_tls_get(int32_t idx)
+os_thread_tls_get (int32_t idx)
 {
     if ((idx < 0 ) || (idx >= MAX_TLS_ID)) {
         return 0 ;
@@ -636,7 +636,7 @@ os_thread_tls_get(int32_t idx)
 
 
 p_sem_t*
-os_thread_thdsem_get(void)
+os_thread_thdsem_get (void)
 {
 #if CFG_OS_CHIBIOS
     thread_t * tp = chThdGetSelfX () ;
@@ -1662,7 +1662,7 @@ os_event_clear_isr (p_event_t* event, uint32_t mask)
 
 #if !defined CFG_OS_EVENT_DISABLE
 uint32_t
-os_event_wait(p_event_t* event, uint32_t clear_on_exit, uint32_t mask, uint32_t all)
+os_event_wait (p_event_t* event, uint32_t clear_on_exit, uint32_t mask, uint32_t all)
 {
     DBG_ASSERT_OS (mask, "ASSERT : os_event_signal") ;
 #if defined CFG_OS_CHIBIOS && CFG_OS_CHIBIOS
@@ -1686,7 +1686,7 @@ os_event_wait(p_event_t* event, uint32_t clear_on_exit, uint32_t mask, uint32_t 
 
 #if !defined CFG_OS_EVENT_DISABLE
 uint32_t
-os_event_wait_timeout(p_event_t* event, uint32_t clear_on_exit, uint32_t mask, 
+os_event_wait_timeout (p_event_t* event, uint32_t clear_on_exit, uint32_t mask, 
                             uint32_t all, uint32_t ticks)
 {
     DBG_ASSERT_OS (mask, "ASSERT : os_event_signal") ;
@@ -1826,10 +1826,10 @@ os_timer_delete (p_timer_t* timer)
 #endif
 
 void
-os_timer_set (p_timer_t* timer, uint32_t ticks, p_timer_function_t fp, void * parm)
+os_timer_set (p_timer_t* timer, uint32_t ticks)
 {
 #if defined CFG_OS_CHIBIOS && CFG_OS_CHIBIOS
-    chVTSet ((virtual_timer_t *)*timer, ticks, (vtfunc_t)fp, parm) ;
+    chVTSet ((virtual_timer_t *)*timer, ticks, /* tofo: fixme*/,  /* tofo: fixme*/) ;
 #endif
 #if defined CFG_OS_FREERTOS && CFG_OS_FREERTOS
     xTimerStop (*timer, (TickType_t)-1 );
@@ -1847,10 +1847,10 @@ os_timer_set (p_timer_t* timer, uint32_t ticks, p_timer_function_t fp, void * pa
 
 #if !defined CFG_OS_OS_TIMER_DISABLE
 void
-os_timer_set_i (p_timer_t* timer, uint32_t ticks, p_timer_function_t fp, void * parm)
+os_timer_set_i (p_timer_t* timer, uint32_t ticks)
 {
 #if defined CFG_OS_CHIBIOS && CFG_OS_CHIBIOS
-    chVTSetI ((virtual_timer_t *)*timer, ticks, (vtfunc_t)fp, parm) ;
+    chVTSetI ((virtual_timer_t *)*timer, ticks, /* tofo: fixme*/, /* tofo: fixme*/) ;
 #endif
 #if defined CFG_OS_FREERTOS && CFG_OS_FREERTOS
     xTimerStop (*timer, (TickType_t)-1 );
@@ -1900,6 +1900,5 @@ os_timer_reset (p_timer_t* timer)
 #endif
 }
 #endif
-
 
 #endif /* CFG_OS_CHIBIOS || CFG_OS_FREERTOS || CFG_OS_THREADX */

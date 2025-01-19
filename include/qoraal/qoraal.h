@@ -150,37 +150,37 @@ typedef struct {
      * @param size The number of bytes to allocate.
      * @return Pointer to the allocated memory or NULL on failure.
      */
-    void *(*malloc)(size_t size);
+    void *(*malloc) (size_t size);
 
     /**
      * @brief Free allocated memory.
      * @param ptr Pointer to the memory to free.
      */
-    void (*free)(void *ptr);
+    void (*free) (void *ptr);
 
     /**
      * @brief Print a debug message.
      * @param message The debug string to print.
      */
-    void (*debug_print)(const char *message);
+    void (*debug_print) (const char *message);
 
     /**
      * @brief Assert with a debug message.
      * @param message The debug string to print.
      */
-    void (*debug_assert)(const char *message);
+    void (*debug_assert) (const char *message);
 
     /**
      * @brief get system time
      * @return Seconds Since Epoch
      */
-    uint32_t (*current_time)(void);
+    uint32_t (*current_time) (void);
 
     /**
      * @brief Kick the WDT
      * @return Seconds before wdt will reset
      */
-    uint32_t (*wdt_kick)(void);
+    uint32_t (*wdt_kick) (void);
 
 } QORAAL_CFG_T;
 
@@ -195,35 +195,34 @@ extern const QORAAL_CFG_T * 	_qoraal_instance ;
 extern "C" {
 #endif
 
-
 int32_t     qoraal_instance_init (const QORAAL_CFG_T * instance);
 int32_t     qoraal_svc_init (SVC_SERVICE_T * list) ;
 int32_t     qoraal_svc_start (void) ;
 
 
-static inline void * qoraal_malloc(size_t size) {
+static inline void * qoraal_malloc (size_t size) {
     if (_qoraal_instance) return _qoraal_instance->malloc (size);
     return 0;
 }
 
-static inline void qoraal_free(void *ptr) {
+static inline void qoraal_free (void *ptr) {
     if (_qoraal_instance) _qoraal_instance->free (ptr);
 }
 
-static inline void qoraal_debug_print(const char *message) {
+static inline void qoraal_debug_print (const char *message) {
     if (_qoraal_instance && _qoraal_instance->debug_print) _qoraal_instance->debug_print (message);
 }
 
-static inline void qoraal_debug_assert(const char *message) {
+static inline void qoraal_debug_assert (const char *message) {
     if (_qoraal_instance && _qoraal_instance->debug_assert) _qoraal_instance->debug_assert (message);
 }
 
-static inline uint32_t qoraal_current_time(void) {
+static inline uint32_t qoraal_current_time (void) {
     if (_qoraal_instance && _qoraal_instance->current_time) return _qoraal_instance->current_time ();
-    return os_sys_timestamp () ;
+    return os_sys_timestamp () / 1000 ;
 }
 
-static inline uint32_t qoraal_wdt_kick(void) {
+static inline uint32_t qoraal_wdt_kick (void) {
     if (_qoraal_instance && _qoraal_instance->wdt_kick) return _qoraal_instance->wdt_kick ();
     return 0 ;
 }

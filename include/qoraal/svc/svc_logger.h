@@ -131,12 +131,11 @@ extern "C" {
     extern uint32_t         svc_logger_would_log (LOGGERT_TYPE_T type, uint8_t facility) ;
     extern int32_t          svc_logger_type_log (LOGGERT_TYPE_T type, uint8_t facility, const char *str, ...) ;
     extern int32_t          svc_logger_type_vlog (LOGGERT_TYPE_T type, uint8_t facility, const char *format_str, va_list args) ;
-    extern int32_t          svc_logger_type_mem (uint32_t type, const char* mem, uint32_t size, const char * head, const char * tail) ;
-
-    extern int32_t          svc_logger_log (const char *format_str, ...) ;
+    extern int32_t          svc_logger_type_mem (LOGGERT_TYPE_T type, uint8_t facility, const char* mem, uint32_t size, const char * head, const char * tail) ;
+    
     extern int32_t          svc_logger_printf (const char *format_str, ...) ;
+    extern int32_t          svc_logger_vprintf (const char *format_str, va_list args) ;
     extern int32_t          svc_logger_put (const char *str, uint32_t len) ;
-    extern int32_t          svc_logger_vlog_state (int inst, const char *format_str, va_list    args) ;
 
     extern void             svc_logger_set_mem_filter (LOGGGER_CHANNEL_FILTER_T filter) ;
 

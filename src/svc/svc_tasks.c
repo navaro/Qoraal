@@ -74,8 +74,8 @@ static uint32_t svc_tasks_service_task (linked_t* task_list, int thd_count, SVC_
  */
 void svc_tasks_virtual_timer(void *p)
 {
-    if (os_sys_is_irq())  svc_events_signal_isr (SVC_EVENTS_TASK) ;
-    else svc_tasks_task_event(SVC_EVENTS_TASK, 0) ;
+    if (os_sys_is_irq ())  svc_events_signal_isr (SVC_EVENTS_TASK) ;
+    else svc_tasks_task_event (SVC_EVENTS_TASK, 0) ;
 }
 
 /**
@@ -305,7 +305,7 @@ svc_tasks_task_event (SVC_EVENTS_T id, void * ctx)
     if (start) {
         now = os_sys_ticks () ;
         if ((int32_t)(start->ticks - now) > 0) {
-            os_timer_set (&_svc_tasks_virtual_timer, start->ticks - now, svc_tasks_virtual_timer, 0) ;
+            os_timer_set (&_svc_tasks_virtual_timer, start->ticks - now) ;
 
         } else {
             do {
@@ -320,7 +320,7 @@ svc_tasks_task_event (SVC_EVENTS_T id, void * ctx)
             } while (start && ((int32_t)(start->ticks - now) <= 0)) ;
 
             if (start) {
-                os_timer_set (&_svc_tasks_virtual_timer, start->ticks - now, svc_tasks_virtual_timer, 0) ;
+                os_timer_set (&_svc_tasks_virtual_timer, start->ticks - now) ;
 
             }
         }
@@ -491,7 +491,7 @@ svc_tasks_schedule (SVC_TASKS_T* task, SVC_TASKS_CALLBACK_T callback, uintptr_t 
         os_mutex_unlock (&_svc_task_mutex) ;
 
         if (ticks) {
-            os_timer_set (&_svc_tasks_virtual_timer, ticks, svc_tasks_virtual_timer, 0) ;
+            os_timer_set (&_svc_tasks_virtual_timer, ticks) ;
 
         } else {
             svc_tasks_task_event(SVC_EVENTS_TASK, 0) ;
