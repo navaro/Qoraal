@@ -61,10 +61,11 @@ system_service_ctrl (uint32_t code, uintptr_t arg)
     int32_t res = EOK ;
 
     switch (code) {
-    case SVC_SERVICE_CTRL_INIT:
+    case SVC_SERVICE_CTRL_INIT: {
         SVC_SHELL_CMD_LIST_INSTALL(system) ;
         os_sem_init (&_system_stop_sem, 0) ;
-        break ;
+    }
+    break ;
 
     case SVC_SERVICE_CTRL_START:
         DBG_MESSAGE_SYSTEM (DBG_MESSAGE_SEVERITY_REPORT, 
@@ -76,13 +77,15 @@ system_service_ctrl (uint32_t code, uintptr_t arg)
                 SERVICE_PRIO_QUEUE4, SVC_TASK_S2TICKS(30)) ;     
         break ;
 
-    case SVC_SERVICE_CTRL_STOP:
+    case SVC_SERVICE_CTRL_STOP: {
         DBG_MESSAGE_SYSTEM (DBG_MESSAGE_SEVERITY_REPORT, 
                         "SYS   : : system STOPPING...\r\n");
+        SVC_SHELL_CMD_LIST_UNINSTALL(system) ;
         os_sem_signal (&_system_stop_sem) ;
         svc_tasks_cancel (&_system_startup_task) ;
         svc_tasks_cancel (&_system_periodic_task) ;
-        break ;
+    }
+    break ;
 
 
     case SVC_SERVICE_CTRL_STATUS:

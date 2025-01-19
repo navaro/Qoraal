@@ -58,14 +58,16 @@ demo_service_ctrl (uint32_t code, uintptr_t arg)
     case SVC_SERVICE_CTRL_INIT:
         break ;
 
-    case SVC_SERVICE_CTRL_START:
+    case SVC_SERVICE_CTRL_START: {
         DBG_MESSAGE_DEMO (DBG_MESSAGE_SEVERITY_REPORT, "DEMO  : : Starting") ;
         SVC_SHELL_CMD_LIST_INSTALL(demo) ;
-        break ;
+    }
+    break ;
 
-    case SVC_SERVICE_CTRL_STOP:
+    case SVC_SERVICE_CTRL_STOP: {
         SVC_SHELL_CMD_LIST_UNINSTALL(demo) ;
-        break ;
+    }
+    break ;
 
     case SVC_SERVICE_CTRL_STATUS:
     default:
@@ -215,7 +217,7 @@ test_thread (void *arg)
     SVC_SHELL_IF_T * pif = (SVC_SHELL_IF_T*) arg ;
     svc_shell_print (pif, SVC_SHELL_OUT_STD, 
         "thread - started.\r\n") ;
-    os_thread_sleep (2000) ;
+    os_thread_sleep (3000) ;
     svc_shell_print (pif, SVC_SHELL_OUT_STD, 
         "thread - terminating.\r\n") ;
 }
@@ -230,6 +232,7 @@ qshell_demo_threads (SVC_SHELL_IF_T * pif, char** argv, int argc)
         "thread - create.\r\n") ;
     svc_threads_create (thd, test_thread_complete, 1024, OS_THREAD_PRIO_5, test_thread, (void*)pif, "test_thread") ;
 
+    os_thread_sleep (1000) ;
     svc_shell_print (pif, SVC_SHELL_OUT_STD, "thread - exit while thread running.\r\n") ;
 
     return SVC_SHELL_CMD_E_OK ;

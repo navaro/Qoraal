@@ -121,7 +121,7 @@ typedef TX_TIMER                    os_timer_t ;
 #include <time.h>
 
 typedef pthread_mutex_t             os_mutex_t ;
-#define OS_MUTEX_DECL(hmtx)         pthread_mutex_t __mtx_##hmtx = PTHREAD_RECURSIVE_MUTEX_INITIALIZER ; \
+#define OS_MUTEX_DECL(hmtx)         pthread_mutex_t __mtx_##hmtx = PTHREAD_MUTEX_INITIALIZER ; \
                                                                         static p_mutex_t hmtx = (p_mutex_t) &__mtx_##hmtx ;
 typedef sem_t                       os_sem_t ;
 #define OS_SEMAPHORE_DECL(hsem)     sem_t __sem_##hsem = \

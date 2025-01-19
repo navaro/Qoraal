@@ -61,10 +61,10 @@ OS := $(shell uname -s)
 
 # Define commands for mkdir and rm based on OS
 ifeq ($(OS), Linux)
-  MKDIR = mkdir -p
+  MKDIR = mkdir -p  $1
   RM = rm -rf
 else ifeq ($(OS), Darwin)
-  MKDIR = mkdir -p
+  MKDIR = mkdir -p  $1
   RM = rm -rf
 else
   MKDIR = mkdir "$(subst /,\\,$(1))" >nul 2>&1 || exit 0
