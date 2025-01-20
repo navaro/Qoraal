@@ -39,7 +39,6 @@ static const QORAAL_CFG_T       _qoraal_cfg = { .malloc = malloc, .free = free, 
 /*===========================================================================*/
 /* Main entry point                                                          */
 /*===========================================================================*/
-
 int 
 main (void)
 {
@@ -53,7 +52,7 @@ main (void)
 
 
     wait_for_exit () ;
-    return 0;
+    return 0 ;
 }
 
 void

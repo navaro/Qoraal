@@ -192,7 +192,7 @@ shell_logger_cb (void* channel, LOGGERT_TYPE_T type, uint8_t facility, const cha
  *
  * @return      status  The result of the command execution.
  */
-static int32_t
+int32_t
 qshell_version (SVC_SHELL_IF_T * pif, char** argv, int argc)
 {
     svc_shell_print (pif, SVC_SHELL_OUT_STD, "%s\r\n", SHELL_VERSION_STR) ;
@@ -209,7 +209,7 @@ qshell_version (SVC_SHELL_IF_T * pif, char** argv, int argc)
  *
  * @return      status  The result of the command execution.
  */
-static int32_t
+int32_t
 qshell_hello (SVC_SHELL_IF_T * pif, char** argv, int argc)
 {
     svc_shell_print (pif, SVC_SHELL_OUT_STD, "%s\r\n\r\n", SHELL_HELLO) ;

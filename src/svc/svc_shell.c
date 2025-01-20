@@ -77,6 +77,13 @@ svc_shell_init(void)
         _qshell_static_list.cnt = cnt;
     }
 
+#if CFG_OS_POSIX 
+    extern void qshell_posixcmd_init (void)  ;
+    qshell_posixcmd_init () ;
+#endif
+    extern void qshell_servicescmd_init (void)  ;
+    qshell_servicescmd_init () ;
+
     return SVC_SHELL_CMD_E_OK ;
 }
 

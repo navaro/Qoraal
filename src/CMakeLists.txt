@@ -5,6 +5,8 @@ set(QORAAL_SRCS
     os_posix.c
     os.c
     qoraal.c
+    qshell/posixcmd.c
+    qshell/servicescmd.c
     svc/svc_events.c
     svc/svc_logger.c
     svc/svc_services.c
@@ -18,8 +20,6 @@ set(QORAAL_SRCS
     common/mlog.c
     common/rtclib.c
     common/strsub.c
-    qshell/posixcmd.c
-    qshell/servicescmd.c
 )
 
 # Add the library target
@@ -27,3 +27,6 @@ add_library(qoraal STATIC ${QORAAL_SRCS})
 
 # Link necessary libraries
 target_link_libraries(qoraal pthread)
+
+# Set compile options for the qoraal target
+

@@ -40,6 +40,7 @@
 
 const QORAAL_CFG_T * _qoraal_instance = 0 ;
 
+
 int32_t
 qoraal_instance_init (const QORAAL_CFG_T * instance)
 {
@@ -50,6 +51,8 @@ qoraal_instance_init (const QORAAL_CFG_T * instance)
         if (!_qoraal_instance->free) qoraal_debug_assert ("qoraal free required") ;
 
     }
+
+
     return EOK;
 }
 

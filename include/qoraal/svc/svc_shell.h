@@ -150,22 +150,20 @@ typedef struct SVC_SHELL_CMD_LIST_S {
         . = ALIGN(4);
          __qshell_cmds_end__ = .;
 */
-#if 1
-#define CONCAT_LINE_HELPER(x, y) x##y
-#define CONCAT_LINE(x, y) CONCAT_LINE_HELPER(x, y)
 
-#define SVC_SHELL_CMD_DECL(name, function, usage)        \
-    static int32_t  function (SVC_SHELL_IF_T * pif, char** argv, int argc) ; \
-    static const SVC_SHELL_CMD_T CONCAT_LINE(__qoraalcmd_, __LINE__)            \
-    __attribute__((used, section(".qshell.cmds." #function), aligned(1))) = \
-    {                                                    \
-        name,                                            \
-        function,                                        \
-        usage                                            \
+#define CONCAT_LINE_HELPER(x, y, z) x##y##z
+#define CONCAT_LINE(x, y, z) CONCAT_LINE_HELPER(x, y, z)
+
+#define SVC_SHELL_CMD_DECL(name, function, usage)                            \
+    static int32_t function (SVC_SHELL_IF_T * pif, char** argv, int argc) ;        \
+    static const SVC_SHELL_CMD_T CONCAT_LINE(__qoraalcmd_, __LINE__, function) \
+        __attribute__((used, section(".qshell.cmds." #function), aligned(1))) = \
+    {                                                                        \
+        name,                                                                \
+        function,                                                            \
+        usage                                                                \
     }
-#else
-#define SVC_SHELL_CMD_DECL(name, function, usage)
-#endif
+
 
 
 /*===========================================================================*/
