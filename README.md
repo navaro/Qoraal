@@ -24,6 +24,7 @@ So lets get into it!
 
 1. Open a Codespace or your development environment.
 2. Run the following commands to build and execute Qoraal:
+   ```
    mkdir build
    cd build
    cmake ..
