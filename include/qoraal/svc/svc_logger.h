@@ -136,6 +136,7 @@ extern "C" {
     extern int32_t          svc_logger_printf (const char *format_str, ...) ;
     extern int32_t          svc_logger_vprintf (const char *format_str, va_list args) ;
     extern int32_t          svc_logger_put (const char *str, uint32_t len) ;
+    extern int32_t          svc_logger_vlog_state (int inst, const char *format_str, va_list args) ;
 
     extern void             svc_logger_set_mem_filter (LOGGGER_CHANNEL_FILTER_T filter) ;
 

@@ -489,6 +489,103 @@ svc_logger_put (const char *str, uint32_t len)
 
 }
 
+/**
+* @brief   Adds a message to the logger queue.
+*
+* @param[in] format_str    format string
+*
+* @return              Error.
+*
+* @svc
+*/
+int32_t
+svc_logger_vlog_state (int inst, const char *format_str, va_list    args)
+{
+    LOGGER_TASK_T* task  ;
+    static uint32_t cnt = 0 ;
+    uint32_t seconds ;
+    uint32_t mseconds ;
+    uint32_t len  ;
+
+    if (
+                (SVC_LOGGER_SEVERITY_WARNING <= SVC_LOGGER_GET_SEVERITY(_logger_filter.type))
+#if !defined CFG_COMMON_MEMLOG_DISABLE
+                || (mlog_started() && (SVC_LOGGER_SEVERITY_WARNING <= SVC_LOGGER_GET_SEVERITY(_logger_filter_mem.type)))
+#endif
+            ) {
+
+
+        uint32_t message_size =  LOG_MESSAGE_SIZE ;
+        if (!message_size) {
+            int32_t strlen =  vsnprintf(0, 0, (char*)format_str, args);
+            if (strlen < 0) return 0 ;
+            message_size = strlen + 32 ;
+
+        }
+
+        task = (LOGGER_TASK_T*)qoraal_malloc(sizeof(LOGGER_TASK_T) + message_size) ;
+
+        if (task == 0) {
+            return E_NOMEM ;
+        }
+        memset(task, 0, sizeof(LOGGER_TASK_T));
+
+        //msg = &task->msg ;
+
+         //msg->type = NSHELL_NOTIFY_LOG_STATE ;
+         task->id = (uint32_t)inst ;
+         mseconds = (unsigned int)os_sys_timestamp() ;
+         seconds = mseconds / 1000;
+         mseconds %= 1000 ;
+
+         task->type = SVC_LOGGER_TYPE (SVC_LOGGER_SEVERITY_WARNING, 0) ;
+         task->facility = 0 ;
+
+
+        if (inst >= 0 ) {
+            len = snprintf ((char*)task->message, message_size, "<%d>[%.5u.%.3u - %.3u] ", inst, (unsigned int)seconds, (unsigned int)mseconds, (unsigned int)cnt++) ;
+        } else {
+            len = snprintf ((char*)task->message, message_size, "<->[%.5u.%.3u - %.3u] ", (unsigned int)seconds, (unsigned int)mseconds, (unsigned int)cnt++) ;
+        }
+        len += vsnprintf ((char*)&(task->message[len]), message_size - len, (char*)format_str, args) ;
+
+
+        //msg->length = sizeof (NSHELL_NOTIFY_LOG_T) - message_size + len + 1 ;
+
+#if !defined CFG_COMMON_MEMLOG_DISABLE
+        if (mlog_started() && (SVC_LOGGER_SEVERITY_WARNING <= SVC_LOGGER_GET_SEVERITY(_logger_filter_mem.type))) {
+            mlog_dbg (SVC_LOGGER_GET_SEVERITY(task->type), _logger_id++, (char*)task->message) ;
+        }
+#endif
+
+#if defined SERVICE_LOGGER_TASK && SERVICE_LOGGER_TASK
+        if (SVC_LOGGER_SEVERITY_WARNING <= SVC_LOGGER_GET_SEVERITY(_logger_filter.type)) {
+            svc_tasks_init_task ((SVC_TASKS_T*)task) ;
+            if (
+                    (SVC_LOGGER_SEVERITY_REPORT > SVC_LOGGER_GET_SEVERITY(_logger_filter.type)) ||
+                    !linked_head (&_logger_channels) ||
+                    (svc_tasks_schedule ((SVC_TASKS_T*)task, logger_task_callback, 0, _logger_task_prio, 0) != EOK)
+                ) {
+                qoraal_free(task) ;
+
+            } else {
+                //chSysLock();
+                //_logger_debug_sending++;
+                //chSysUnlock();
+
+            }
+#else
+            logger_state_task_callback ((SVC_TASKS_T*)task, (uint32_t)0, SERVICE_CALLBACK_REASON_RUN) ;
+
+#endif
+        }
+
+    }
+
+    return EOK ;
+}
+
+
 
 int32_t
 svc_logger_type_mem (LOGGERT_TYPE_T type, uint8_t facility, const char* mem, uint32_t size, const char * head, const char * tail)
