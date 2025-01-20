@@ -31,7 +31,7 @@ So lets get into it!
    cmake --build .
    ```
    > :bulb: On Wondows try: ```cmake -G "MinGW Makefiles" ..```
-   > :bulb: To do a clean build, start with: ``` cmake --build . --target clean ``` or, if you want to check out qoraal again: ```rm -rf _deps```
+   > :bulb: To do a clean build, start with: ```cmake --build . --target clean``` or, if you want to check out qoraal again: ```rm -rf _deps```
 
 3. in the shell that will open:
    ```bash

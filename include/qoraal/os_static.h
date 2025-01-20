@@ -30,7 +30,7 @@
 typedef unsigned int                os_mutex_t[5] ;
 #define OS_MUTEX_DECL(hmtx)         unsigned int __mtx_##hmtx[5] = \
                                     {0} ; \
-                                    static p_mutex_t hmtx = (p_mutex_t) __mtx_##hmtx ;
+                                    p_mutex_t hmtx = (p_mutex_t) __mtx_##hmtx ;
 
 typedef unsigned int                os_sem_t[3] ;
 #define OS_SEMAPHORE_DECL(hsem)     unsigned int __sem_##hsem[3] = \
@@ -60,7 +60,7 @@ typedef unsigned int                os_timer_t[5] ;
 typedef StaticQueue_t               os_mutex_t ;
 #define OS_MUTEX_DECL(hmtx)         StaticQueue_t __mtx##hmtx = \
                                     {0} ; \
-                                    static p_mutex_t hmtx = (p_mutex_t) &__mtx##hmtx ;
+                                    p_mutex_t hmtx = (p_mutex_t) &__mtx##hmtx ;
 
 typedef StaticQueue_t               os_sem_t ;
 #define OS_SEMAPHORE_DECL(hsem)     StaticQueue_t __sem_##hsem = \
@@ -75,7 +75,7 @@ typedef StaticEventGroup_t          os_event_t ;
 typedef StaticTimer_t               os_timer_t ;
 #define OS_TIMER_DECL(htimer)       StaticTimer_t __timer_##htimer = \
                                     {0} ; \
-                                    static p_timer_t htimer = (p_timer_t) &__timer_##htimer ;
+                                    p_timer_t htimer = (p_timer_t) &__timer_##htimer ;
 
 #define OS_THREAD_WA_SIZE(stack_size) (sizeof(StaticTask_t) + 6*sizeof(uint32_t) + stack_size)
 #define OS_THREAD_WORKING_AREA(s, n)  uint64_t s[OS_THREAD_WA_SIZE(n) / sizeof (uint64_t)]
@@ -92,7 +92,7 @@ typedef StaticTimer_t               os_timer_t ;
 typedef TX_MUTEX                    os_mutex_t ;
 #define OS_MUTEX_DECL(hmtx)         TX_MUTEX __mtx_##hmtx = \
                                     {0} ; \
-                                    static p_mutex_t hmtx = (p_mutex_t) &__mtx_##hmtx ;
+                                    p_mutex_t hmtx = (p_mutex_t) &__mtx_##hmtx ;
 
 typedef TX_SEMAPHORE                os_sem_t ;
 #define OS_SEMAPHORE_DECL(hsem)     TX_SEMAPHORE __sem_##hsem = \
@@ -136,7 +136,7 @@ typedef struct os_event_s {
 } os_event_t ;
 
 #define OS_EVENT_DECL(hevent)       os_event_t __event_##hevent = \
-                                    {PTHREAD_MUTEX_INITIALIZER, PTHREAD_COND_INITIALIZER} ; \
+                                    {.mutex = PTHREAD_MUTEX_INITIALIZER, .cond = PTHREAD_COND_INITIALIZER} ; \
                                     p_event_t hevent = (p_event_t) &__event_##hevent ;
 
 
