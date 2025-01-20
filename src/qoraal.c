@@ -68,7 +68,9 @@ qoraal_svc_init (SVC_SERVICE_T * list)
     svc_logger_init (SERVICE_PRIO_QUEUE3) ;
     svc_threads_init () ;
     svc_shell_init () ;
-    svc_service_services_init (list) ;
+    if (list) {
+        svc_service_services_init (list) ;
+    }
 
     return EOK ;
 }
