@@ -24,9 +24,14 @@ So lets get into it!
 
 1. Open a Codespace or your development environment.
 2. Run the following commands to build and execute Qoraal:
-   ```bash
-   make
-   ./build/qoraal
+   mkdir build
+   cd build
+   cmake ..
+   cmake --build .
+   ```
+   > :bulb: On Wondows try: ```cmake -G "MinGW Makefiles" ..```
+   > :bulb: To do a clean build, start with: ``` cmake --build . --target clean ``` or, if you want to check out qoraal again: ```rm -rf _deps```
+
 3. in the shell that will open:
    ```bash
    . runme.sh

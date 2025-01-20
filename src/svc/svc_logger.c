@@ -569,9 +569,9 @@ svc_logger_vlog_state (int inst, const char *format_str, va_list    args)
                 qoraal_free(task) ;
 
             } else {
-                //chSysLock();
-                //_logger_debug_sending++;
-                //chSysUnlock();
+                os_sys_lock();
+                _logger_debug_sending++;
+                os_sys_unlock();
 
             }
 #else
