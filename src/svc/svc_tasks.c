@@ -407,7 +407,7 @@ svc_tasks_complete (SVC_TASKS_T* task)
 }
 
 int32_t
-svc_tasks_add (SVC_TASKS_T* task, SVC_TASKS_CALLBACK_T callback, uint32_t parm, uint16_t prio)
+svc_tasks_add (SVC_TASKS_T* task, SVC_TASKS_CALLBACK_T callback, uintptr_t parm, uint16_t prio)
 {
     int32_t status  ;
 
