@@ -21,11 +21,11 @@
 /* Service Local Variables and Types                                         */
 /*===========================================================================*/
 
-QORAAL_SERVC_LIST_START(_qoraal_services_list)
-QORAAL_SERVC_RUN_DECL("system",  system_service_run, system_service_ctrl, 0, 6000, OS_THREAD_PRIO_7, QORAAL_SERVICE_SYSTEM, SVC_SERVICE_FLAGS_AUTOSTART)
-QORAAL_SERVC_RUN_DECL("shell",  shell_service_run, shell_service_ctrl, 0, 6000, OS_THREAD_PRIO_7, QORAAL_SERVICE_SHELL, SVC_SERVICE_FLAGS_AUTOSTART)
-QORAAL_SERVC_DECL("demo", demo_service_ctrl, 0, QORAAL_SERVICE_DEMO, 0)
-QORAAL_SERVC_LIST_END()
+SVC_SERVICE_LIST_START(_qoraal_services_list)
+SVC_SERVICE_RUN_DECL("system",  system_service_run, system_service_ctrl, 0, 6000, OS_THREAD_PRIO_7, QORAAL_SERVICE_SYSTEM, SVC_SERVICE_FLAGS_AUTOSTART)
+SVC_SERVICE_RUN_DECL("shell",  shell_service_run, shell_service_ctrl, 0, 6000, OS_THREAD_PRIO_7, QORAAL_SERVICE_SHELL, SVC_SERVICE_FLAGS_AUTOSTART)
+SVC_SERVICE_DECL("demo", demo_service_ctrl, 0, QORAAL_SERVICE_DEMO, 0)
+SVC_SERVICE_LIST_END()
 
 static const QORAAL_CFG_T       _qoraal_cfg = { .malloc = malloc, .free = free, .debug_print = platform_print, .debug_assert = platform_assert, .current_time = platform_current_time, .wdt_kick = platform_wdt_kick};
 
@@ -34,7 +34,7 @@ static const QORAAL_CFG_T       _qoraal_cfg = { .malloc = malloc, .free = free, 
 /*===========================================================================*/
 
 /**
- * @brief Initializatoin after scheduler was started.
+ * @brief Initialization after scheduler was started.
  * @note  If the services completely define the application, you can  
  *        safely exit here, and the service threads will clean up this 
  *        thread's resources.

@@ -22,7 +22,7 @@
 /* Service local variables and types.                                        */
 /*===========================================================================*/
 
-static OS_SEMAPHORE_DECL    (_system_stop_sem) ;
+static p_sem_t              _system_stop_sem ;
 static SVC_TASKS_DECL       (_system_startup_task) ;
 static SVC_TASKS_DECL       (_system_periodic_task) ;
 
@@ -63,7 +63,7 @@ system_service_ctrl (uint32_t code, uintptr_t arg)
     switch (code) {
     case SVC_SERVICE_CTRL_INIT: {
         SVC_SHELL_CMD_LIST_INSTALL(system) ;
-        os_sem_init (&_system_stop_sem, 0) ;
+        os_sem_create (&_system_stop_sem, 0) ;
     }
     break ;
 
@@ -112,6 +112,8 @@ system_service_run (uintptr_t arg)
 
     }
 
+    os_sem_delete (&_system_stop_sem) ;
+    
     DBG_MESSAGE_SYSTEM (DBG_MESSAGE_SEVERITY_REPORT, 
                     "SYS   : : system complete.");
 

@@ -99,16 +99,16 @@ typedef struct SVC_SERVICE_S {
 } SVC_SERVICE_T ;
 
 
-#define QORAAL_SERVC_LIST_START(name) SVC_SERVICE_T name[] = {
-#define QORAAL_SERVC_LIST_END() \
+#define SVC_SERVICE_LIST_START(name) SVC_SERVICE_T name[] = {
+#define SVC_SERVICE_LIST_END() \
         {_SVC_THREADS_DATA, 0, 0, 0, 0, 0, 0, 0, \
         0, 0, SVC_SERVICES_INVALID, 0, 0} };
 
-#define QORAAL_SERVC_RUN_DECL(name, fprun, fpctrl, parm, stack, prio, service, flags) \
+#define SVC_SERVICE_RUN_DECL(name, fprun, fpctrl, parm, stack, prio, service, flags) \
         {_SVC_THREADS_DATA, 0, 0, fprun, fpctrl, parm, stack, prio, \
         SVC_SERVICE_STATUS_STOPPED, EOK, service, flags, name},
 
-#define QORAAL_SERVC_DECL(name, fpctrl, parm, service, flags) \
+#define SVC_SERVICE_DECL(name, fpctrl, parm, service, flags) \
         {_SVC_THREADS_DATA, 0, 0, 0, fpctrl, parm, 0, 0, \
         SVC_SERVICE_STATUS_STOPPED, EOK, service, flags, name},
 

@@ -147,11 +147,11 @@ qshell_demo_waitable_tasks (SVC_SHELL_IF_T * pif, char** argv, int argc)
             SERVICE_PRIO_QUEUE5, SVC_TASK_MS2TICKS(2000)) ;
 
     int32_t res = svc_tasks_wait ((SVC_TASKS_T*)&task, SVC_TASK_MS2TICKS(4000)) ;
-
     DBG_ASSERT_T (res == EOK, "qshell_demo_waitable_tasks unexpectes!")
 
+    svc_tasks_deinit_waitable_task (&task) ;
     svc_shell_print (pif, SVC_SHELL_OUT_STD, 
-            "task - test complete.\r\n") ;
+            "waitable task - test complete.\r\n") ;
 
     return SVC_SHELL_CMD_E_OK;
 }

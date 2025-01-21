@@ -113,7 +113,7 @@ typedef struct SVC_TASKS_S {
 
 typedef struct SVC_WAITABLE_TASKS_S {
     SVC_TASKS_T     task ;
-    os_event_t      event ;
+    p_event_t       event ;
 } SVC_WAITABLE_TASKS_T ;
 
 

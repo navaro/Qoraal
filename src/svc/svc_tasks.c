@@ -259,18 +259,22 @@ int32_t
 svc_tasks_init_waitable_task (SVC_WAITABLE_TASKS_T* task)
 {
     svc_tasks_init_task(&task->task) ;
-    task->task.flags = SVC_TASKS_FLAGS_WAITABLE ;
-    p_event_t event = &((SVC_WAITABLE_TASKS_T*)task)->event ;
-    return os_event_init (&event) ;
+    task->event = 0 ;
+    p_event_t event  ;
+    int32_t res = os_event_create (&event) ;
+    if (res == EOK) {
+        task->event = event ;
+        task->task.flags = SVC_TASKS_FLAGS_WAITABLE ;
+    }
+    return res ;
 }
 
 void
 svc_tasks_deinit_waitable_task (SVC_WAITABLE_TASKS_T* task)
 {
-    p_event_t event = &((SVC_WAITABLE_TASKS_T*)task)->event ;
-    os_event_deinit (&event) ;
+    p_event_t event = ((SVC_WAITABLE_TASKS_T*)task)->event ;
+    os_event_delete (&event) ;
 }
-
 
 static void
 task_to_ready (SVC_TASKS_T* task)
@@ -400,7 +404,7 @@ svc_tasks_complete (SVC_TASKS_T* task)
 {
     task->status &= ~SERVICE_STATUS_ACTIVE_BIT ;
     if (task->flags & SVC_TASKS_FLAGS_WAITABLE) {
-        p_event_t event = &((SVC_WAITABLE_TASKS_T*)task)->event ;
+        p_event_t event = ((SVC_WAITABLE_TASKS_T*)task)->event ;
         os_event_signal (&event, 1) ;
     }
 
@@ -446,7 +450,7 @@ svc_tasks_schedule (SVC_TASKS_T* task, SVC_TASKS_CALLBACK_T callback, uintptr_t 
     DBG_ASSERT_SVC_TASKS (ticks < ((uint32_t)-1) / 2, "svc_tasks_schedule invalid ticks %d!!", ticks) ;
 
     if (task->flags & SVC_TASKS_FLAGS_WAITABLE) {
-        p_event_t event = &((SVC_WAITABLE_TASKS_T*)task)->event ;
+        p_event_t event = ((SVC_WAITABLE_TASKS_T*)task)->event ;
         os_event_clear (&event, 1) ;
     }
 
@@ -546,7 +550,7 @@ task_ready_cancel (SVC_TASKS_T* task)
             os_mutex_lock (&_svc_task_mutex) ;
 
             if (task->flags & SVC_TASKS_FLAGS_WAITABLE) {
-                p_event_t event = &((SVC_WAITABLE_TASKS_T*)task)->event ;
+                p_event_t event = ((SVC_WAITABLE_TASKS_T*)task)->event ;
                 os_event_signal (&event, 1) ;
             }
 
@@ -602,7 +606,7 @@ svc_tasks_cancel (SVC_TASKS_T* task)
         task->callback (task, parm, SERVICE_CALLBACK_REASON_CANCELED) ;
 
         if (start->flags & SVC_TASKS_FLAGS_WAITABLE) {
-            p_event_t event = &((SVC_WAITABLE_TASKS_T*)start)->event ;
+            p_event_t event = ((SVC_WAITABLE_TASKS_T*)start)->event ;
             os_event_signal (&event, 1) ;
         }
 
@@ -701,7 +705,7 @@ int32_t
 svc_tasks_wait (SVC_TASKS_T* task, uint32_t timeout)
 {
     if (task->flags & SVC_TASKS_FLAGS_WAITABLE) {
-        p_event_t event = &((SVC_WAITABLE_TASKS_T*)task)->event ;
+        p_event_t event = ((SVC_WAITABLE_TASKS_T*)task)->event ;
         return os_event_wait_timeout (&event, 0, 1, 0, SVC_TASK_MS2TICKS(timeout)) ?
                 EOK : E_TIMEOUT ;
 

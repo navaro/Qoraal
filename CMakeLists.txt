@@ -5,10 +5,6 @@ project(qoraal C)
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED True)
 
-# Add compile definitions globally
-add_compile_definitions(CFG_OS_POSIX)
-
-
 # Include directories
 include_directories(include)
 

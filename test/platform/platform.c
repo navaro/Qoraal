@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "platform.h"
 #include "qoraal/common/rtclib.h"
 
@@ -42,7 +43,7 @@ platform_wdt_kick (void)
     return 20 ;
 }
 
-static OS_SEMAPHORE_DECL    (_main_stop_sem) ;
+static p_sem_t    _main_stop_sem ;
 void 
 status_callback (SVC_SERVICES_T  id, int32_t status)
 {
@@ -55,9 +56,10 @@ void
 platform_wait_for_exit (SVC_SERVICES_T service_id)
 {
     _platform_complete_service_id = service_id ;
-    os_sem_init (&_main_stop_sem, 0) ;
+    os_sem_create (&_main_stop_sem, 0) ;
     SVC_SERVICE_HANDLER_T  handler ;
     svc_service_register_handler (&handler, status_callback) ;
     os_sem_wait (&_main_stop_sem) ;
     svc_service_unregister_handler (&handler) ;
+    os_sem_delete (&_main_stop_sem) ;
 }

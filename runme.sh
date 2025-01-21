@@ -40,7 +40,6 @@ echo "Executing: demo_tasks"
 demo_tasks
 echo
 sleep 2000
-ctrl demo stop
 
 echo
 echo "Demo completed! Feel free to explore other commands or rerun the script."
