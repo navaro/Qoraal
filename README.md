@@ -30,11 +30,11 @@ Other RTOS suport currently include ChibiOS, FreeRTOS and ThreadX.
    ```
    mkdir build
    cd build
-   cmake ..
+   cmake .. -DBUILD_TESTS=ON
    cmake --build .
    ./test/qoraal_test
    ```
-   > :bulb: On Wondows use: ```cmake -G "MinGW Makefiles" ..```
+   > :bulb: On Wondows use: ```cmake .. -DBUILD_TESTS=ON -G "MinGW Makefiles"```
    
    > :bulb: To do a clean build, start with: ```cmake --build . --target clean``` or, if you want to check out qoraal again: ```rm -rf _deps```
 

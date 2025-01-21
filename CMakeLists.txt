@@ -1,3 +1,6 @@
+# to build test code use: 
+#   cmake .. -DBUILD_TESTS=ON
+
 cmake_minimum_required(VERSION 3.10)
 project(qoraal C)
 
@@ -10,4 +13,11 @@ include_directories(include)
 
 # Add subdirectories
 add_subdirectory(src)
-add_subdirectory(test)
+
+# Option to build tests
+option(BUILD_TESTS "Build the test directory" OFF)
+
+
+if(BUILD_TESTS)
+    add_subdirectory(test)
+endif()
