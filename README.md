@@ -32,7 +32,7 @@ Other RTOS suport currently include ChibiOS, FreeRTOS and ThreadX.
    cd build
    cmake ..
    cmake --build .
-   ./build/test/qoraal_test
+   ./test/qoraal_test
    ```
    > :bulb: On Wondows use: ```cmake -G "MinGW Makefiles" ..```
    

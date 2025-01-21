@@ -216,7 +216,10 @@ logger_create_task (LOGGERT_TYPE_T type, uint8_t facility, const char *format_st
     uint32_t len = 0 ;
     uint32_t message_size =  LOG_MESSAGE_SIZE ;
     if (!message_size) {
-        int32_t strlen =  vsnprintf(0, 0, (char*)format_str, args);
+        va_list args_copy;
+        va_copy(args_copy, args);
+        int32_t strlen =  vsnprintf(0, 0, (char*)format_str, args_copy);
+        va_end(args_copy);
         if (strlen < 0) return 0 ;
         message_size = strlen + 32 + EXTRA_CHARS ;
 
@@ -250,7 +253,7 @@ logger_create_task (LOGGERT_TYPE_T type, uint8_t facility, const char *format_st
 #endif
     len += vsnprintf((char*)&task->message[len], message_size - len - EXTRA_CHARS, (char*)format_str, args);
     if (!(type & SVC_LOGGER_FLAGS_NO_FORMATTING)) {
-        if (len >= message_size - EXTRA_CHARS) len = message_size - EXTRA_CHARS ;
+        if (len >= message_size - EXTRA_CHARS) len = message_size - EXTRA_CHARS -1 ;
         if (task->message[len-1] == '\n') len-- ;
         if (task->message[len-1] == '\r') len-- ;
 #if SVC_LOGGER_APPEND_CRLF
