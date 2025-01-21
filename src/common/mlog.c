@@ -209,7 +209,9 @@ mlog_dbg (uint16_t type, uint16_t id, const char* msg, ...)
 {
     va_list         args;
     va_start (args, msg) ;
-    return mlog_append(type, id, MLOG_DBG, msg, args) ;
+    int32_t res = mlog_append(type, id, MLOG_DBG, msg, args) ;
+    va_end (args) ;
+    return res ;
 }
 
 int32_t         
@@ -227,7 +229,9 @@ mlog_log (int16_t facillity,  int16_t severity, const char* msg, ...)
 
     va_list         args;
     va_start (args, msg) ;
-    return mlog_append (logtype.type, 0, MLOG_DBG, msg, args) ;
+    int32_t res = mlog_append (logtype.type, 0, MLOG_DBG, msg, args) ;
+    va_end (args) ;
+    return res ;
 }
 
 int32_t 

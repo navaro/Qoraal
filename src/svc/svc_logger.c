@@ -400,7 +400,9 @@ svc_logger_type_log (LOGGERT_TYPE_T type, uint8_t facility, const char *format_s
 {
     va_list         args;
     va_start(args, format_str);
-    return svc_logger_type_vlog (type, facility, format_str, args) ;
+    int32_t res = svc_logger_type_vlog (type, facility, format_str, args) ;
+    va_end (args) ;
+    return res ;
 }
 
 /**
@@ -419,9 +421,11 @@ svc_logger_printf (const char *format_str, ...)
 {
     va_list         args;
     va_start(args, format_str);
-    return svc_logger_type_vlog (
+    int32_t res = svc_logger_type_vlog (
             SVC_LOGGER_TYPE(SVC_LOGGER_SEVERITY_REPORT,0), 0,
             format_str, args) ;
+    va_end (args) ;
+    return res ;
 }
 
 /**

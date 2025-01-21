@@ -35,6 +35,7 @@ debug_printf (const char *format, ...)
     va_start (args, format) ;
     char debug_msg[DEBUG_MSG_SIZE] ;
     int32_t count = vsnprintf ((char*)debug_msg, DEBUG_MSG_SIZE, format, args) ;
+    va_end (args) ;
     debug_msg [DEBUG_MSG_SIZE-1] = '\0';
     qoraal_debug_print (debug_msg) ;
     return count ;
@@ -47,6 +48,7 @@ debug_assert(const char *format, ...)
     va_start (args, format) ;
     char debug_msg[DEBUG_MSG_SIZE] ;
     vsnprintf ((char*)debug_msg, DEBUG_MSG_SIZE, format, args) ;
+    va_end (args) ;
     debug_msg [DEBUG_MSG_SIZE-1] = '\0';
     qoraal_debug_assert (debug_msg) ;
 }

@@ -215,6 +215,7 @@ int32_t svc_shell_print_table(SVC_SHELL_IF_T * pif, uint32_t out,
         _qshell_buffer[count++] = ' ' ;
     } while ((count < tabright) && (count < SVC_SHELL_PRINT_BUFFER_SIZE - 3)) ;
     count += vsnprintf ((char*)&_qshell_buffer[count], SVC_SHELL_PRINT_BUFFER_SIZE - count, (char*)fmtstr, args) ;
+    va_end (args) ;
     pif->out (pif->ctx, out, _qshell_buffer) ;
     return count ;
 }
@@ -225,6 +226,7 @@ int32_t svc_shell_print(SVC_SHELL_IF_T * pif, uint32_t out, const char * fmtstr,
     va_start (args, fmtstr) ;
 
     int32_t count = vsnprintf ((char*)_qshell_buffer, SVC_SHELL_PRINT_BUFFER_SIZE, (char*)fmtstr, args) ;
+    va_end (args) ;
     pif->out (pif->ctx, out, _qshell_buffer) ;
 
     return count ;
