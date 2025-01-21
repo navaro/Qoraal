@@ -28,9 +28,8 @@
 /* CFG_COMMON_MEMLOG_DISABLE 
     If defined, the platform does not support memory logging.
 */
-#if defined CFG_OS_POSIX
 // #define CFG_COMMON_MEMLOG_DISABLE      1
-#endif
+
 
 /* CFG_OS_OS_TIMER_DISABLE
     If defined, the platform does not support os timers

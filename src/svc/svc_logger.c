@@ -635,7 +635,7 @@ svc_logger_type_mem (LOGGERT_TYPE_T type, uint8_t facility, const char* mem, uin
    extern char* dbg_format_mem_dump_width (char* buffer, int len, const char* data, int size, unsigned int print_addr, int width) ;
         dbg_format_mem_dump_width (&task->message[len], message_size-len, mem, size, 0, 16) ;
 #else
-        len += snprintf(&task->message[len], message_size-len, "0x%.8lx: ", (uintptr_t)mem);
+        len += snprintf(&task->message[len], message_size-len, "0x%p: ", mem);
         for (int i=0; i<size; i++) {
             len += sprintf (&task->message[len], "%.2X ", (char)mem[i]&0xFF);
             if (len >= message_size-4) break ;
