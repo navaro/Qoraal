@@ -664,14 +664,9 @@ os_mutex_init (p_mutex_t* mutex)
         return EFAIL;
     }
 
-    *mutex = qoraal_malloc(sizeof(pthread_mutex_t)); // Allocate space for the mutex
-    if (*mutex == NULL) {
-        return EFAIL;
-    }
 
     pthread_mutexattr_t attr;
     if (pthread_mutexattr_init(&attr) != 0) {
-        qoraal_free(*mutex);
         return EFAIL;
     }
 
@@ -679,7 +674,7 @@ os_mutex_init (p_mutex_t* mutex)
 
     if (pthread_mutex_init((pthread_mutex_t*)*mutex, &attr) != 0) {
         pthread_mutexattr_destroy(&attr);
-        qoraal_free(*mutex);
+        
         return EFAIL;
     }
 
@@ -689,10 +684,30 @@ os_mutex_init (p_mutex_t* mutex)
 #endif
 
 #if !defined CFG_OS_MUTEX_DISABLE
+void 
+os_mutex_deinit (p_mutex_t* mutex)
+{
+    if (mutex && *mutex) {
+        pthread_mutex_destroy((pthread_mutex_t*)*mutex);
+        *mutex = NULL;
+    }
+}
+#endif
+
+#if !defined CFG_OS_MUTEX_DISABLE
 int32_t 
 os_mutex_create (p_mutex_t* mutex)
 {
-    return os_mutex_init (mutex);
+    *mutex = qoraal_malloc(sizeof(pthread_mutex_t)); // Allocate space for the mutex
+    if (*mutex == NULL) {
+        return EFAIL;
+    }
+
+    int res = os_mutex_init (mutex);
+    if (res != EOK) {
+        qoraal_free(*mutex);
+    }
+    return res ;
 }
 #endif
 
