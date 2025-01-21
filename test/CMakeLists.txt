@@ -1,9 +1,10 @@
 # Collect all test source files
 set(TEST_SRCS
     main.c
-    demo.c
-    shell.c
-    system.c
+    services/demo.c
+    services/shell.c
+    services/system.c
+    platform/platform.c
 )
 
 # Add the executable target
@@ -15,4 +16,4 @@ target_compile_options(qoraal PRIVATE -O0 -g)
 target_compile_options(qoraal_test PRIVATE -O0 -g)
 
 # Generate a map file
-set_target_properties(qoraal_test PROPERTIES LINK_FLAGS "-Wl,-Map=output.map -T ${CMAKE_SOURCE_DIR}/test/posix.ld")
+set_target_properties(qoraal_test PROPERTIES LINK_FLAGS "-Wl,-Map=output.map -T ${CMAKE_SOURCE_DIR}/test/platform/posix.ld")

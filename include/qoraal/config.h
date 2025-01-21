@@ -16,9 +16,8 @@
 /* CFG_SVC_WDT_DISABLE_PLATFORM
     If defined, platform does not support a watchdog, functions will be implemented as stubs only.
 */
-#if defined CFG_OS_POSIX
-#define CFG_SVC_WDT_DISABLE_PLATFORM    1
-#endif
+// #define CFG_SVC_WDT_DISABLE_PLATFORM    1
+
 
 /* CFG_COMMON_STRSUB_DISABLE
     If defined the shell will not support string substitution in the command parser

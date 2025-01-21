@@ -10,19 +10,16 @@
 #include "qoraal/svc/svc_services.h"
 #include "qoraal/svc/svc_shell.h"
 #include "qoraal/common/mlog.h"
-#include "services.h"
+#include "services/services.h"
+#include "platform/platform.h"
 
 /*===========================================================================*/
 /* Macros and Defines                                                        */
 /*===========================================================================*/
 
 /*===========================================================================*/
-/* Local Functions                                                           */
+/* Service Local Variables and Types                                         */
 /*===========================================================================*/
-
-static void     wait_for_exit (void) ;
-static void     qoraal_print (const char *format) ;
-static void     qoraal_assert (const char *format) ;
 
 QORAAL_SERVC_LIST_START(_qoraal_services_list)
 QORAAL_SERVC_RUN_DECL("system",  system_service_run, system_service_ctrl, 0, 6000, OS_THREAD_PRIO_7, QORAAL_SERVICE_SYSTEM, SVC_SERVICE_FLAGS_AUTOSTART)
@@ -30,58 +27,76 @@ QORAAL_SERVC_RUN_DECL("shell",  shell_service_run, shell_service_ctrl, 0, 6000, 
 QORAAL_SERVC_DECL("demo", demo_service_ctrl, 0, QORAAL_SERVICE_DEMO, 0)
 QORAAL_SERVC_LIST_END()
 
-/*===========================================================================*/
-/* Service Local Variables and Types                                         */
-/*===========================================================================*/
-
-static const QORAAL_CFG_T       _qoraal_cfg = { .malloc = malloc, .free = free, .debug_print = qoraal_print, .debug_assert = qoraal_assert, .current_time = 0, .wdt_kick = 0};
+static const QORAAL_CFG_T       _qoraal_cfg = { .malloc = malloc, .free = free, .debug_print = platform_print, .debug_assert = platform_assert, .current_time = platform_current_time, .wdt_kick = platform_wdt_kick};
 
 /*===========================================================================*/
-/* Main entry point                                                          */
+/* Local Functions                                                           */
 /*===========================================================================*/
-int 
-main (void)
+
+/**
+ * @brief Initializatoin after scheduler was started.
+ * @note  If the services completely define the application, you can  
+ *        safely exit here, and the service threads will clean up this 
+ *        thread's resources.
+ * 
+ */
+static void
+main_thread(void* arg)
 {
- 
+    platform_start () ;
+    qoraal_svc_start () ;
+}
+
+/**
+ * @brief Pre-scheduler initialization.
+ *
+ */
+void
+main_init (void)
+{
+    static SVC_THREADS_T thd ;
+
+    platform_init () ;
     qoraal_instance_init (&_qoraal_cfg) ;
     qoraal_svc_init (_qoraal_services_list) ;
 
-    os_sys_start () ;
+    svc_threads_create (&thd, 0,
+                4000, OS_THREAD_PRIO_1, main_thread, 0, 0) ;
 
-    qoraal_svc_start () ;
-
-
-    wait_for_exit () ;
-    return 0 ;
 }
 
-void
-qoraal_print (const char *format)
+#if defined CFG_OS_THREADX 
+void tx_application_define(void *first_unused_memory)
 {
-    printf ("%s", format) ;
+    main_init () ;
+}
+#endif
+
+/**
+ * @brief Main entry point.
+ *
+ */
+int main( void )
+{
+#if !defined CFG_OS_THREADX
+    main_init() ;
+#endif
+
+    /* Start the scheduler. */
+    os_sys_start ();
+
+    /* 
+     * Dependinmg on the RTOS, if you get here it will be in a threading context. 
+     * So alternatively, main_thread can be called from here.
+     */
+
+    /*
+     * For the demo, we wait for the shell to be exited with the "exit" command.
+     */
+    platform_wait_for_exit (QORAAL_SERVICE_SHELL) ;    
+
+    // for( ;; ) os_thread_sleep (32768);
 }
 
-void
-qoraal_assert (const char *format)
-{
-    printf ("%s", format) ;
-    abort () ;
-}
 
-static OS_SEMAPHORE_DECL    (_main_stop_sem) ;
-void status_callback (SVC_SERVICES_T  id, int32_t status)
-{
-    if (status == SVC_SERVICE_STATUS_STOPPED && id == QORAAL_SERVICE_SHELL) {
-        os_sem_signal (&_main_stop_sem) ;
-    }
-}
 
-void
-wait_for_exit (void)
-{
-    os_sem_init (&_main_stop_sem, 0) ;
-    SVC_SERVICE_HANDLER_T  handler ;
-    svc_service_register_handler (&handler, status_callback) ;
-    os_sem_wait (&_main_stop_sem) ;
-    svc_service_unregister_handler (&handler) ;
-}

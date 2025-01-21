@@ -219,7 +219,7 @@ static inline void qoraal_debug_assert (const char *message) {
 
 static inline uint32_t qoraal_current_time (void) {
     if (_qoraal_instance && _qoraal_instance->current_time) return _qoraal_instance->current_time ();
-    return os_sys_timestamp () / 1000 ;
+    return 0 ;
 }
 
 static inline uint32_t qoraal_wdt_kick (void) {
