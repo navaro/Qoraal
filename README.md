@@ -1,5 +1,6 @@
 # Qoraal
 ### Embedded Application Framework
+#### ChibiOS - FreeRTOS - ThreadX - POSIX
 
 ---
 
@@ -22,6 +23,8 @@ So lets get into it!
 
 ## Quick Start
 
+The demo application will be compiled using the posix port for evaluation.
+Other RTOS suport currently include ChibiOS, FreeRTOS and ThreadX.
 1. Open a Codespace or your development environment.
 2. Run the following commands to build and execute Qoraal:
    ```
