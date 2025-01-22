@@ -106,6 +106,7 @@ _cmd_first(SVC_SHELL_CMD_LIST_IT_T * it)
         it->lst = &_qshell_static_list ;
     }
 
+    if (!it->lst) return 0 ;
     return &it->lst->cmds[it->idx] ;
 }
 
