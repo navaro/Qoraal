@@ -105,10 +105,10 @@ dictionary_const_str_keyval_free(struct dictionary * dict, struct dlist *np)
 static unsigned int
 dictionary_str_key_hash(struct dictionary * dict, const char *s)
 {
-    unsigned int hashval;
-    if (s == 0) return 0 ;
-    for (hashval = 0; *s != '\0'; s++) {
-      hashval = *s + 31 * hashval;
+    unsigned int hashval = 5381; // Start with a prime number
+    while (*s != '\0') {
+        hashval = ((hashval << 5) + hashval) + *s; // hashval * 33 + *s
+        s++;
     }
     return hashval % dict->hashsize;
 }
