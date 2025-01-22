@@ -524,11 +524,15 @@ svc_logger_vlog_state (int inst, const char *format_str, va_list    args)
 
         uint32_t message_size =  LOG_MESSAGE_SIZE ;
         if (!message_size) {
-            int32_t strlen =  vsnprintf(0, 0, (char*)format_str, args);
+            va_list args_copy;
+            va_copy(args_copy, args);
+            int32_t strlen =  vsnprintf(0, 0, (char*)format_str, args_copy);
+            va_end(args_copy);
             if (strlen < 0) return 0 ;
-            message_size = strlen + 32 ;
+            message_size = strlen + 32  ;
 
         }
+
 
         task = (LOGGER_TASK_T*)qoraal_malloc(sizeof(LOGGER_TASK_T) + message_size) ;
 
