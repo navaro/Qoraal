@@ -266,5 +266,3 @@ qshell_dmesg (SVC_SHELL_IF_T * pif, char** argv, int argc)
 #endif
 
 
-void qshell_servicescmd_init (void) {} ;
-
