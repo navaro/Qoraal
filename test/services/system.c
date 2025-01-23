@@ -105,7 +105,7 @@ system_service_run (uintptr_t arg)
 
     while (1) {
         if (os_sem_wait_timeout (&_system_stop_sem, OS_S2TICKS(120)) == EOK) {
-            return EOK ;
+            break ;
         }
 
         DBG_MESSAGE_SYSTEM (DBG_MESSAGE_SEVERITY_REPORT, 
