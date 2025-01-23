@@ -79,7 +79,7 @@ strsub_uninstall_handler (STRSUB_INSTANCE_T * instance, strsub_token_t token,
 
 uint32_t
 strsub_parse (STRSUB_INSTANCE_T * instance, STRSUB_REPLACE_CB cb,
-        const char * buffer, size_t len, uintptr_t arg)
+        const char * buffer, size_t len, uint32_t *tokens, uintptr_t arg)
 {
     const char *p, *start_of_word = buffer ;
     strsub_token_t state = StrsubDull;
@@ -89,6 +89,7 @@ strsub_parse (STRSUB_INSTANCE_T * instance, STRSUB_REPLACE_CB cb,
     uint32_t i  ;
 
     if (instance == 0) instance = &_strsub_instance ; /* default instance */
+    if (tokens) *tokens = 0 ;
 
     for (p = buffer;
             res >= 0 && *p != '\0' && ((unsigned int)(p - buffer) < len) ;
@@ -111,6 +112,7 @@ strsub_parse (STRSUB_INSTANCE_T * instance, STRSUB_REPLACE_CB cb,
                         /* open token found */
                         state = i ;
                         start_of_word = p + 1;
+
                         break ;
 
                     }
@@ -156,6 +158,7 @@ strsub_parse (STRSUB_INSTANCE_T * instance, STRSUB_REPLACE_CB cb,
                                the read pointer past the closing delimiter token
                                and continue */
                             offset += res ;
+                            if (tokens) (*tokens)++ ;
                             break ;
 
                         }
@@ -197,7 +200,6 @@ strsub_parse (STRSUB_INSTANCE_T * instance, STRSUB_REPLACE_CB cb,
 typedef struct STRSUB_TO_CB_S {
     char *      buffer ;
     uint32_t    len ;
-    uint32_t    tokens ;
 } STRSUB_TO_CB_T ;
 
 static int32_t
@@ -209,6 +211,7 @@ strsub_cb(const char * str, uint32_t len, uint32_t offset, uintptr_t arg)
         return -1 ;
 
     }
+
     if (len + offset >= parg->len - 1) {
         len = parg->len - offset - 1;
 
@@ -217,27 +220,29 @@ strsub_cb(const char * str, uint32_t len, uint32_t offset, uintptr_t arg)
         memcpy (&(parg->buffer[offset]), str, len) ;
 
     }
-    parg->tokens++ ;
+
+
     return len ;
 }
 
-uint32_t
+int32_t
 strsub_parse_get_dst_length (STRSUB_INSTANCE_T * instance,
                                 const char * str, uint32_t len)
 {
     STRSUB_TO_CB_T arg = {0};
     arg.len = ~0 ;
+    uint32_t tokens = 0 ;
 
     if (str == 0) return 0 ;
     if (!len) len = strlen(str) ;
 
     /* NULL buffer will get the length only */
-    int32_t dstlen = strsub_parse (instance, strsub_cb, str, len, (uintptr_t)&arg) ;
+    int32_t dstlen = strsub_parse (instance, strsub_cb, str, len, &tokens, (uintptr_t)&arg) ;
     if (dstlen < 0) {
         return EFAIL ;
 
     }
-    if (!arg.tokens) {
+    if (!tokens) {
         return E_NOTFOUND ;
 
     }
@@ -257,7 +262,7 @@ strsub_parse_string_to (STRSUB_INSTANCE_T * instance, const char * str,
     if (str == 0) return 0 ;
     if (!len) len = strlen(str) ;
 
-    uint32_t offset = strsub_parse (instance, strsub_cb, str, len, (uintptr_t)&arg) ;
+    uint32_t offset = strsub_parse (instance, strsub_cb, str, len, 0, (uintptr_t)&arg) ;
 
     return offset ;
 }

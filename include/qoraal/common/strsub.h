@@ -112,13 +112,13 @@ extern "C" {
      * A source string can be parsed to a user allocated destination string using
      * the following functions.
      */
-    extern uint32_t     strsub_parse_get_dst_length (STRSUB_INSTANCE_T * instance, const char * str, uint32_t len) ;
+    extern int32_t      strsub_parse_get_dst_length (STRSUB_INSTANCE_T * instance, const char * str, uint32_t len) ;
     extern uint32_t     strsub_parse_string_to (STRSUB_INSTANCE_T * instance, const char * str, uint32_t len, char* dst, uint32_t dst_len) ;
 
     /**
      * This is the raw parser function.
      */
-    extern uint32_t     strsub_parse (STRSUB_INSTANCE_T * instance, STRSUB_REPLACE_CB cb, const char * str, size_t len, uintptr_t arg) ;
+    extern uint32_t     strsub_parse (STRSUB_INSTANCE_T * instance, STRSUB_REPLACE_CB cb, const char * str, size_t len, uint32_t * tokens, uintptr_t arg) ;
 
 #ifdef __cplusplus
 }
