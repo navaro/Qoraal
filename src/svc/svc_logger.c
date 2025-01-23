@@ -31,6 +31,7 @@
 #include "qoraal/config.h"
 #include "qoraal/qoraal.h"
 #include "qoraal/common/lists.h"
+#include "qoraal/common/memdbg.h"
 #if !defined CFG_COMMON_MEMLOG_DISABLE
 #include "qoraal/common/mlog.h"
 #endif
@@ -601,9 +602,7 @@ svc_logger_vlog_state (int inst, const char *format_str, va_list    args)
 int32_t
 svc_logger_type_mem (LOGGERT_TYPE_T type, uint8_t facility, const char* mem, uint32_t size, const char * head, const char * tail)
 {
-    //uint32_t severity = SVC_LOGGER_GET_SEVERITY(type) ;
     int32_t status = 0 ;
-    //uint32_t i ;
     int len  ;
 
     if (_logger_debug_sending >= SVC_LOGGER_MAX_QUEUE_SIZE) {
@@ -635,8 +634,7 @@ svc_logger_type_mem (LOGGERT_TYPE_T type, uint8_t facility, const char* mem, uin
         task->facility = facility ;
         len = snprintf(task->message, message_size, "%s", head);
 
-#if 0
-   extern char* dbg_format_mem_dump_width (char* buffer, int len, const char* data, int size, unsigned int print_addr, int width) ;
+#if 1
         dbg_format_mem_dump_width (&task->message[len], message_size-len, mem, size, 0, 16) ;
 #else
         len += snprintf(&task->message[len], message_size-len, "0x%p: ", mem);

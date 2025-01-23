@@ -26,6 +26,8 @@ static int32_t      qshell_demo_tasks (SVC_SHELL_IF_T * pif, char** argv, int ar
 static int32_t      qshell_demo_waitable_tasks (SVC_SHELL_IF_T * pif, char** argv, int argc) ;
 static int32_t      qshell_demo_events (SVC_SHELL_IF_T * pif, char** argv, int argc) ;
 static int32_t      qshell_demo_timers (SVC_SHELL_IF_T * pif, char** argv, int argc) ;
+static int32_t      qshell_demo_dbg (SVC_SHELL_IF_T * pif, char** argv, int argc) ;
+
 
 SVC_SHELL_CMD_LIST_START(demo, QORAAL_SERVICE_DEMO)
 SVC_SHELL_CMD_LIST( "demo_threads", qshell_demo_threads,  "")
@@ -33,6 +35,7 @@ SVC_SHELL_CMD_LIST( "demo_tasks", qshell_demo_tasks,  "")
 SVC_SHELL_CMD_LIST( "demo_waitable_tasks", qshell_demo_waitable_tasks,  "")
 SVC_SHELL_CMD_LIST( "demo_events", qshell_demo_events,  "")
 SVC_SHELL_CMD_LIST( "demo_timers", qshell_demo_timers,  "")
+SVC_SHELL_CMD_LIST( "demo_dbg", qshell_demo_dbg,  "")
 SVC_SHELL_CMD_LIST_END()
 
 /*===========================================================================*/
@@ -292,3 +295,12 @@ qshell_demo_timers (SVC_SHELL_IF_T * pif, char** argv, int argc)
 }
 
 
+int32_t
+qshell_demo_dbg (SVC_SHELL_IF_T * pif, char** argv, int argc)
+{
+    char mem[128] ;
+
+    svc_logger_type_mem (SVC_LOGGER_SEVERITY_REPORT, 0, mem, sizeof(mem), "MEM DUMP:\r\n", "\r\n") ;
+
+    return SVC_SHELL_CMD_E_OK ;
+}

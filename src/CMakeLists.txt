@@ -15,6 +15,7 @@ set(QORAAL_SRCS
     common/cbuffer.c
     common/dictionary.c
     common/lists.c
+    common/memdbg.c
     common/mlog.c
     common/rtclib.c
     common/strsub.c

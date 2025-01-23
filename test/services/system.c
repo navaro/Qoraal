@@ -62,30 +62,31 @@ system_service_ctrl (uint32_t code, uintptr_t arg)
 
     switch (code) {
     case SVC_SERVICE_CTRL_INIT: {
-        SVC_SHELL_CMD_LIST_INSTALL(system) ;
-        os_sem_create (&_system_stop_sem, 0) ;
-    }
+        
+     }
     break ;
 
-    case SVC_SERVICE_CTRL_START:
+    case SVC_SERVICE_CTRL_START:{
         DBG_MESSAGE_SYSTEM (DBG_MESSAGE_SEVERITY_REPORT, 
                         "SYS   : : system starting...\r\n");
-        os_sem_reset (&_system_stop_sem, 0) ;
+        os_sem_create (&_system_stop_sem, 0) ;
         svc_tasks_schedule (&_system_startup_task, system_startup_cb, 0,
                 SERVICE_PRIO_QUEUE2, SVC_TASK_MS2TICKS(5000)) ;        
         svc_tasks_schedule (&_system_periodic_task, system_periodic_cb, 0,
-                SERVICE_PRIO_QUEUE4, SVC_TASK_S2TICKS(40)) ;     
+                SERVICE_PRIO_QUEUE4, SVC_TASK_S2TICKS(40)) ;    
+        SVC_SHELL_CMD_LIST_INSTALL(system) ;
+        } 
         break ;
 
     case SVC_SERVICE_CTRL_STOP: {
         DBG_MESSAGE_SYSTEM (DBG_MESSAGE_SEVERITY_REPORT, 
                         "SYS   : : system stopping...\r\n");
         SVC_SHELL_CMD_LIST_UNINSTALL(system) ;
-        os_sem_signal (&_system_stop_sem) ;
         svc_tasks_cancel (&_system_startup_task) ;
         svc_tasks_cancel (&_system_periodic_task) ;
-    }
-    break ;
+        os_sem_signal (&_system_stop_sem) ;
+        }
+        break ;
 
 
     case SVC_SERVICE_CTRL_STATUS:
