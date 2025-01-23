@@ -147,7 +147,7 @@ os_thread_create (uint16_t stack_size, uint32_t prio, p_thread_function_t pf,
 
     if (thread) *thread = 0 ;
 
-    wsp = qoraal_malloc (size) ;
+    wsp = qoraal_malloc (QORAAL_HeapOperatingSystem, size) ;
     if (wsp == 0)
         return E_NOMEM;
 
@@ -183,7 +183,7 @@ os_thread_create (uint16_t stack_size, uint32_t prio, p_thread_function_t pf,
     size_t size = stack_size  ;
 
     if (thread) *thread = 0 ;
-    OS_THREAD_WA_T * const wa = qoraal_malloc (size  + sizeof(OS_THREAD_WA_T));
+    OS_THREAD_WA_T * const wa = qoraal_malloc (QORAAL_HeapOperatingSystem, QORAAL_HeapOperatingSystem, size  + sizeof(OS_THREAD_WA_T));
     if (!wa) {
         return E_NOMEM ;
     }
@@ -204,7 +204,7 @@ os_thread_create (uint16_t stack_size, uint32_t prio, p_thread_function_t pf,
             (void*)&wa->tcb ) ;
 
     if (!h) {
-        qoraal_free (wa);
+        qoraal_free (QORAAL_HeapOperatingSystem, wa);
         return EFAIL ;
     }
 
@@ -214,7 +214,7 @@ os_thread_create (uint16_t stack_size, uint32_t prio, p_thread_function_t pf,
 #endif
 #if defined CFG_OS_THREADX && CFG_OS_THREADX
     if (thread) *thread = 0 ;
-    OS_THREAD_WA_T * const wa = qoraal_malloc (stack_size  + sizeof(OS_THREAD_WA_T));
+    OS_THREAD_WA_T * const wa = qoraal_malloc (QORAAL_HeapOperatingSystem, stack_size  + sizeof(OS_THREAD_WA_T));
 
     if (!wa) {
         return E_NOMEM ;
@@ -239,7 +239,7 @@ os_thread_create (uint16_t stack_size, uint32_t prio, p_thread_function_t pf,
         tx_event_flags_delete (&wa->suspend_evt) ;
         tx_semaphore_delete (&wa->join_sem) ;
         tx_semaphore_delete (&wa->thread_sem) ;
-        qoraal_free (wa);
+        qoraal_free (QORAAL_HeapOperatingSystem, wa);
         return EFAIL ;
 
     }
@@ -403,7 +403,7 @@ os_thread_join (p_thread_t* thread)
     uint32_t* wa = tp->wa ;
     chThdWait ((thread_t*)*thread);
     if (tp->heap) {
-        qoraal_free (wa) ;
+        qoraal_free (QORAAL_HeapOperatingSystem, wa) ;
     }
 #endif
 #if defined CFG_OS_FREERTOS && CFG_OS_FREERTOS
@@ -430,7 +430,7 @@ os_thread_join_timeout (p_thread_t* thread, uint32_t ticks)
 #error NOT IMPPLEMENTED YET!
     chThdWait ((thread_t*)*thread);
     if (heap) {
-        qoraal_free (wa) ;
+        qoraal_free (QORAAL_HeapOperatingSystem, wa) ;
     }
 #endif
 #if defined CFG_OS_FREERTOS && CFG_OS_FREERTOS
@@ -465,7 +465,7 @@ os_thread_release (p_thread_t* thread)
     uint32_t* wa = tp->wa ;
     chThdRelease ((thread_t*)*thread);
     if (heap != HEAP_SPACE_NONE) {
-        qoraal_free (wa) ;
+        qoraal_free (QORAAL_HeapOperatingSystem, wa) ;
     }
 #endif
 #if defined CFG_OS_FREERTOS && CFG_OS_FREERTOS
@@ -473,7 +473,7 @@ os_thread_release (p_thread_t* thread)
     wa = (OS_THREAD_WA_T * )*thread ;
     vTaskDelete ((TaskHandle_t)wa);
     if (wa->heap) {
-        qoraal_free (wa) ;
+        qoraal_free (QORAAL_HeapOperatingSystem, wa) ;
 
     }
 #endif
@@ -490,7 +490,7 @@ os_thread_release (p_thread_t* thread)
     tx_thread_delete (&wa->tcb) ;
 
     if (wa->heap) {
-        qoraal_free (wa) ;
+        qoraal_free (QORAAL_HeapOperatingSystem, wa) ;
 
     }
 #endif
@@ -1056,7 +1056,7 @@ int32_t
 os_mutex_create (p_mutex_t* mutex)
 {
 #if defined CFG_OS_CHIBIOS && CFG_OS_CHIBIOS
-    *(mutex) = qoraal_malloc ((sizeof(mutex_t)) ) ;
+    *(mutex) = qoraal_malloc (QORAAL_HeapOperatingSystem, (sizeof(mutex_t)) ) ;
     if (!*(mutex)) return E_NOMEM ;
     chMtxObjectInit ((mutex_t*)*mutex) ;
     return EOK ;
@@ -1066,7 +1066,7 @@ os_mutex_create (p_mutex_t* mutex)
     return *(mutex) ? EOK : EFAIL ;
 #endif
 #if defined CFG_OS_THREADX && CFG_OS_THREADX
-    *(mutex) = qoraal_malloc ((sizeof(TX_MUTEX)) ) ;
+    *(mutex) = qoraal_malloc (QORAAL_HeapOperatingSystem, (sizeof(TX_MUTEX)) ) ;
     if (!*(mutex)) return E_NOMEM ;
     UINT r = tx_mutex_create((TX_MUTEX*)(*mutex), "", 1) ;
     (void)r;
@@ -1081,7 +1081,7 @@ void
 os_mutex_delete (p_mutex_t* mutex)
 {
 #if defined CFG_OS_CHIBIOS && CFG_OS_CHIBIOS
-    qoraal_free (*(mutex)) ;
+    qoraal_free (QORAAL_HeapOperatingSystem, *(mutex)) ;
     *mutex = 0 ;
 #endif
 #if defined CFG_OS_FREERTOS && CFG_OS_FREERTOS
@@ -1090,7 +1090,7 @@ os_mutex_delete (p_mutex_t* mutex)
 #endif
 #if defined CFG_OS_THREADX && CFG_OS_THREADX
     os_mutex_deinit (mutex) ;   
-    qoraal_free (*(mutex)) ;
+    qoraal_free (QORAAL_HeapOperatingSystem, *(mutex)) ;
     *mutex = 0 ;
 #endif
 }
@@ -1186,7 +1186,7 @@ int32_t
 os_sem_create (p_sem_t* sem, int32_t cnt)
 {
 #if defined CFG_OS_CHIBIOS && CFG_OS_CHIBIOS
-    *(sem) = qoraal_malloc ((sizeof(semaphore_t)) ) ;
+    *(sem) = qoraal_malloc (QORAAL_HeapOperatingSystem, (sizeof(semaphore_t)) ) ;
     if (!*(sem)) return E_NOMEM ;
     chSemObjectInit ((semaphore_t*)*sem, cnt) ;
     return EOK ;
@@ -1198,7 +1198,7 @@ os_sem_create (p_sem_t* sem, int32_t cnt)
     return EOK ;
 #endif
 #if defined CFG_OS_THREADX && CFG_OS_THREADX
-    *(sem) = qoraal_malloc ((sizeof(TX_SEMAPHORE)) ) ;
+    *(sem) = qoraal_malloc (QORAAL_HeapOperatingSystem, (sizeof(TX_SEMAPHORE)) ) ;
     if (!*(sem)) return E_NOMEM ;
     return tx_semaphore_create((TX_SEMAPHORE*)*sem, "os", cnt) == TX_SUCCESS ? EOK : EFAIL ;
 #endif
@@ -1226,7 +1226,7 @@ void
 os_sem_delete (p_sem_t* sem)
 {
 #if defined CFG_OS_CHIBIOS && CFG_OS_CHIBIOS
-    qoraal_free (*(sem)) ;
+    qoraal_free (QORAAL_HeapOperatingSystem, *(sem)) ;
     *sem = 0 ;
 #endif
 #if defined CFG_OS_FREERTOS && CFG_OS_FREERTOS
@@ -1235,7 +1235,7 @@ os_sem_delete (p_sem_t* sem)
 #endif
 #if defined CFG_OS_THREADX && CFG_OS_THREADX
     tx_semaphore_delete ((TX_SEMAPHORE*)*sem) ;
-    qoraal_free (*(sem)) ;
+    qoraal_free (QORAAL_HeapOperatingSystem, *(sem)) ;
     *sem = 0 ;
 #endif
 }
@@ -1337,7 +1337,7 @@ int32_t
 os_bsem_create (p_sem_t* sem, int32_t taken)
 {
 #if defined CFG_OS_CHIBIOS && CFG_OS_CHIBIOS
-    *(sem) = qoraal_malloc ((sizeof(semaphore_t)) ) ;
+    *(sem) = qoraal_malloc (QORAAL_HeapOperatingSystem, (sizeof(semaphore_t)) ) ;
     if (!*(sem)) return E_NOMEM ;
     chBSemObjectInit ((binary_semaphore_t*)*sem, taken) ;
     return EOK ;
@@ -1350,7 +1350,7 @@ os_bsem_create (p_sem_t* sem, int32_t taken)
     return EOK ;
 #endif
 #if defined CFG_OS_THREADX && CFG_OS_THREADX
-    *(sem) = qoraal_malloc ((sizeof(TX_SEMAPHORE)) ) ;
+    *(sem) = qoraal_malloc (QORAAL_HeapOperatingSystem, (sizeof(TX_SEMAPHORE)) ) ;
     if (!*(sem)) return E_NOMEM ;
     return tx_semaphore_create((TX_SEMAPHORE*)*sem, "os", taken ? 0 : 1) == TX_SUCCESS ? EOK : EFAIL ;
 #endif
@@ -1378,7 +1378,7 @@ void
 os_bsem_delete (p_sem_t* sem)
 {
 #if defined CFG_OS_CHIBIOS && CFG_OS_CHIBIOS
-    qoraal_free (*(sem)) ;
+    qoraal_free (QORAAL_HeapOperatingSystem, *(sem)) ;
     *sem = 0 ;
 #endif
 #if defined CFG_OS_FREERTOS && CFG_OS_FREERTOS
@@ -1387,7 +1387,7 @@ os_bsem_delete (p_sem_t* sem)
 #endif
 #if defined CFG_OS_THREADX && CFG_OS_THREADX
     tx_semaphore_delete ((TX_SEMAPHORE*)*sem) ;
-    qoraal_free (*(sem)) ;
+    qoraal_free (QORAAL_HeapOperatingSystem, *(sem)) ;
     *sem = 0 ;
 #endif
 }
@@ -1517,7 +1517,7 @@ int32_t
 os_event_create (p_event_t* event)
 {
 #if defined CFG_OS_CHIBIOS && CFG_OS_CHIBIOS
-    *(event) = (p_event_t)qoraal_malloc (sizeof(EventFlags));
+    *(event) = (p_event_t)qoraal_malloc (QORAAL_HeapOperatingSystem, sizeof(EventFlags));
     if (!*(event)) return E_NOMEM ;
     chEvtFlagsInit ((EventFlags*)*(event)) ;
     return EOK ;
@@ -1527,7 +1527,7 @@ os_event_create (p_event_t* event)
     return *(event) ? EOK : EFAIL ;
 #endif
 #if defined CFG_OS_THREADX && CFG_OS_THREADX
-    *(event) = (p_event_t)qoraal_malloc (sizeof(TX_EVENT_FLAGS_GROUP));
+    *(event) = (p_event_t)qoraal_malloc (QORAAL_HeapOperatingSystem, sizeof(TX_EVENT_FLAGS_GROUP));
     if (!*(event)) return E_NOMEM ;
     return tx_event_flags_create ((TX_EVENT_FLAGS_GROUP*)(*event), "os")
             == TX_SUCCESS ? EOK : EFAIL ;
@@ -1545,7 +1545,7 @@ os_event_delete (p_event_t* event)
 #endif
     chEvtFlagsDelete ( *(event) )  ;
     DBG_ASSERT_OS (chEvtFlagsListenerCnt ((EventFlags*)*(event)) == 0, "ASSERT : os_event_delete unexpected!") ;
-    qoraal_free ( *(event) ) ;
+    qoraal_free (QORAAL_HeapOperatingSystem,  *(event) ) ;
     *event = 0 ;
 #endif
 #if defined CFG_OS_FREERTOS && CFG_OS_FREERTOS
@@ -1554,7 +1554,7 @@ os_event_delete (p_event_t* event)
 #endif
 #if defined CFG_OS_THREADX && CFG_OS_THREADX
     tx_event_flags_delete ( (TX_EVENT_FLAGS_GROUP*)(*event) )  ;
-    qoraal_free ( *event ) ;
+    qoraal_free (QORAAL_HeapOperatingSystem,  *event ) ;
     *event = 0 ;
 #endif
 }
@@ -1771,7 +1771,7 @@ int32_t
 os_timer_create (p_timer_t* timer, p_timer_function_t fp, void * parm)
 {
 #if defined CFG_OS_CHIBIOS && CFG_OS_CHIBIOS
-    *(timer) = (p_timer_t)qoraal_malloc (sizeof(virtual_timer_t));
+    *(timer) = (p_timer_t)qoraal_malloc (QORAAL_HeapOperatingSystem, sizeof(virtual_timer_t));
     if (!*(timer)) return E_NOMEM ;
      chVTObjectInit ((virtual_timer_t *)*timer) ;
     return EOK ;
@@ -1797,7 +1797,7 @@ os_timer_create (p_timer_t* timer, p_timer_function_t fp, void * parm)
     return *(timer) ? EOK : EFAIL ;
 #endif
 #if defined CFG_OS_THREADX && CFG_OS_THREADX
-    *(timer) = (p_timer_t)qoraal_malloc (sizeof(TX_TIMER));
+    *(timer) = (p_timer_t)qoraal_malloc (QORAAL_HeapOperatingSystem, sizeof(TX_TIMER));
     if (!*(timer)) return E_NOMEM ;
     return tx_timer_create((TX_TIMER *)*timer, "os", (VOID (*)(ULONG))fp,
             (ULONG) (parm),1, 0, TX_NO_ACTIVATE) == TX_SUCCESS ? EOK : EFAIL ;
@@ -1811,7 +1811,7 @@ os_timer_delete (p_timer_t* timer)
 {
 #if defined CFG_OS_CHIBIOS && CFG_OS_CHIBIOS
     chVTReset ((virtual_timer_t *)*timer) ;
-    qoraal_free ( *timer ) ;
+    qoraal_free (QORAAL_HeapOperatingSystem,  *timer ) ;
     *timer = 0 ;
 #endif
 #if defined CFG_OS_FREERTOS && CFG_OS_FREERTOS
@@ -1819,7 +1819,7 @@ os_timer_delete (p_timer_t* timer)
 #endif
 #if defined CFG_OS_THREADX && CFG_OS_THREADX
     tx_timer_delete ((TX_TIMER *)*timer) ;
-    qoraal_free ( *timer ) ;
+    qoraal_free (QORAAL_HeapOperatingSystem,  *timer ) ;
     *timer = 0 ;
 #endif
 }

@@ -177,7 +177,7 @@ os_thread_create (uint16_t stack_size, uint32_t prio, p_thread_function_t pf,
     }
 
     /* We'll allocate the wrapper struct. */
-        OS_THREAD_WA_T * const wa = qoraal_malloc (sizeof(OS_THREAD_WA_T));
+        OS_THREAD_WA_T * const wa = qoraal_malloc (QORAAL_HeapOperatingSystem, sizeof(OS_THREAD_WA_T));
         if (!wa) {
             return E_NOMEM ;
         }
@@ -188,7 +188,7 @@ os_thread_create (uint16_t stack_size, uint32_t prio, p_thread_function_t pf,
         wa->heap = 1 ;
 
         if (sem_init(&wa->join_sem, 0, 0) != 0) {
-            qoraal_free(wa);
+            qoraal_free (QORAAL_HeapOperatingSystem, wa);
             return EFAIL;
         }
 
@@ -207,7 +207,7 @@ os_thread_create (uint16_t stack_size, uint32_t prio, p_thread_function_t pf,
 
     if (ret != 0) {
         sem_destroy(&wa->join_sem);
-        qoraal_free(wa);
+        qoraal_free(QORAAL_HeapOperatingSystem, wa);
         return EFAIL;
     }
 
@@ -360,7 +360,7 @@ os_thread_release (p_thread_t* thread)
 
     // Free memory if we allocated it
     if (wa->heap) {
-        qoraal_free(wa);
+        qoraal_free(QORAAL_HeapOperatingSystem, wa);
     }
     
     *thread = NULL;
@@ -698,14 +698,14 @@ os_mutex_deinit (p_mutex_t* mutex)
 int32_t 
 os_mutex_create (p_mutex_t* mutex)
 {
-    *mutex = qoraal_malloc(sizeof(pthread_mutex_t)); // Allocate space for the mutex
+    *mutex = qoraal_malloc(QORAAL_HeapOperatingSystem, sizeof(pthread_mutex_t)); // Allocate space for the mutex
     if (*mutex == NULL) {
         return EFAIL;
     }
 
     int res = os_mutex_init (mutex);
     if (res != EOK) {
-        qoraal_free(*mutex);
+        qoraal_free(QORAAL_HeapOperatingSystem, *mutex);
     }
     return res ;
 }
@@ -717,7 +717,7 @@ os_mutex_delete (p_mutex_t* mutex)
 {
     if (mutex && *mutex) {
         pthread_mutex_destroy((pthread_mutex_t*)*mutex);
-        qoraal_free(*mutex);
+        qoraal_free(QORAAL_HeapOperatingSystem, *mutex);
         *mutex = NULL;
     }
 }
@@ -776,7 +776,7 @@ os_sem_deinit (p_sem_t* sem)
 int32_t 
 os_sem_create (p_sem_t* sem, int32_t cnt)
 {
-    *sem = qoraal_malloc(sizeof(sem_t));
+    *sem = qoraal_malloc(QORAAL_HeapOperatingSystem, sizeof(sem_t));
     if (*sem == NULL) {
         return EFAIL;
     }
@@ -800,7 +800,7 @@ os_sem_delete (p_sem_t* sem)
 {
     if (sem && *sem) {
         sem_destroy((sem_t*)(*sem));
-        qoraal_free(*sem);
+        qoraal_free(QORAAL_HeapOperatingSystem, *sem);
         *sem = NULL;
     }
 }
@@ -904,7 +904,7 @@ os_event_init (p_event_t* event)
     os_event_t* pevent = (os_event_t*)(*event);
     if (pthread_cond_init(&pevent->cond, NULL) != 0 ||
         pthread_mutex_init(&pevent->mutex, NULL) != 0) {
-        qoraal_free(*event);
+        qoraal_free(QORAAL_HeapOperatingSystem, *event);
         *event = NULL;
         return EFAIL;
     }
@@ -930,7 +930,7 @@ os_event_deinit (p_event_t* event)
 int32_t 
 os_event_create (p_event_t* event)
 {
-    *event = qoraal_malloc(sizeof(os_event_t));
+    *event = qoraal_malloc(QORAAL_HeapOperatingSystem, sizeof(os_event_t));
     if (*event == NULL) {
         return EFAIL;
     }
@@ -945,7 +945,7 @@ os_event_delete (p_event_t* event)
 {
     if (event && *event) {
         os_event_deinit (event) ;
-        qoraal_free(*event);
+        qoraal_free(QORAAL_HeapOperatingSystem, *event);
         *event = NULL;
     }
 }
@@ -1162,7 +1162,7 @@ stop_timer_manager (void)
     os_timer_t *current = os_timer_manager.head;
     while (current) {
         os_timer_t *next = current->next;
-        qoraal_free(current);
+        qoraal_free(QORAAL_HeapOperatingSystem, current);
         current = next;
     }
     pthread_mutex_unlock(&os_timer_manager.mutex);
@@ -1189,7 +1189,7 @@ os_timer_init (p_timer_t *timer, p_timer_function_t fp, void *parm)
 int32_t 
 os_timer_create (p_timer_t *timer, p_timer_function_t fp, void *parm) 
 {
-    os_timer_t *new_timer = (os_timer_t *)qoraal_malloc(sizeof(os_timer_t));
+    os_timer_t *new_timer = (os_timer_t *)qoraal_malloc(QORAAL_HeapOperatingSystem, sizeof(os_timer_t));
     if (!new_timer) {
         return E_NOMEM;
     }
@@ -1270,7 +1270,7 @@ os_timer_delete (p_timer_t *timer)
 {
     if (!timer || !*timer) return; // Ensure the timer is valid
     os_timer_reset(timer);
-    qoraal_free(*timer);
+    qoraal_free(QORAAL_HeapOperatingSystem, *timer);
     *timer = NULL;
 }
 #endif /* CFG_OS_OS_TIMER_DISABLE */

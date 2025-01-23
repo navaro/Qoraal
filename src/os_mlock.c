@@ -112,7 +112,7 @@ os_mlock_deinit (p_mlock_t* mlock)
 int32_t
 os_mlock_create (p_mlock_t* mlock, uint32_t prio)
 {
-    *(mlock) = qoraal_malloc ((sizeof(MLock)) ) ;
+    *(mlock) = qoraal_malloc (QORAAL_HeapOperatingSystem, (sizeof(MLock)) ) ;
     if (!*(mlock)) return E_NOMEM ;
     return os_mlock_init (mlock, prio) ;
 }
@@ -121,7 +121,7 @@ void
 os_mlock_delete (p_mlock_t* mlock)
 {
     os_mlock_deinit (mlock) ;
-    qoraal_free (*(mlock)) ;
+    qoraal_free (QORAAL_HeapOperatingSystem, *(mlock)) ;
 }
 
 void

@@ -343,12 +343,12 @@ svc_shell_cmd_run (SVC_SHELL_IF_T * pif, char** argv, int argc)
         if (strcmp (cmd->cmd, argv[0]) == 0) {
             int32_t usage = 0 ;
             if ((argc <= 1) || (*argv[1] != '?')) {
-#if CFG_PLATFORM_SVC_SERVICES
+
                 if ((started < 0) && list->service) {
                     started = svc_service_status(svc_service_get(list->service))
                             >= SVC_SERVICE_STATUS_STARTED ;
                 }
-#endif
+
                 if (started != 0) {
                     res = cmd->fp (pif, argv, argc) ;
 

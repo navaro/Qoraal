@@ -26,6 +26,7 @@
 
 #include <string.h>
 #include "qoraal/common/strsub.h"
+#include "qoraal/errordef.h"
 
 #pragma GCC diagnostic ignored  "-Wmissing-braces"
 static STRSUB_INSTANCE_T  _strsub_instance = {STRSUB_ESCAPE_TOKEN,
@@ -196,6 +197,7 @@ strsub_parse (STRSUB_INSTANCE_T * instance, STRSUB_REPLACE_CB cb,
 typedef struct STRSUB_TO_CB_S {
     char *      buffer ;
     uint32_t    len ;
+    uint32_t    tokens ;
 } STRSUB_TO_CB_T ;
 
 static int32_t
@@ -215,6 +217,7 @@ strsub_cb(const char * str, uint32_t len, uint32_t offset, uintptr_t arg)
         memcpy (&(parg->buffer[offset]), str, len) ;
 
     }
+    parg->tokens++ ;
     return len ;
 }
 
@@ -231,12 +234,15 @@ strsub_parse_get_dst_length (STRSUB_INSTANCE_T * instance,
     /* NULL buffer will get the length only */
     int32_t dstlen = strsub_parse (instance, strsub_cb, str, len, (uintptr_t)&arg) ;
     if (dstlen < 0) {
-        return 0 ;
+        return EFAIL ;
+
+    }
+    if (!arg.tokens) {
+        return E_NOTFOUND ;
 
     }
 
     return dstlen + 1 ;
-
 }
 
 uint32_t

@@ -484,11 +484,11 @@ QORAAL_LOG_IT_T *
 mlog_platform_it_create (MLOG_TYPE_T log)
 {
     if (!_memlog_started)  return 0 ;
-    _MEMLOG_IT_T * it = qoraal_malloc(sizeof(_MEMLOG_IT_T)) ;
+    _MEMLOG_IT_T * it = qoraal_malloc(QORAAL_HeapOperatingSystem, sizeof(_MEMLOG_IT_T)) ;
     if (it) {
         it->it = mlog_itertor_first (log, 0) ;
         if (!it->it) {
-        	qoraal_free (it) ;
+        	qoraal_free (QORAAL_HeapOperatingSystem, it) ;
             it = 0 ;
 
         } else {
@@ -505,7 +505,7 @@ mlog_platform_it_create (MLOG_TYPE_T log)
 void                
 mlog_platform_it_destroy (QORAAL_LOG_IT_T * it)
 {
-	qoraal_free (it) ;
+	qoraal_free (QORAAL_HeapOperatingSystem, it) ;
 }
 
 

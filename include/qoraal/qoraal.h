@@ -34,6 +34,13 @@
 /* Data structures and types.                                                */
 /*===========================================================================*/
 
+typedef enum {
+    QORAAL_HeapOperatingSystem,
+    QORAAL_HeapAuxiliary,
+    QORAAL_HeapDirectMemoryAccess,
+    QORAAL_HeapLast
+} QORAAL_HEAP;
+
 // Structure to define component dependencies
 typedef struct {
     /**
@@ -41,13 +48,13 @@ typedef struct {
      * @param size The number of bytes to allocate.
      * @return Pointer to the allocated memory or NULL on failure.
      */
-    void *(*malloc) (size_t size);
+    void *(*malloc) (QORAAL_HEAP heap, size_t size);
 
     /**
      * @brief Free allocated memory.
      * @param ptr Pointer to the memory to free.
      */
-    void (*free) (void *ptr);
+    void (*free) (QORAAL_HEAP heap, void *mem);
 
     /**
      * @brief Print a debug message.
@@ -91,13 +98,13 @@ int32_t     qoraal_svc_init (SVC_SERVICE_T * list) ;
 int32_t     qoraal_svc_start (void) ;
 
 
-static inline void * qoraal_malloc (size_t size) {
-    if (_qoraal_instance) return _qoraal_instance->malloc (size);
+static inline void * qoraal_malloc (QORAAL_HEAP heap, size_t size) {
+    if (_qoraal_instance) return _qoraal_instance->malloc (heap, size);
     return 0;
 }
 
-static inline void qoraal_free (void *ptr) {
-    if (_qoraal_instance) _qoraal_instance->free (ptr);
+static inline void qoraal_free (QORAAL_HEAP heap, void *mem) {
+    if (_qoraal_instance) _qoraal_instance->free (heap, mem);
 }
 
 static inline void qoraal_debug_print (const char *message) {

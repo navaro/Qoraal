@@ -174,13 +174,13 @@ test_tqask_cb (SVC_TASKS_T *task, uintptr_t parm, uint32_t reason)
     }
 
     svc_tasks_complete (task) ;
-    qoraal_free (task) ;
+    qoraal_free (QORAAL_HeapAuxiliary, task) ;
 }
 
 int32_t
 qshell_demo_tasks (SVC_SHELL_IF_T * pif, char** argv, int argc)
 {
-    SVC_TASKS_T * task = qoraal_malloc (sizeof(SVC_TASKS_T)) ;
+    SVC_TASKS_T * task = qoraal_malloc (QORAAL_HeapAuxiliary, sizeof(SVC_TASKS_T)) ;
 
     svc_tasks_init_task (task) ;
     svc_shell_print (pif, SVC_SHELL_OUT_STD, 
@@ -207,7 +207,7 @@ test_thread_complete (SVC_THREADS_T * thd, void* arg)
     SVC_SHELL_IF_T * pif = (SVC_SHELL_IF_T*) arg ;
     svc_shell_print (pif, SVC_SHELL_OUT_STD, 
             "thread - complete callback.\r\n") ;
-    qoraal_free (thd) ;
+    qoraal_free (QORAAL_HeapAuxiliary, thd) ;
 
 }
 
@@ -226,7 +226,7 @@ test_thread (void *arg)
 int32_t
 qshell_demo_threads (SVC_SHELL_IF_T * pif, char** argv, int argc)
 {
-    SVC_THREADS_T * thd = qoraal_malloc (sizeof(SVC_THREADS_T)) ;
+    SVC_THREADS_T * thd = qoraal_malloc (QORAAL_HeapAuxiliary, sizeof(SVC_THREADS_T)) ;
 
     svc_shell_print (pif, SVC_SHELL_OUT_STD, 
         "thread - create.\r\n") ;

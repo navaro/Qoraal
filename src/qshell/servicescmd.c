@@ -210,7 +210,7 @@ static int32_t
 qshell_dmesg (SVC_SHELL_IF_T * pif, char** argv, int argc)
 {
 #define LOG_MSG_SIZE    (sizeof(QORAAL_LOG_MSG_T) + 200)
-    QORAAL_LOG_MSG_T *  msg = qoraal_malloc(LOG_MSG_SIZE) ;
+    QORAAL_LOG_MSG_T *  msg = qoraal_malloc(QORAAL_HeapAuxiliary, LOG_MSG_SIZE) ;
     unsigned int cnt = 16 ;
     unsigned int severity = 6 ;
     QORAAL_LOG_IT_T * it = 0 ;
@@ -259,7 +259,7 @@ qshell_dmesg (SVC_SHELL_IF_T * pif, char** argv, int argc)
 
     }
 
-    qoraal_free (msg) ;
+    qoraal_free (QORAAL_HeapAuxiliary, msg) ;
 
     return SVC_SHELL_CMD_E_OK ;
 }

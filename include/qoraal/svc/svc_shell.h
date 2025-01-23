@@ -91,8 +91,8 @@
 /* Macros.                                                                   */
 /*===========================================================================*/
 
-#define SVC_SHELL_MALLOC(size)          qoraal_malloc(size)
-#define SVC_SHELL_FREE(mem)             qoraal_free(mem)
+#define SVC_SHELL_MALLOC(size)          qoraal_malloc(QORAAL_HeapAuxiliary, size)
+#define SVC_SHELL_FREE(mem)             qoraal_free(QORAAL_HeapAuxiliary, mem)
 
 
 /*===========================================================================*/

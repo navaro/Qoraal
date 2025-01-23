@@ -48,8 +48,8 @@ struct dictionary_it {
 };
 
 
-#define DICTIONARY_MALLOC(heap, size)           qoraal_malloc (size)
-#define DICTIONARY_FREE(heap, mem)              qoraal_free (mem)
+#define DICTIONARY_MALLOC(heap, size)           qoraal_malloc (heap, size)
+#define DICTIONARY_FREE(heap, mem)              qoraal_free (heap, mem)
 
 #define DICTIONARY_KEYTYPE_STRING               0
 #define DICTIONARY_KEYTYPE_CONST_STRING         1

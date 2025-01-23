@@ -188,7 +188,7 @@ logger_task_callback (SVC_TASKS_T *task, uintptr_t parm, uint32_t reason)
     _logger_debug_sending-- ;
     os_sys_unlock();
     svc_tasks_complete (task) ;
-    qoraal_free(task) ;
+    qoraal_free(QORAAL_HeapAuxiliary, task) ;
 }
 
 
@@ -224,7 +224,7 @@ logger_create_task (LOGGERT_TYPE_T type, uint8_t facility, const char *format_st
         message_size = strlen + 32 + EXTRA_CHARS ;
 
     }
-    task = (LOGGER_TASK_T*)qoraal_malloc(sizeof(LOGGER_TASK_T) + message_size + EXTRA_CHARS);
+    task = (LOGGER_TASK_T*)qoraal_malloc(QORAAL_HeapAuxiliary, sizeof(LOGGER_TASK_T) + message_size + EXTRA_CHARS);
 
     if (!task) {
         return 0;
@@ -313,7 +313,7 @@ svc_logger_vlogx (LOGGERT_TYPE_T type, uint8_t facility, const char *format_str,
     if (    (SVC_LOGGER_GET_SEVERITY(type) > SVC_LOGGER_GET_SEVERITY(_logger_filter.type)) ||
             (status = svc_tasks_schedule((SVC_TASKS_T*)task, logger_task_callback, 0, _logger_task_prio, 0) != EOK)
         ) {
-        qoraal_free(task);
+        qoraal_free(QORAAL_HeapAuxiliary, task);
     }
     else {
         os_sys_lock();
@@ -463,7 +463,7 @@ svc_logger_put (const char *str, uint32_t len)
     LOGGER_TASK_T* task;
     int32_t status ;
 
-    task = (LOGGER_TASK_T*)qoraal_malloc(sizeof(LOGGER_TASK_T) +len+1);
+    task = (LOGGER_TASK_T*)qoraal_malloc(QORAAL_HeapAuxiliary, sizeof(LOGGER_TASK_T) +len+1);
 
     if (!task) {
         return 0;
@@ -480,7 +480,7 @@ svc_logger_put (const char *str, uint32_t len)
 #if defined SERVICE_LOGGER_TASK && SERVICE_LOGGER_TASK
     status = svc_tasks_schedule((SVC_TASKS_T*)task, logger_task_callback, 0, _logger_task_prio, 0) ;
     if (status  != EOK) {
-        qoraal_free(task);
+        qoraal_free(QORAAL_HeapAuxiliary, task);
     }
     else {
         os_sys_lock();
@@ -534,7 +534,7 @@ svc_logger_vlog_state (int inst, const char *format_str, va_list    args)
         }
 
 
-        task = (LOGGER_TASK_T*)qoraal_malloc(sizeof(LOGGER_TASK_T) + message_size) ;
+        task = (LOGGER_TASK_T*)qoraal_malloc(QORAAL_HeapAuxiliary, sizeof(LOGGER_TASK_T) + message_size) ;
 
         if (task == 0) {
             return E_NOMEM ;
@@ -577,7 +577,7 @@ svc_logger_vlog_state (int inst, const char *format_str, va_list    args)
                     !linked_head (&_logger_channels) ||
                     (svc_tasks_schedule ((SVC_TASKS_T*)task, logger_task_callback, 0, _logger_task_prio, 0) != EOK)
                 ) {
-                qoraal_free(task) ;
+                qoraal_free(QORAAL_HeapAuxiliary, task) ;
 
             } else {
                 os_sys_lock();
@@ -624,7 +624,7 @@ svc_logger_type_mem (LOGGERT_TYPE_T type, uint8_t facility, const char* mem, uin
         uint32_t message_size =  size * 6 + 96 ;
 
 
-        task = (LOGGER_TASK_T*)qoraal_malloc(sizeof(LOGGER_TASK_T)+message_size);
+        task = (LOGGER_TASK_T*)qoraal_malloc(QORAAL_HeapAuxiliary, sizeof(LOGGER_TASK_T)+message_size);
 
         if (!task) {
             return E_NOMEM ;
@@ -657,7 +657,7 @@ svc_logger_type_mem (LOGGERT_TYPE_T type, uint8_t facility, const char* mem, uin
     if (    (SVC_LOGGER_GET_SEVERITY(type) > SVC_LOGGER_GET_SEVERITY(_logger_filter.type)) ||
             (status = svc_tasks_schedule((SVC_TASKS_T*)task, logger_task_callback, 0, _logger_task_prio, 0) != EOK)
         ) {
-        qoraal_free(task);
+        qoraal_free(QORAAL_HeapAuxiliary, task);
     }
     else {
         os_sys_lock();
