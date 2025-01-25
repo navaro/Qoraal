@@ -95,7 +95,7 @@ qoraal_svc_start (void)
 }
 
 
-#if CFG_OS_MEM_DEBUG_ENABLE
+#if defined CFG_OS_MEM_DEBUG_ENABLE
 #define DEBUG_SIZE_HEAD      8
 #define DEBUG_SIZE_TAIL      8
 #define DEBUG_HEAD_FILL      0x77
@@ -118,7 +118,7 @@ qoraal_svc_start (void)
 //
 // If CFG_OS_MEM_DEBUG_ENABLE is 0, we skip all this overhead and just do plain malloc/free.
 
-#if (CFG_OS_MEM_DEBUG_ENABLE)
+#if defined CFG_OS_MEM_DEBUG_ENABLE
 void*
 heap_do_check(void* mem, int clear, const char* name, uint32_t line)
 {
@@ -170,7 +170,7 @@ heap_do_check(void* mem, int clear, const char* name, uint32_t line)
 }
 #endif
 
-#if (CFG_OS_MEM_DEBUG_ENABLE)
+#if defined CFG_OS_MEM_DEBUG_ENABLE
 void*
 heap_add_check(void* mem, uint32_t bytes, const char* name, uint32_t line)
 {
@@ -213,7 +213,7 @@ qoraal_malloc (QORAAL_HEAP heap, size_t size)
     void* mem = _qoraal_instance->malloc(heap, size + DEBUG_BYTES);
     if (!mem) return 0;
 
-#if (CFG_OS_MEM_DEBUG_ENABLE)
+#if defined CFG_OS_MEM_DEBUG_ENABLE
     // Insert our canaries and store metadata
     mem = heap_add_check(mem, size, 0, 0);
 #endif
@@ -226,7 +226,7 @@ qoraal_free (QORAAL_HEAP heap, void *mem)
     if (!_qoraal_instance) return;
     if (!mem) return;
 
-#if (CFG_OS_MEM_DEBUG_ENABLE)
+#if defined CFG_OS_MEM_DEBUG_ENABLE
     // Validate our canaries; optionally clear user data
     mem = heap_do_check(mem, 1, 0, 0);
 #endif
