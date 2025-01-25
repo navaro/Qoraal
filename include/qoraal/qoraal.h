@@ -96,16 +96,8 @@ extern "C" {
 int32_t     qoraal_instance_init (const QORAAL_CFG_T * instance);
 int32_t     qoraal_svc_init (SVC_SERVICE_T * list) ;
 int32_t     qoraal_svc_start (void) ;
-
-
-static inline void * qoraal_malloc (QORAAL_HEAP heap, size_t size) {
-    if (_qoraal_instance) return _qoraal_instance->malloc (heap, size);
-    return 0;
-}
-
-static inline void qoraal_free (QORAAL_HEAP heap, void *mem) {
-    if (_qoraal_instance) _qoraal_instance->free (heap, mem);
-}
+void *      qoraal_malloc (QORAAL_HEAP heap, size_t size) ;
+void        qoraal_free (QORAAL_HEAP heap, void *mem) ;
 
 static inline void qoraal_debug_print (const char *message) {
     if (_qoraal_instance && _qoraal_instance->debug_print) _qoraal_instance->debug_print (message);

@@ -40,7 +40,14 @@
     If defined, the platform does not support os events 
 */
 // #define CFG_OS_EVENT_DISABLE        1
+
 /* CFG_OS_MLOCK_DISABLE
     If defined, the platform does not support mlock
 */
 // #define CFG_OS_MLOCK_DISABLE        1
+
+
+/* CFG_OS_MEM_DEBUG_ENABLE
+    If defined, the platform does aditioanl checking an memory allocations
+*/
+// #define CFG_OS_MEM_DEBUG_ENABLE        1
