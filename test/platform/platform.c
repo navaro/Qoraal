@@ -49,6 +49,12 @@ platform_current_time (void)
     return os_sys_timestamp () / 1000 ;
 }
 
+uint32_t    
+platform_rand (void)
+{
+    return rand () ;
+}
+
 uint32_t 
 platform_wdt_kick (void)
 {

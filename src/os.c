@@ -183,7 +183,7 @@ os_thread_create (uint16_t stack_size, uint32_t prio, p_thread_function_t pf,
     size_t size = stack_size  ;
 
     if (thread) *thread = 0 ;
-    OS_THREAD_WA_T * const wa = qoraal_malloc (QORAAL_HeapOperatingSystem, QORAAL_HeapOperatingSystem, size  + sizeof(OS_THREAD_WA_T));
+    OS_THREAD_WA_T * const wa = qoraal_malloc (QORAAL_HeapOperatingSystem, size  + sizeof(OS_THREAD_WA_T));
     if (!wa) {
         return E_NOMEM ;
     }

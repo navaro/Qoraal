@@ -12,4 +12,5 @@ void        platform_print (const char *format) ;
 void        platform_assert (const char *format) ;
 uint32_t    platform_wdt_kick (void) ;
 uint32_t    platform_current_time (void) ;
+uint32_t    platform_rand (void) ;
 void        platform_wait_for_exit (SVC_SERVICES_T service_id) ;

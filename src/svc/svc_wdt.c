@@ -124,15 +124,13 @@ svc_wdt_stop (void)
 void
 svc_wdt_register (SVC_WDT_HANDLE_T * handler, SVC_WDT_TIMEOUTS_T id)
 {
-    p_thread_t thread = os_thread_current () ;
-    handler->thread = thread ;
-    handler->flags = 0 ;
-    handler->id = 0 ;
+    memset (handler, 0, sizeof(SVC_WDT_HANDLE_T)) ;
+    handler->thread = os_thread_current () ; ;
 #ifndef CFG_SVC_WDT_DISABLE_PLATFORM
     if (id < TIMEOUT_LAST) {
         os_mutex_lock (&_svc_wdt_mutex) ;
 
-        stack_remove (&_svc_wdt_handler_stack[id], (plists_t)handler, OFFSETOF(SVC_WDT_HANDLE_T, next)) ;
+        //stack_remove (&_svc_wdt_handler_stack[id], (plists_t)handler, OFFSETOF(SVC_WDT_HANDLE_T, next)) ;
         stack_add_head (&_svc_wdt_handler_stack[id], handler, OFFSETOF(SVC_WDT_HANDLE_T, next)) ;
 
         os_mutex_unlock (&_svc_wdt_mutex) ;

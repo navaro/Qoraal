@@ -75,6 +75,12 @@ typedef struct {
     uint32_t (*current_time) (void);
 
     /**
+     * @brief random number
+     * @return random number
+     */
+    uint32_t (*rand) (void);
+
+    /**
      * @brief Kick the WDT
      * @return Seconds before wdt will reset
      */
@@ -109,6 +115,11 @@ static inline void qoraal_debug_assert (const char *message) {
 
 static inline uint32_t qoraal_current_time (void) {
     if (_qoraal_instance && _qoraal_instance->current_time) return _qoraal_instance->current_time ();
+    return 0 ;
+}
+
+static inline uint32_t qoraal_rand (void) {
+    if (_qoraal_instance && _qoraal_instance->rand) return _qoraal_instance->rand ();
     return 0 ;
 }
 
