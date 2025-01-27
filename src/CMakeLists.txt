@@ -1,10 +1,10 @@
 # Collect all source files
 set(QORAAL_SRCS
+    qoraal.c
     debug.c
     os_mlock.c
     os_posix.c
     os.c
-    qoraal.c
     svc/svc_events.c
     svc/svc_logger.c
     svc/svc_services.c
@@ -30,5 +30,5 @@ add_library(qoraal STATIC ${QORAAL_SRCS})
 target_link_libraries(qoraal pthread)
 
 # Set compile-time definitions for the qoraal target
-target_compile_definitions(qoraal PRIVATE CFG_OS_POSIX)
+# target_compile_definitions(qoraal PRIVATE CFG_OS_POSIX)
 

@@ -137,11 +137,13 @@ typedef void (*p_timer_function_t)( void * );
 /*===========================================================================*/
 /* Platform static data declarations.                                         */
 /*===========================================================================*/
-#if defined CFG_OS_CHIBIOS || \
-    defined CFG_OS_FREERTOS || \
-    defined CFG_OS_THREADX || \
-    defined CFG_OS_POSIX
-#define CFG_OS_STATIC_DECLARATIONS      1   
+#if defined CFG_OS_CHIBIOS || defined CFG_OS_FREERTOS || \
+    defined CFG_OS_THREADX || defined CFG_OS_POSIX
+    #if (defined CFG_OS_CHIBIOS + defined CFG_OS_FREERTOS + \
+        defined CFG_OS_THREADX + defined CFG_OS_POSIX) != 1
+        #error "Exactly one of CFG_OS_CHIBIOS, CFG_OS_FREERTOS, CFG_OS_THREADX, or CFG_OS_POSIX must be defined."
+    #endif
+    #define CFG_OS_STATIC_DECLARATIONS 1
 #endif
 
 #if defined CFG_OS_STATIC_DECLARATIONS

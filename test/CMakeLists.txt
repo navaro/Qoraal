@@ -7,13 +7,16 @@ set(TEST_SRCS
     platform/platform.c
 )
 
+
+# set options for compiling the qoraal library
+target_compile_options(qoraal PRIVATE -O0 -g)
+target_compile_definitions(qoraal PRIVATE CFG_OS_POSIX)
+
 # Add the executable target
 add_executable(qoraal_test ${TEST_SRCS})
-
+target_compile_options(qoraal_test PRIVATE -O0 -g)
 # Link the qoraal library and pthread
 target_link_libraries(qoraal_test qoraal pthread)
-target_compile_options(qoraal PRIVATE -O0 -g)
-target_compile_options(qoraal_test PRIVATE -O0 -g)
 
 target_link_options(qoraal_test PRIVATE
     "-Wl,--whole-archive"

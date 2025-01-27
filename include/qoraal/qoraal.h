@@ -25,6 +25,7 @@
 #define __QORAAL_H__
 #include <stdint.h>
 #include <stddef.h>
+#include "qoraal/config.h"
 #include "qoraal/os.h"
 #include "qoraal/errordef.h"
 #include "qoraal/debug.h"

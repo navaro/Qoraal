@@ -36,7 +36,9 @@
 
 #ifndef CFG_OS_STATIC_DECLARATIONS
 #error "CFG_OS_CHIBIOS, CFG_OS_FREERTOS, CFG_OS_THREADX or CFG_OS_POSIX must be defined when compiling qoraal"
-#endif 
+#endif
+
+
 
 const QORAAL_CFG_T * _qoraal_instance = 0 ;
 
