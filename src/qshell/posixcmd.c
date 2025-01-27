@@ -243,4 +243,15 @@ qshell_cmd_echo (SVC_SHELL_IF_T * pif, char** argv, int argc)
     return SVC_SHELL_CMD_E_OK ;
 }
 
+void
+keep_posixcmds (void) 
+{
+    (void)qshell_cmd_ls;
+    (void)qshell_cmd_cd ;
+    (void)qshell_cmd_source ;
+    (void)qshell_cmd_source ;
+    (void)qshell_cmd_cat ;
+    (void)qshell_cmd_pwd ;
+    (void)qshell_cmd_echo ;
+}
 #endif /* CFG_OS_POSIX */

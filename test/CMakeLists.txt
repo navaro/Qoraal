@@ -18,11 +18,8 @@ target_compile_options(qoraal_test PRIVATE -O0 -g)
 # Link the qoraal library and pthread
 target_link_libraries(qoraal_test qoraal pthread)
 
-target_link_options(qoraal_test PRIVATE
-    "-Wl,--whole-archive"
-    "$<TARGET_FILE:qoraal>"
-    "-Wl,--no-whole-archive"
-)
 
 # Generate a map file
-set_target_properties(qoraal_test PROPERTIES LINK_FLAGS "-Wl,-Map=output.map -T ${CMAKE_SOURCE_DIR}/test/platform/posix.ld")
+set_target_properties(qoraal_test PROPERTIES 
+        LINK_FLAGS "-Wl,-Map=output.map -T ${CMAKE_SOURCE_DIR}/test/platform/posix.ld"
+)

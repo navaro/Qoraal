@@ -38,6 +38,8 @@
 #error "CFG_OS_CHIBIOS, CFG_OS_FREERTOS, CFG_OS_THREADX or CFG_OS_POSIX must be defined when compiling qoraal"
 #endif
 
+extern void keep_posixcmds (void) ;
+extern void keep_servicescmds (void) ;
 
 
 const QORAAL_CFG_T * _qoraal_instance = 0 ;
@@ -74,6 +76,9 @@ qoraal_svc_init (SVC_SERVICE_T * list)
         svc_service_services_init (list) ;
     }
 
+    keep_posixcmds () ;
+    keep_servicescmds () ;
+    
     return EOK ;
 }
 

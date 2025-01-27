@@ -265,4 +265,16 @@ qshell_cmd_dmesg (SVC_SHELL_IF_T * pif, char** argv, int argc)
 }
 #endif
 
+void
+keep_servicescmds (void)
+{
+    (void)qshell_cmd_ctrl ;
+    (void)qshell_cmd_logmsg ;
+    (void)qshell_cmd_sleep ;
+    (void)qshell_cmd_cls ;
+#if !defined CFG_COMMON_MEMLOG_DISABLE
+    (void)qshell_cmd_dmesg ;
+#endif    
+}
+
 
