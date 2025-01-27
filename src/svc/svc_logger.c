@@ -242,8 +242,11 @@ logger_create_task (LOGGERT_TYPE_T type, uint8_t facility, const char *format_st
         mseconds = (unsigned int)os_sys_timestamp() ;
         seconds = mseconds / 1000;
         mseconds %= 1000 ;
-        len += snprintf((char*)&(task->message[len]), message_size - EXTRA_CHARS, "[%05u.%03u] ",
-                (unsigned int)seconds, (unsigned int)mseconds);
+        len += snprintf((char*)&(task->message[len]), 
+                message_size - EXTRA_CHARS,
+                "[%05u.%03u] ",
+                (unsigned int)(seconds % 100000),
+                (unsigned int)(mseconds % 1000));
 #ifdef SVC_LOGGER_MEMSTAT_HEAP
         uint32_t memalloc, memfree ;
         heap_stats (SVC_LOGGER_MEMSTAT_HEAP, &memalloc, &memfree) ;
