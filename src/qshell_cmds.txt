@@ -1,0 +1,12 @@
+qshell_cmd_ls
+qshell_cmd_cd
+qshell_cmd_source
+qshell_cmd_source
+qshell_cmd_cat
+qshell_cmd_pwd
+qshell_cmd_echo
+qshell_cmd_ctrl
+qshell_cmd_logmsg
+qshell_cmd_sleep
+qshell_cmd_cls
+qshell_cmd_dmesg

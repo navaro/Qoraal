@@ -31,12 +31,12 @@
 #include "qoraal/common/mlog.h"
 #include "qoraal/common/logit.h"
 
-SVC_SHELL_CMD_DECL("ctrl", qshell_ctrl, "[service name] [start/stop/restart] [arg]");
-SVC_SHELL_CMD_DECL( "logmsg", qshell_logmsg,  "<msg> [severity]" );
-SVC_SHELL_CMD_DECL( "sleep", qshell_sleep, "<msec>");
-SVC_SHELL_CMD_DECL( "cls", qshell_cls,  "");
+SVC_SHELL_CMD_DECL("ctrl", qshell_cmd_ctrl, "[service name] [start/stop/restart] [arg]");
+SVC_SHELL_CMD_DECL( "logmsg", qshell_cmd_logmsg,  "<msg> [severity]" );
+SVC_SHELL_CMD_DECL( "sleep", qshell_cmd_sleep, "<msec>");
+SVC_SHELL_CMD_DECL( "cls", qshell_cmd_cls,  "");
 #if !defined CFG_COMMON_MEMLOG_DISABLE
-SVC_SHELL_CMD_DECL( "dmesg", qshell_dmesg,  "[severity] [count]");
+SVC_SHELL_CMD_DECL( "dmesg", qshell_cmd_dmesg,  "[severity] [count]");
 #endif
 
 /**
@@ -62,7 +62,7 @@ compare_by_handle(const void *a, const void *b) {
 }
 
 static int32_t
-qshell_ctrl (SVC_SHELL_IF_T * pif, char** argv, int argc)
+qshell_cmd_ctrl (SVC_SHELL_IF_T * pif, char** argv, int argc)
 {
     SCV_SERVICE_HANDLE h ;
     int i, j ;
@@ -156,7 +156,7 @@ qshell_ctrl (SVC_SHELL_IF_T * pif, char** argv, int argc)
 }
 
 static int32_t
-qshell_logmsg (SVC_SHELL_IF_T * pif, char** argv, int argc)
+qshell_cmd_logmsg (SVC_SHELL_IF_T * pif, char** argv, int argc)
 {
     uint32_t level = SVC_LOGGER_SEVERITY_REPORT ;
 
@@ -171,7 +171,7 @@ qshell_logmsg (SVC_SHELL_IF_T * pif, char** argv, int argc)
 }
 
 static int32_t
-qshell_sleep(SVC_SHELL_IF_T * pif, char** argv, int argc)
+qshell_cmd_sleep(SVC_SHELL_IF_T * pif, char** argv, int argc)
 {
     uint32_t timeout = 0 ;
     if (argc > 1) {
@@ -198,7 +198,7 @@ qshell_sleep(SVC_SHELL_IF_T * pif, char** argv, int argc)
 }
 
 static int32_t 
-qshell_cls(SVC_SHELL_IF_T * pif, char** argv, int argc)
+qshell_cmd_cls(SVC_SHELL_IF_T * pif, char** argv, int argc)
 {
     svc_shell_print (pif, SVC_SHELL_OUT_STD,
             "\x1b[2J\x1B[H" ) ;
@@ -207,7 +207,7 @@ qshell_cls(SVC_SHELL_IF_T * pif, char** argv, int argc)
 
 #if !defined CFG_COMMON_MEMLOG_DISABLE
 static int32_t 
-qshell_dmesg (SVC_SHELL_IF_T * pif, char** argv, int argc)
+qshell_cmd_dmesg (SVC_SHELL_IF_T * pif, char** argv, int argc)
 {
 #define LOG_MSG_SIZE    (sizeof(QORAAL_LOG_MSG_T) + 200)
     QORAAL_LOG_MSG_T *  msg = qoraal_malloc(QORAAL_HeapAuxiliary, LOG_MSG_SIZE) ;

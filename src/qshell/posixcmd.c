@@ -51,16 +51,16 @@
  * Declare commands for use with the shell. Use the SVC_SHELL_CMD_DECL for the
  * commands to be accessible from the command shell interface.
  */
-SVC_SHELL_CMD_DECL("ls", qshell_ls, "");
-SVC_SHELL_CMD_DECL("cd", qshell_cd, "<path>");
-SVC_SHELL_CMD_DECL("source", qshell_source, "<file>");
-SVC_SHELL_CMD_DECL(".", qshell_source, "<file>");
-SVC_SHELL_CMD_DECL("cat", qshell_cat, "<file>");
-SVC_SHELL_CMD_DECL("pwd", qshell_pwd, "");
-SVC_SHELL_CMD_DECL("echo", qshell_echo, "[string]");
+SVC_SHELL_CMD_DECL("ls", qshell_cmd_ls, "");
+SVC_SHELL_CMD_DECL("cd", qshell_cmd_cd, "<path>");
+SVC_SHELL_CMD_DECL("source", qshell_cmd_source, "<file>");
+SVC_SHELL_CMD_DECL(".", qshell_cmd_source, "<file>");
+SVC_SHELL_CMD_DECL("cat", qshell_cmd_cat, "<file>");
+SVC_SHELL_CMD_DECL("pwd", qshell_cmd_pwd, "");
+SVC_SHELL_CMD_DECL("echo", qshell_cmd_echo, "[string]");
 
 static int32_t
-qshell_ls (SVC_SHELL_IF_T * pif, char** argv, int argc)
+qshell_cmd_ls (SVC_SHELL_IF_T * pif, char** argv, int argc)
 {
     /* Here we will list the directory. */
     const char *dir = "." ;
@@ -89,7 +89,7 @@ qshell_ls (SVC_SHELL_IF_T * pif, char** argv, int argc)
 }
 
 static int32_t
-qshell_cd (SVC_SHELL_IF_T * pif, char** argv, int argc)
+qshell_cmd_cd (SVC_SHELL_IF_T * pif, char** argv, int argc)
 {
     /* Change the current directory. */
     if (argc < 2) {
@@ -107,7 +107,7 @@ qshell_cd (SVC_SHELL_IF_T * pif, char** argv, int argc)
 }
 
 static int32_t
-qshell_pwd (SVC_SHELL_IF_T * pif, char** argv, int argc)
+qshell_cmd_pwd (SVC_SHELL_IF_T * pif, char** argv, int argc)
 {
     /* Print the current directory. */
     char buffer[256] ;
@@ -176,7 +176,7 @@ read_file (SVC_SHELL_IF_T * pif, const char * filename, char ** pbuffer)
 }
 
 static int32_t
-qshell_source (SVC_SHELL_IF_T * pif, char** argv, int argc)
+qshell_cmd_source (SVC_SHELL_IF_T * pif, char** argv, int argc)
 {
     int32_t res  ;
 
@@ -202,7 +202,7 @@ qshell_source (SVC_SHELL_IF_T * pif, char** argv, int argc)
 }
 
 static int32_t
-qshell_cat (SVC_SHELL_IF_T * pif, char** argv, int argc)
+qshell_cmd_cat (SVC_SHELL_IF_T * pif, char** argv, int argc)
 {
     int32_t res  ;
 
@@ -226,7 +226,7 @@ qshell_cat (SVC_SHELL_IF_T * pif, char** argv, int argc)
 }
 
 static int32_t
-qshell_echo (SVC_SHELL_IF_T * pif, char** argv, int argc)
+qshell_cmd_echo (SVC_SHELL_IF_T * pif, char** argv, int argc)
 {
     /*
      * Echo the first argument. Can be used to demostrate the string
