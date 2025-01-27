@@ -159,7 +159,7 @@ logger_task_callback (SVC_TASKS_T *task, uintptr_t parm, uint32_t reason)
 
 #if SVC_LOGGER_APPEND_TIMESTAMP
                             if ((start->filter[i].type & SVC_LOGGER_FLAGS_NO_TIMESTAMP) && (logger_task->message[0] == '[')) {
-                                offset = 12 ;
+                                offset = 13 ;
 #ifdef SVC_LOGGER_MEMSTAT_HEAP
                             offset += 15 ;
 #endif
@@ -242,7 +242,7 @@ logger_create_task (LOGGERT_TYPE_T type, uint8_t facility, const char *format_st
         mseconds = (unsigned int)os_sys_timestamp() ;
         seconds = mseconds / 1000;
         mseconds %= 1000 ;
-        len += snprintf((char*)&(task->message[len]), message_size - EXTRA_CHARS, "[%.5u.%.3u] ",
+        len += snprintf((char*)&(task->message[len]), message_size - EXTRA_CHARS, "[%05u.%03u] ",
                 (unsigned int)seconds, (unsigned int)mseconds);
 #ifdef SVC_LOGGER_MEMSTAT_HEAP
         uint32_t memalloc, memfree ;
