@@ -94,21 +94,16 @@ static void svc_tasks_thread (void *arg) {
     uint32_t mask =  1 << (count) ;
 
     svc_wdt_register (&hwdt, _svc_tasks_pool.pool[count].wdt) ;
-
     while (_svc_tasks_run) {
 
         os_event_signal (&_svc_tasks_complete_event, mask) ;
-
         svc_wdt_deactivate (&hwdt) ;
-
         os_thread_wait (OS_TIME_INFINITE) ;
-
         if (!_svc_tasks_run) {
             break ;
+
         }
-
         svc_wdt_activate (&hwdt) ;
-
         while (svc_tasks_service_task (&_svc_tasks_ready_list[count], count,  &hwdt)) ;
 
     }
@@ -135,15 +130,12 @@ uint32_t
 svc_task_next_expire (void)
 {
     int32_t timeout = 0 ;
-     SVC_TASKS_T* next ;
+    SVC_TASKS_T* next ;
     os_mutex_lock (&_svc_task_mutex) ;
     next = (SVC_TASKS_T*)linked_head (&_svc_tasks_list) ;
-
     if (next) {
         timeout = next->ticks - os_sys_ticks () ;
         if (timeout < 0)  timeout = 0 ;
-
-
 
     }
     os_mutex_unlock (&_svc_task_mutex) ;
@@ -156,7 +148,6 @@ uint32_t
 svc_task_get_active_ticks (uint16_t prio, SVC_TASKS_CALLBACK_T* callback, uintptr_t* parm)
 {
     uint32_t timer = 0 ;
-
     if (prio < _svc_tasks_pool_count) {
         os_sys_lock();
         if (_svc_task_active_task[prio]) {
@@ -168,7 +159,6 @@ svc_task_get_active_ticks (uint16_t prio, SVC_TASKS_CALLBACK_T* callback, uintpt
         os_sys_unlock();
 
     }
-
     return timer  ;
 }
 
@@ -194,7 +184,6 @@ svc_tasks_init (const SVC_TASK_CFG_T * pool)
     os_timer_init (&_svc_tasks_virtual_timer, svc_tasks_virtual_timer, 0) ;
     os_mutex_init (&_svc_task_mutex) ;
     os_event_init (&_svc_tasks_complete_event) ;
-
     return EOK ;
 }
 
@@ -265,6 +254,7 @@ svc_tasks_init_waitable_task (SVC_WAITABLE_TASKS_T* task)
     if (res == EOK) {
         task->event = event ;
         task->task.flags = SVC_TASKS_FLAGS_WAITABLE ;
+
     }
     return res ;
 }
@@ -301,7 +291,8 @@ svc_tasks_task_event (SVC_EVENTS_T id, void * ctx)
     (void)id ;
 
     DBG_MESSAGE_SVC_TASKS (DBG_MESSAGE_SEVERITY_INFO,
-        "SVC   : : svc_tasks_task_event count %d tasks %d", _svc_tasks_list_count, _svc_tasks_ready_count);
+        "SVC   : : svc_tasks_task_event count %d tasks %d", 
+        _svc_tasks_list_count, _svc_tasks_ready_count);
 
     os_mutex_lock (&_svc_task_mutex) ;
 
@@ -327,13 +318,15 @@ svc_tasks_task_event (SVC_EVENTS_T id, void * ctx)
                 os_timer_set (&_svc_tasks_virtual_timer, start->ticks - now) ;
 
             }
+
         }
 
     }
 
     os_mutex_unlock (&_svc_task_mutex) ;
     DBG_MESSAGE_SVC_TASKS (DBG_MESSAGE_SEVERITY_INFO,
-        "SVC   : : svc_tasks_rtc_event count %d tasks %d", _svc_tasks_list_count, _svc_tasks_ready_count);
+            "SVC   : : svc_tasks_rtc_event count %d tasks %d", 
+            _svc_tasks_list_count, _svc_tasks_ready_count);
 
 }
 
@@ -350,11 +343,13 @@ svc_tasks_service_task ( linked_t* task_list, int thd_count, SVC_WDT_HANDLE_T * 
         uintptr_t parm = start->parm ;
         SVC_TASKS_CALLBACK_T callback = start->callback ;
         linked_remove_head (task_list, OFFSETOF(SVC_TASKS_T, next)) ;
-        DBG_ASSERT_SVC_TASKS (_svc_tasks_ready_count, "svc_tasks_service_task 1 _svc_tasks_ready_count invalid") ;
+        DBG_ASSERT_SVC_TASKS (_svc_tasks_ready_count, 
+                "svc_tasks_service_task 1 _svc_tasks_ready_count invalid") ;
         _svc_tasks_ready_count-- ;
 #ifndef NDEBUG
         if (!_svc_tasks_ready_count) {
-            DBG_ASSERT_SVC_TASKS (!linked_head(task_list), "svc_tasks_service_task 2 _svc_tasks_ready_count invalid") ;
+            DBG_ASSERT_SVC_TASKS (!linked_head(task_list),
+                "svc_tasks_service_task 2 _svc_tasks_ready_count invalid") ;
 
         }
 #endif
@@ -375,15 +370,11 @@ svc_tasks_service_task ( linked_t* task_list, int thd_count, SVC_WDT_HANDLE_T * 
         _svc_task_active_task[thd_count] = 0 ;
         _svc_task_active_timer[thd_count] = 0 ;
         svc_wdt_set_id (hwdt, 0) ;
-
-        // STATS_COUNTER_INC(tasks_cnt) ;
-
         os_sys_unlock();
 
 #ifndef NDEBUG
         timer = os_sys_ticks() - timer;
         if (timer > OS_MS2TICKS(2500)) {
-
             DBG_MESSAGE_SVC_TASKS (DBG_MESSAGE_SEVERITY_REPORT,
                 "SVC   : : svc_tasks_service_task %d elapsed for 0x%x queue %d",
                 OS_TICKS2MS(timer), callback, thd_count);
@@ -406,6 +397,7 @@ svc_tasks_complete (SVC_TASKS_T* task)
     if (task->flags & SVC_TASKS_FLAGS_WAITABLE) {
         p_event_t event = ((SVC_WAITABLE_TASKS_T*)task)->event ;
         os_event_signal (&event, 1) ;
+
     }
 
 }
@@ -416,9 +408,9 @@ svc_tasks_add (SVC_TASKS_T* task, SVC_TASKS_CALLBACK_T callback, uintptr_t parm,
     int32_t status  ;
 
     os_mutex_lock (&_svc_task_mutex) ;
-
     if (svc_tasks_status(task) == SERVICE_STATUS_QUEUED) {
         status = E_BUSY ;
+
     } else {
         task->callback = callback ;
         task->parm = parm ;
@@ -427,8 +419,8 @@ svc_tasks_add (SVC_TASKS_T* task, SVC_TASKS_CALLBACK_T callback, uintptr_t parm,
         task->ticks = 0 ;
         task_to_ready (task) ;
         status  = EOK  ;
-    }
 
+    }
     os_mutex_unlock (&_svc_task_mutex) ;
 
     return status ;
@@ -447,7 +439,8 @@ svc_tasks_schedule (SVC_TASKS_T* task, SVC_TASKS_CALLBACK_T callback, uintptr_t 
         ticks = (((uint32_t)-1) / 2) - 1 ;
     }
 
-    DBG_ASSERT_SVC_TASKS (ticks < ((uint32_t)-1) / 2, "svc_tasks_schedule invalid ticks %d!!", ticks) ;
+    DBG_ASSERT_SVC_TASKS (ticks < ((uint32_t)-1) / 2, 
+            "svc_tasks_schedule invalid ticks %d!!", ticks) ;
 
     if (task->flags & SVC_TASKS_FLAGS_WAITABLE) {
         p_event_t event = ((SVC_WAITABLE_TASKS_T*)task)->event ;
@@ -480,7 +473,8 @@ svc_tasks_schedule (SVC_TASKS_T* task, SVC_TASKS_CALLBACK_T callback, uintptr_t 
 
         ) {
 
-        DBG_ASSERT_SVC_TASKS (start != task, "svc_tasks_schedule task already in list!!") ;
+        DBG_ASSERT_SVC_TASKS (start != task, 
+                "svc_tasks_schedule task already in list!!") ;
         previous = start ;
         start = (SVC_TASKS_T*)linked_next (start, OFFSETOF(SVC_TASKS_T, next));
 
@@ -516,8 +510,6 @@ svc_tasks_schedule (SVC_TASKS_T* task, SVC_TASKS_CALLBACK_T callback, uintptr_t 
 
     }
 
-
- 
     return EOK ;
 }
 
@@ -552,6 +544,7 @@ task_ready_cancel (SVC_TASKS_T* task)
             if (task->flags & SVC_TASKS_FLAGS_WAITABLE) {
                 p_event_t event = ((SVC_WAITABLE_TASKS_T*)task)->event ;
                 os_event_signal (&event, 1) ;
+
             }
 
         } else {
@@ -585,7 +578,8 @@ svc_tasks_cancel (SVC_TASKS_T* task)
     if (linked_remove (&_svc_tasks_list, task, OFFSETOF(SVC_TASKS_T, next)) != NULL_LLO) {
         uint32_t parm = task->parm ;
 
-        DBG_ASSERT_SVC_TASKS (_svc_tasks_list_count, "svc_tasks_cancel _svc_tasks_list_count invalid") ;
+        DBG_ASSERT_SVC_TASKS (_svc_tasks_list_count, 
+                    "svc_tasks_cancel _svc_tasks_list_count invalid") ;
 
 #if DEBUG
         if (!_svc_tasks_list_count) {
@@ -612,7 +606,8 @@ svc_tasks_cancel (SVC_TASKS_T* task)
 
 
         DBG_MESSAGE_SVC_TASKS (DBG_MESSAGE_SEVERITY_INFO, 
-            "SVC   : : svc_tasks_cancel remove task count %d", _svc_tasks_list_count);
+                "SVC   : : svc_tasks_cancel remove task count %d", 
+                _svc_tasks_list_count);
 
         return EOK ;
 
@@ -622,6 +617,7 @@ svc_tasks_cancel (SVC_TASKS_T* task)
         int32_t res = task->status & SERVICE_STATUS_ACTIVE_BIT ? E_BUSY : EOK ;
         os_mutex_unlock (&_svc_task_mutex) ;
         return  res ;
+        
     }
 
     status = task_ready_cancel (task) ;

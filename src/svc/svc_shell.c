@@ -205,11 +205,13 @@ int32_t svc_shell_print_table(SVC_SHELL_IF_T * pif, uint32_t out,
     va_list         args;
     va_start (args, fmtstr) ;
 
-    int count = snprintf ((char*)_qshell_buffer, SVC_SHELL_PRINT_BUFFER_SIZE - 3, "%s", (char*)left) ;
+    int count = snprintf ((char*)_qshell_buffer, 
+                    SVC_SHELL_PRINT_BUFFER_SIZE - 3, "%s", (char*)left) ;
     do {
         _qshell_buffer[count++] = ' ' ;
     } while ((count < tabright) && (count < SVC_SHELL_PRINT_BUFFER_SIZE - 3)) ;
-    count += vsnprintf ((char*)&_qshell_buffer[count], SVC_SHELL_PRINT_BUFFER_SIZE - count, (char*)fmtstr, args) ;
+    count += vsnprintf ((char*)&_qshell_buffer[count], 
+                    SVC_SHELL_PRINT_BUFFER_SIZE - count, (char*)fmtstr, args) ;
     va_end (args) ;
     pif->out (pif->ctx, out, _qshell_buffer) ;
     return count ;
@@ -220,7 +222,8 @@ int32_t svc_shell_print(SVC_SHELL_IF_T * pif, uint32_t out, const char * fmtstr,
     va_list         args;
     va_start (args, fmtstr) ;
 
-    int32_t count = vsnprintf ((char*)_qshell_buffer, SVC_SHELL_PRINT_BUFFER_SIZE, (char*)fmtstr, args) ;
+    int32_t count = vsnprintf ((char*)_qshell_buffer, 
+                    SVC_SHELL_PRINT_BUFFER_SIZE, (char*)fmtstr, args) ;
     va_end (args) ;
     pif->out (pif->ctx, out, _qshell_buffer) ;
 
@@ -376,11 +379,6 @@ svc_shell_cmd_run (SVC_SHELL_IF_T * pif, char** argv, int argc)
 
             }
 #endif
-            else if (res < SVC_SHELL_CMD_E_OK) {
-                //svc_shell_print (pif, SVC_SHELL_OUT_STD, "shell '%s' returned %d!" SVC_SHELL_NEWLINE,
-                //      cmd->cmd, res) ;
-
-            }
             break ;
 
         }
@@ -716,7 +714,8 @@ svc_shell_script_run (SVC_SHELL_IF_T * pif, const char* name,
         //i_line_next = i ;
 
 #if !defined CFG_COMMON_STRSUB_DISABLE
-        len = strsub_parse_string_to (0, current_line, len, strsub_line, SVC_SHELL_LINE_STRSUB_SIZE_MAX) ;
+        len = strsub_parse_string_to (0, current_line, len, strsub_line, 
+                        SVC_SHELL_LINE_STRSUB_SIZE_MAX) ;
         argc = svc_shell_cmd_split(strsub_line, len, argv, SVC_SHELL_ARGC_MAX-1);
 #else
         argc = svc_shell_cmd_split(current_line, len, argv, SVC_SHELL_ARGC_MAX-1);
@@ -807,7 +806,8 @@ svc_shell_script_run (SVC_SHELL_IF_T * pif, const char* name,
                     //i_line_error = i_line_next ;
                     if (lineno > 1) {
                         svc_shell_print (pif, SVC_SHELL_OUT_STD,
-                                "shell '%s %s %s' error %d for '%s' on line %d!" SVC_SHELL_NEWLINE,
+                                "shell '%s %s %s' error %d for '%s' on line %d!" 
+                                SVC_SHELL_NEWLINE,
                                 name, argc>1 ? argv[1] : "", argc>2 ? argv[2] : "",
                                 status, argv[0], lineno) ;
 
@@ -822,7 +822,8 @@ svc_shell_script_run (SVC_SHELL_IF_T * pif, const char* name,
                     cancel = pif->out (pif->ctx, SVC_SHELL_OUT_NULL, 0) ;
                     if (cancel < SVC_SHELL_CMD_E_OK) {
                         svc_shell_print (pif, SVC_SHELL_OUT_STD,
-                                "shell '%s %s %s' cancelled with %d on line %d!" SVC_SHELL_NEWLINE,
+                                "shell '%s %s %s' cancelled with %d on line %d!" 
+                                SVC_SHELL_NEWLINE,
                                 name, argc>1 ? argv[1] : "", argc>2 ? argv[2] : "",
                                 status, lineno) ;
                         lasterror = status = cancel ;
