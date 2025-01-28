@@ -242,6 +242,7 @@ _service_thread (void * arg)
 /**
  * @brief   svc_service_services_init
  * @note    initialise list of count services to manage by the API.
+ *          parm in the callback is the service handle
  *
  * @param[in] list   list of services
  * @param[in] count  number of services in list.
@@ -271,7 +272,7 @@ svc_service_services_init (SVC_SERVICE_T * list)
         }
 
         if (pservice->ctrl) {
-            if (pservice->ctrl(SVC_SERVICE_CTRL_INIT, pservice->parm) != EOK) {
+            if (pservice->ctrl(SVC_SERVICE_CTRL_INIT, _cfg_service_cnt) != EOK) {
                 pservice->status = SVC_SERVICE_STATUS_DISABLED ;
             }
 
