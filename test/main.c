@@ -46,7 +46,7 @@ static void
 main_thread(void* arg)
 {
     platform_start () ;
-    qoraal_svc_start () ;
+    qoraal_start_default () ;
 }
 
 /**

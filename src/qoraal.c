@@ -82,7 +82,7 @@ qoraal_init_default (const QORAAL_CFG_T * instance, SVC_SERVICE_T * list)
 }
 
 int32_t
-qoraal_svc_start (void)
+qoraal_start_default (void)
 {
     if (!_qoraal_instance) {
        return E_UNEXP ;
