@@ -100,6 +100,8 @@ extern const QORAAL_CFG_T * 	_qoraal_instance ;
 extern "C" {
 #endif
 
+int32_t     qoraal_init_default (const QORAAL_CFG_T * instance, SVC_SERVICE_T * list) ;
+
 int32_t     qoraal_instance_init (const QORAAL_CFG_T * instance);
 int32_t     qoraal_svc_init (SVC_SERVICE_T * list) ;
 int32_t     qoraal_svc_start (void) ;

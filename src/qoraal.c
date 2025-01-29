@@ -58,9 +58,10 @@ qoraal_instance_init (const QORAAL_CFG_T * instance)
 
 
 int32_t
-qoraal_svc_init (SVC_SERVICE_T * list)
+qoraal_init_default (const QORAAL_CFG_T * instance, SVC_SERVICE_T * list)
 {
-    if (!_qoraal_instance) {
+    int32_t res = qoraal_instance_init (instance) ;
+    if (res != EOK) {
        return E_UNEXP ;
 
     }
