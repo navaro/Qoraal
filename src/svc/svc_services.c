@@ -265,13 +265,12 @@ svc_service_services_init (SVC_SERVICE_T * list)
 
     for (_cfg_service_cnt=0; ; ) {
         pservice = &_svc_service_list[_cfg_service_cnt] ;
-        _cfg_service_cnt++ ;
-
         if (pservice->service == SVC_SERVICES_INVALID) {
             break ;
 
         }
 
+        _cfg_service_cnt++ ;
         if (pservice->ctrl) {
             if (pservice->ctrl(SVC_SERVICE_CTRL_INIT, _cfg_service_cnt-1) != EOK) {
                 pservice->status = SVC_SERVICE_STATUS_DISABLED ;
