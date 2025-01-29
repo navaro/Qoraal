@@ -21,6 +21,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <winsock2.h>
 #include "qoraal/example/platform.h"
 #include "qoraal/common/rtclib.h"
 #include "qoraal/common/dictionary.h"
@@ -38,6 +39,14 @@ platform_init (uint32_t flash_size)
 int32_t         
 platform_start ()
 {
+#ifdef _WIN32
+    // Initialize Winsock if on Windows
+    WSADATA wsaData;
+    int ret = WSAStartup(MAKEWORD(2, 2), &wsaData);
+    if (ret != 0) {
+        return -1; // Winsock initialization failed
+    }
+#endif
     os_thread_sleep (100) ;
     if (_platform_flash_size) {
         _platform_flash = (uint8_t*)platform_malloc (QORAAL_HeapAuxiliary, _platform_flash_size) ;
@@ -51,7 +60,9 @@ int32_t
 platform_stop ()
 {
     platform_free (QORAAL_HeapAuxiliary, _platform_flash) ;
-
+#ifdef _WIN32
+     WSACleanup();
+#endif
     return 0 ;
 }
 

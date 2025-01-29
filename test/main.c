@@ -95,8 +95,8 @@ int main( void )
     /*
      * For the demo, we wait for the shell to be exited with the "exit" command.
      */
-    console_wait_for_exit () ;    
-
+    console_wait_for_exit () ;
+    platform_stop () ;   
     // for( ;; ) os_thread_sleep (32768);
 }
 
