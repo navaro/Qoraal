@@ -89,9 +89,9 @@ qoraal_start_default (void)
 
     }
 
+    svc_wdt_start () ;
     svc_events_start () ;
     svc_tasks_start () ;
-    svc_wdt_start () ;
     svc_logger_start () ;
     svc_threads_start () ;
     svc_shell_start () ;
@@ -100,6 +100,23 @@ qoraal_start_default (void)
     return EOK ;
 }
 
+
+int32_t
+qoraal_stop_default (void)
+{
+    if (!_qoraal_instance) {
+       return E_UNEXP ;
+
+    }
+
+    svc_service_system_halt () ;
+    svc_shell_stop () ;
+    svc_tasks_stop (100) ;
+    svc_events_stop () ;
+    svc_wdt_stop () ;
+
+    return EOK ;
+}
 
 #if defined CFG_OS_MEM_DEBUG_ENABLE
 #define DEBUG_SIZE_HEAD      8

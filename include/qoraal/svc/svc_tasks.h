@@ -133,7 +133,7 @@ extern "C" {
 
     int32_t         svc_tasks_init (const SVC_TASK_CFG_T * pool) ;
     int32_t         svc_tasks_start (void) ;
-    int32_t         svc_tasks_kill (uint32_t timeout) ;
+    int32_t         svc_tasks_stop (uint32_t timeout) ;
 
     void            svc_tasks_init_task (SVC_TASKS_T* task) ;
     int32_t         svc_tasks_init_waitable_task (SVC_WAITABLE_TASKS_T* task) ;

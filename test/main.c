@@ -95,6 +95,7 @@ int main( void )
      * For the demo, we wait for the shell to be exited with the "exit" command.
      */
     console_wait_for_exit () ;
+    qoraal_stop_default () ;
     platform_stop () ;   
     // for( ;; ) os_thread_sleep (32768);
 }

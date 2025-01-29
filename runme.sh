@@ -43,3 +43,4 @@ sleep 2000
 
 echo
 echo "Demo completed! Feel free to explore other commands or rerun the script."
+:clearerror
