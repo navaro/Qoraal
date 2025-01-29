@@ -11,11 +11,13 @@
 #include "qoraal/svc/svc_shell.h"
 #include "qoraal/common/mlog.h"
 #include "services/services.h"
-#include "platform/platform.h"
+#include "qoraal/example/console.h"
+#include "qoraal/example/platform.h"
 
 /*===========================================================================*/
 /* Macros and Defines                                                        */
 /*===========================================================================*/
+
 
 /*===========================================================================*/
 /* Service Local Variables and Types                                         */
@@ -23,7 +25,7 @@
 
 SVC_SERVICE_LIST_START(_qoraal_services_list)
 SVC_SERVICE_RUN_DECL("system",  system_service_run, system_service_ctrl, 0, 6000, OS_THREAD_PRIO_7, QORAAL_SERVICE_SYSTEM, SVC_SERVICE_FLAGS_AUTOSTART)
-SVC_SERVICE_RUN_DECL("shell",  shell_service_run, shell_service_ctrl, 0, 6000, OS_THREAD_PRIO_7, QORAAL_SERVICE_SHELL, SVC_SERVICE_FLAGS_AUTOSTART)
+SVC_SERVICE_RUN_DECL("shell",  console_service_run, console_service_ctrl, 0, 6000, OS_THREAD_PRIO_7, QORAAL_SERVICE_SHELL, SVC_SERVICE_FLAGS_AUTOSTART)
 SVC_SERVICE_DECL("demo", demo_service_ctrl, 0, QORAAL_SERVICE_DEMO, 0)
 SVC_SERVICE_LIST_END()
 
@@ -56,7 +58,7 @@ main_init (void)
 {
     static SVC_THREADS_T thd ;
 
-    platform_init () ;
+    platform_init (0) ;
     qoraal_instance_init (&_qoraal_cfg) ;
     qoraal_svc_init (_qoraal_services_list) ;
 
@@ -93,7 +95,7 @@ int main( void )
     /*
      * For the demo, we wait for the shell to be exited with the "exit" command.
      */
-    platform_wait_for_exit (QORAAL_SERVICE_SHELL) ;    
+    console_wait_for_exit () ;    
 
     // for( ;; ) os_thread_sleep (32768);
 }

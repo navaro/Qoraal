@@ -17,26 +17,27 @@
  *  This file is part of CORAL Connect (https://navaro.nl)
  */
 
+/**
+ * @file        terminal.h
+ * @brief       Qoraal POSIX Terminal Service
+ * @details     This file implements a POSIX-based console service for the  
+ *              Qoraal framework. It provides an interface to the Qoraal 
+ *              shell, handling user input, executing commands, logging 
+ *              messages, and managing the service lifecycle.  
+ *
+ * @author      Navaro
+ * @version    
+ * @date        
+ */
 
-#ifndef __MAIN_H__
-#define __MAIN_H__
+#ifndef __POSIXTERM_H__
+#define __POSIXTERM_H__
 
 #include "qoraal/svc/svc_services.h"
-
 
 /*===========================================================================*/
 /* Client pre-compile time settings.                                         */
 /*===========================================================================*/
-
-#define DBG_MESSAGE_SERVICES(severity, fmt_str, ...)   DBG_MESSAGE_T_LOG (SVC_LOGGER_TYPE(severity,0), 0, fmt_str, ##__VA_ARGS__)
-
-typedef enum  {
-    QORAAL_SERVICE_SYSTEM = SVC_SERVICES_USER,
-    QORAAL_SERVICE_DEMO,
-    QORAAL_SERVICE_SHELL,
-	QORAAL_SERVICE_LAST,
-} QORAAL_SERVICES ;
-
 
 /*===========================================================================*/
 /* Data structures and types.                                                */
@@ -49,13 +50,12 @@ typedef enum  {
 extern "C" {
 #endif
 
-    extern int32_t      system_service_ctrl (uint32_t code, uintptr_t arg) ;
-    extern int32_t      system_service_run (uintptr_t arg) ;
-
-    extern int32_t      demo_service_ctrl (uint32_t code, uintptr_t arg) ;
+    extern int32_t      console_service_ctrl (uint32_t code, uintptr_t arg) ;
+    extern int32_t      console_service_run (uintptr_t arg) ;
+    extern void         console_wait_for_exit (void) ;
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __MAIN_H__ */
+#endif /* __SERVICES_H__ */

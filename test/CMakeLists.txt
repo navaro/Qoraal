@@ -2,9 +2,7 @@
 set(TEST_SRCS
     main.c
     services/demo.c
-    services/shell.c
     services/system.c
-    platform/platform.c
 )
 
 
@@ -21,5 +19,5 @@ target_link_libraries(qoraal_test qoraal pthread)
 
 # Generate a map file
 set_target_properties(qoraal_test PROPERTIES 
-        LINK_FLAGS "-Wl,-Map=output.map -T ${CMAKE_SOURCE_DIR}/test/platform/posix.ld"
+        LINK_FLAGS "-Wl,-Map=output.map -T ${CMAKE_SOURCE_DIR}/test/posix.ld"
 )

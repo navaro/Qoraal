@@ -19,7 +19,9 @@ set(QORAAL_SRCS
     common/mlog.c
     common/rtclib.c
     common/strsub.c
-    qshell/posixcmd.c
+    example/console.c
+    example/platform.c
+    example/posixcmd.c
     qshell/servicescmd.c
 )
 

@@ -1,18 +1,39 @@
+/*
+ *  Copyright (C) 2015-2025, Navaro, All Rights Reserved
+ *  SPDX-License-Identifier: Apache-2.0
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License"); you may
+ *  not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ *  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ *  This file is part of CORAL Connect (https://navaro.nl)
+ */
+
+#if defined CFG_OS_POSIX
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 #include "qoraal/qoraal.h"
 #include "qoraal/svc/svc_services.h"
-#include "qoraal/svc/svc_tasks.h"
 #include "qoraal/svc/svc_shell.h"
-#include "services.h"
+
 
 /*===========================================================================*/
 /* Macros and Defines                                                        */
 /*===========================================================================*/
 
-#define DBG_MESSAGE_SHELL(severity, fmt_str, ...)   DBG_MESSAGE_T_REPORT (SVC_LOGGER_TYPE(severity,0), QORAAL_SERVICE_SHELL, fmt_str, ##__VA_ARGS__)
+SVC_SERVICES_T      _console_service_id = SVC_SERVICES_INVALID ;   
+
+#define DBG_MESSAGE_SHELL(severity, fmt_str, ...)   DBG_MESSAGE_T_REPORT (SVC_LOGGER_TYPE(severity,0), _console_service_id, fmt_str, ##__VA_ARGS__)
 
 #define SHELL_VERSION_STR   "Navaro Qoraal Demo v '" __DATE__ "'"
 #define SHELL_HELLO         "Enter 'help' or '?' to view available commands. "
@@ -21,30 +42,29 @@
 /*===========================================================================*/
 /* Service Local Functions                                                   */
 /*===========================================================================*/
+static void     console_logger_cb (void* channel, LOGGERT_TYPE_T type, uint8_t facility, const char* msg) ;
+static int32_t  console_out (void* ctx, uint32_t out, const char* str);
+static int32_t  console_get_line (char * buffer, uint32_t len) ;
 
-static void     shell_logger_cb (void* channel, LOGGERT_TYPE_T type, uint8_t facility, const char* msg) ;
-static int32_t  shell_out (void* ctx, uint32_t out, const char* str);
-static int32_t  shell_get_line (char * buffer, uint32_t len) ;
+SVC_SHELL_CMD_DECL("exit", qshell_cmd_exit, "");
+SVC_SHELL_CMD_DECL("version", qshell_cmd_version, "");
+SVC_SHELL_CMD_DECL("hello", qshell_cmd_hello, "");
 
-SVC_SHELL_CMD_DECL("exit", qshell_exit, "");
-SVC_SHELL_CMD_DECL("version", qshell_version, "");
-SVC_SHELL_CMD_DECL("hello", qshell_hello, "");
-
-
+extern void keep_posixcmds (void) ;
 
 /*===========================================================================*/
 /* Service Local Variables and Types                                         */
 /*===========================================================================*/
 
 static bool                 _shell_exit = false ;
-static LOGGER_CHANNEL_T     _shell_log_channel = { .fp = shell_logger_cb, .user = (void*)0, .filter = { { .mask = SVC_LOGGER_MASK, .type = SVC_LOGGER_SEVERITY_LOG | SVC_LOGGER_FLAGS_PROGRESS }, {0,0} } };
+static LOGGER_CHANNEL_T     _shell_log_channel = { .fp = console_logger_cb, .user = (void*)0, .filter = { { .mask = SVC_LOGGER_MASK, .type = SVC_LOGGER_SEVERITY_LOG | SVC_LOGGER_FLAGS_PROGRESS }, {0,0} } };
 
 /*===========================================================================*/
 /* Service Functions                                                         */
 /*===========================================================================*/
 
 /**
- * @brief       shell_service_ctrl
+ * @brief       console_service_ctrl
  * @details
  * @note        For code SVC_SERVICE_CTRL_STATUS, if the return value is E_NOIMPL
  *              the status will be determined by the svc_services module.
@@ -57,12 +77,14 @@ static LOGGER_CHANNEL_T     _shell_log_channel = { .fp = shell_logger_cb, .user 
  * @services
  */
 int32_t
-shell_service_ctrl (uint32_t code, uintptr_t arg)
+console_service_ctrl (uint32_t code, uintptr_t arg)
 {
     int32_t res = EOK ;
 
     switch (code) {
     case SVC_SERVICE_CTRL_INIT:
+        keep_posixcmds () ;
+        _console_service_id = svc_service_service ((SCV_SERVICE_HANDLE) arg ) ;
         break ;
 
     case SVC_SERVICE_CTRL_START:
@@ -84,7 +106,7 @@ shell_service_ctrl (uint32_t code, uintptr_t arg)
 }
 
 /**
- * @brief       shell_service_run
+ * @brief       console_service_run
  * @details     Runs the shell service, processing input and executing commands
  *              until the "exit" command is issued.
  *
@@ -93,25 +115,25 @@ shell_service_ctrl (uint32_t code, uintptr_t arg)
  * @return      status  The result of the shell execution.
  */
 int32_t
-shell_service_run (uintptr_t arg)
+console_service_run (uintptr_t arg)
 {
     DBG_MESSAGE_SHELL (DBG_MESSAGE_SEVERITY_INFO, "SHELL : : shell STARTED");
 
-    SVC_SHELL_IF_T  qshell_if ;
-    svc_shell_if_init (&qshell_if, 0, shell_out, 0) ;
+    SVC_SHELL_IF_T  qshell_cmd_if ;
+    svc_shell_if_init (&qshell_cmd_if, 0, console_out, 0) ;
 
     /*
      * Now process the input from the command line as shell commands until
      * the "exit" command is executed.
      */
-    svc_shell_script_run (&qshell_if, "", "version", strlen("version")) ;
-    svc_shell_script_run (&qshell_if, "", "hello", strlen("hello")) ;
+    svc_shell_script_run (&qshell_cmd_if, "", "version", strlen("version")) ;
+    svc_shell_script_run (&qshell_cmd_if, "", "hello", strlen("hello")) ;
     do {
         char line[1024];
         printf (SHELL_PROMPT) ;
-        int len = shell_get_line (line, sizeof(line)) ;
+        int len = console_get_line (line, sizeof(line)) ;
         if (len > 0) {
-            svc_shell_script_run (&qshell_if, "", line, len) ;
+            svc_shell_script_run (&qshell_cmd_if, "", line, len) ;
             
         }
 
@@ -123,7 +145,7 @@ shell_service_run (uintptr_t arg)
 }
 
 /**
- * @brief       shell_out
+ * @brief       console_out
  * @details     Handles shell output operations.
  *
  * @param[in]   ctx     The context for the output operation.
@@ -133,7 +155,7 @@ shell_service_run (uintptr_t arg)
  * @return      status  The result of the operation.
  */
 int32_t
-shell_out (void* ctx, uint32_t out, const char* str)
+console_out (void* ctx, uint32_t out, const char* str)
 {
     if (str && (out && out < SVC_SHELL_IN_STD)) {
         printf ("%s", str) ;
@@ -144,7 +166,7 @@ shell_out (void* ctx, uint32_t out, const char* str)
 }
 
 /**
- * @brief       shell_get_line
+ * @brief       console_get_line
  * @details     Reads a line of input from the user.
  *
  * @param[out]  buffer  The buffer to store the input line.
@@ -153,7 +175,7 @@ shell_out (void* ctx, uint32_t out, const char* str)
  * @return      length  The length of the input line.
  */
 int32_t
-shell_get_line (char * buffer, uint32_t len)
+console_get_line (char * buffer, uint32_t len)
 {
     uint32_t i = 0 ;
 
@@ -168,7 +190,7 @@ shell_get_line (char * buffer, uint32_t len)
 }
 
 /**
- * @brief       shell_logger_cb
+ * @brief       console_logger_cb
  * @details     Callback function for logging messages from the shell.
  *
  * @param[in]   channel     The logger channel.
@@ -177,13 +199,35 @@ shell_get_line (char * buffer, uint32_t len)
  * @param[in]   msg         The log message to display.
  */
 void
-shell_logger_cb (void* channel, LOGGERT_TYPE_T type, uint8_t facility, const char* msg)
+console_logger_cb (void* channel, LOGGERT_TYPE_T type, uint8_t facility, const char* msg)
 {
     printf("--- %s\n", msg) ;
 }
 
+static void 
+status_callback (SVC_SERVICES_T  id, int32_t status, uintptr_t parm)
+{
+    p_sem_t    stop_sem = (p_sem_t) parm ;
+    if (status == SVC_SERVICE_STATUS_STOPPED && id == _console_service_id) {
+        os_sem_signal (&stop_sem) ;
+    }
+}
+
+void
+console_wait_for_exit (void)
+{
+    p_sem_t    stop_sem ;
+    os_sem_create (&stop_sem, 0) ;
+    SVC_SERVICE_HANDLER_T  handler ;
+    svc_service_register_handler (&handler, status_callback, (uintptr_t) stop_sem) ;
+    os_sem_wait (&stop_sem) ;
+    svc_service_unregister_handler (&handler) ;
+    os_sem_delete (&stop_sem) ;
+}
+
+
 /**
- * @brief       qshell_version
+ * @brief       qshell_cmd_version
  * @details     Outputs the version of the Qoraal shell.
  *
  * @param[in]   pif     Shell interface pointer.
@@ -193,14 +237,14 @@ shell_logger_cb (void* channel, LOGGERT_TYPE_T type, uint8_t facility, const cha
  * @return      status  The result of the command execution.
  */
 int32_t
-qshell_version (SVC_SHELL_IF_T * pif, char** argv, int argc)
+qshell_cmd_version (SVC_SHELL_IF_T * pif, char** argv, int argc)
 {
     svc_shell_print (pif, SVC_SHELL_OUT_STD, "%s\r\n", SHELL_VERSION_STR) ;
     return SVC_SHELL_CMD_E_OK ;
 }
 
 /**
- * @brief       qshell_hello
+ * @brief       qshell_cmd_hello
  * @details     Outputs hello text of the Qoraal shell.
  *
  * @param[in]   pif     Shell interface pointer.
@@ -210,14 +254,14 @@ qshell_version (SVC_SHELL_IF_T * pif, char** argv, int argc)
  * @return      status  The result of the command execution.
  */
 int32_t
-qshell_hello (SVC_SHELL_IF_T * pif, char** argv, int argc)
+qshell_cmd_hello (SVC_SHELL_IF_T * pif, char** argv, int argc)
 {
     svc_shell_print (pif, SVC_SHELL_OUT_STD, "%s\r\n\r\n", SHELL_HELLO) ;
     return SVC_SHELL_CMD_E_OK ;
 }
 
 /**
- * @brief       qshell_exit
+ * @brief       qshell_cmd_exit
  * @details     Exits the shell service.
  *
  * @param[in]   pif     Shell interface pointer.
@@ -227,8 +271,13 @@ qshell_hello (SVC_SHELL_IF_T * pif, char** argv, int argc)
  * @return      status  The result of the command execution.
  */
 int32_t
-qshell_exit (SVC_SHELL_IF_T * pif, char** argv, int argc)
+qshell_cmd_exit (SVC_SHELL_IF_T * pif, char** argv, int argc)
 {
     _shell_exit = true ;
     return SVC_SHELL_CMD_E_OK ;
 }
+
+
+
+
+#endif

@@ -263,8 +263,9 @@ svc_service_services_init (SVC_SERVICE_T * list)
 
     _svc_service_list = list ;
 
-    for (_cfg_service_cnt=0; ; _cfg_service_cnt++) {
+    for (_cfg_service_cnt=0; ; ) {
         pservice = &_svc_service_list[_cfg_service_cnt] ;
+        _cfg_service_cnt++ ;
 
         if (pservice->service == SVC_SERVICES_INVALID) {
             break ;
@@ -272,7 +273,7 @@ svc_service_services_init (SVC_SERVICE_T * list)
         }
 
         if (pservice->ctrl) {
-            if (pservice->ctrl(SVC_SERVICE_CTRL_INIT, _cfg_service_cnt) != EOK) {
+            if (pservice->ctrl(SVC_SERVICE_CTRL_INIT, _cfg_service_cnt-1) != EOK) {
                 pservice->status = SVC_SERVICE_STATUS_DISABLED ;
             }
 
@@ -294,11 +295,12 @@ svc_service_services_init (SVC_SERVICE_T * list)
  * @svc
  */
 void
-svc_service_register_handler (SVC_SERVICE_HANDLER_T * handler, SVC_SERVICE_CALLBACK_T fp)
+svc_service_register_handler (SVC_SERVICE_HANDLER_T * handler, SVC_SERVICE_CALLBACK_T fp, uintptr_t parm)
 {
     os_mutex_lock (&_svc_service_mutex) ;
     stack_remove (&_svc_service_handlers, (plists_t)handler, OFFSETOF(SVC_SERVICE_HANDLER_T, next)) ;
     handler->fp = fp ;
+    handler->parm = parm ;
     stack_add_head (&_svc_service_handlers, handler, OFFSETOF(SVC_SERVICE_HANDLER_T, next)) ;
     os_mutex_unlock (&_svc_service_mutex) ;
     return  ;
@@ -329,7 +331,7 @@ _service_changed(int32_t status, SVC_SERVICE_T* pservice)
         (start!=NULL_LLO)
             ; ) {
 
-        start->fp (pservice->service, status) ;
+        start->fp (pservice->service, status, start->parm) ;
         start = (SVC_SERVICE_HANDLER_T*)stack_next ((plists_t)start, OFFSETOF(SVC_SERVICE_HANDLER_T, next));
 
     }

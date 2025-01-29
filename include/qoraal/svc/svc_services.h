@@ -114,10 +114,11 @@ typedef struct SVC_SERVICE_S {
 
 typedef struct CORAL_SERVICE_S * PSVC_SERVICE_T ;
 
-typedef void (*SVC_SERVICE_CALLBACK_T) (SVC_SERVICES_T /* id */, int32_t /*status*/) ;
+typedef void (*SVC_SERVICE_CALLBACK_T) (SVC_SERVICES_T /* id */, int32_t /*status*/, uintptr_t) ;
 typedef struct SVC_SERVICE_HANDLER_S {
     struct SVC_SERVICE_HANDLER_S * next ;
     SVC_SERVICE_CALLBACK_T fp ;
+    uintptr_t parm ;
 } SVC_SERVICE_HANDLER_T ;
 
 
@@ -131,7 +132,7 @@ extern "C" {
 
     extern int32_t                  svc_service_services_init (SVC_SERVICE_T * list) ;
     extern int32_t                  svc_service_services_start (uint32_t startflags) ;
-    extern void                     svc_service_register_handler (SVC_SERVICE_HANDLER_T * handler, SVC_SERVICE_CALLBACK_T fp) ;
+    extern void                     svc_service_register_handler (SVC_SERVICE_HANDLER_T * handler, SVC_SERVICE_CALLBACK_T fp, uintptr_t parm) ;
     extern void                     svc_service_unregister_handler (SVC_SERVICE_HANDLER_T * handler) ;
 
     extern SCV_SERVICE_HANDLE       svc_service_get (SVC_SERVICES_T id) ;
