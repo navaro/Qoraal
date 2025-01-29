@@ -30,8 +30,8 @@
  * @date        
  */
 
-#ifndef __POSIXTERM_H__
-#define __POSIXTERM_H__
+#ifndef __CONSOLE_H__
+#define __CONSOLE_H__
 
 #include "qoraal/svc/svc_services.h"
 
@@ -58,4 +58,4 @@ extern "C" {
 }
 #endif
 
-#endif /* __SERVICES_H__ */
+#endif /* __CONSOLE_H__ */
