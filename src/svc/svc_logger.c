@@ -159,7 +159,7 @@ logger_task_callback (SVC_TASKS_T *task, uintptr_t parm, uint32_t reason)
 
 #if SVC_LOGGER_APPEND_TIMESTAMP
                             if ((start->filter[i].type & SVC_LOGGER_FLAGS_NO_TIMESTAMP) && (logger_task->message[0] == '[')) {
-                                offset = 13 ;
+                                offset = 12 ;
 #ifdef SVC_LOGGER_MEMSTAT_HEAP
                             offset += 15 ;
 #endif
