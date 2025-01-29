@@ -39,7 +39,7 @@ platform_init (uint32_t flash_size)
 int32_t         
 platform_start ()
 {
-#ifdef _WIN32
+#if defined _WIN32 && defined CFG_PLATFORM_ENABLE_WS2
     // Initialize Winsock if on Windows
     WSADATA wsaData;
     int ret = WSAStartup(MAKEWORD(2, 2), &wsaData);
@@ -60,7 +60,7 @@ int32_t
 platform_stop ()
 {
     platform_free (QORAAL_HeapAuxiliary, _platform_flash) ;
-#ifdef _WIN32
+#if defined _WIN32 && defined CFG_PLATFORM_ENABLE_WS2
      WSACleanup();
 #endif
     return 0 ;

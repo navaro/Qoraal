@@ -51,3 +51,8 @@
     If defined, the platform does aditioanl checking an memory allocations
 */
 // #define CFG_OS_MEM_DEBUG_ENABLE        1
+
+/* CFG_PLATFORM_ENABLE_WS2
+    If defined, the platform does initialisatin for ws2 (windows) sockets
+*/
+// #define CFG_PLATFORM_ENABLE_WS2        1
