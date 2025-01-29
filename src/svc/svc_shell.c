@@ -315,7 +315,7 @@ svc_shell_if_init (SVC_SHELL_IF_T * pif, void* ctx, SVC_SHELL_OUT_FP out, SVC_SH
     pif->in = in ;
     pif->status = 0 ;
 
-    svc_wdt_register (&pif->wdt, TIMEOUT_60_SEC) ;
+    
     return EOK ;
 }
 
@@ -332,6 +332,7 @@ svc_shell_cmd_run (SVC_SHELL_IF_T * pif, char** argv, int argc)
         return SVC_SHELL_CMD_E_OK ;
     }
 
+    svc_wdt_register (&pif->wdt, TIMEOUT_60_SEC) ;
     svc_wdt_activate (&pif->wdt) ;
 
     cmd = _cmd_first(&it);
@@ -393,7 +394,7 @@ svc_shell_cmd_run (SVC_SHELL_IF_T * pif, char** argv, int argc)
 
     }
 
-    svc_wdt_deactivate (&pif->wdt) ;
+    svc_wdt_unregister (&pif->wdt, TIMEOUT_60_SEC) ;
 
     return res ;
 }
