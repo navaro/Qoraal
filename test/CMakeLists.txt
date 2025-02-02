@@ -18,7 +18,7 @@ target_compile_options(qoraal_test PRIVATE -O0 -g)
 if(WIN32)
     target_link_libraries(qoraal_test qoraal pthread ws2_32)
 else()
-    target_link_libraries(qoraal_test qoraal-http pthread)
+    target_link_libraries(qoraal_test qoraal pthread)
 endif()
 
 

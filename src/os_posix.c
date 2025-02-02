@@ -860,7 +860,7 @@ os_bsem_init (p_sem_t* sem, int32_t taken)
 int32_t 
 os_bsem_create (p_sem_t* sem, int32_t taken)
 {
-    return os_bsem_init(sem, taken);
+    return os_sem_create(sem, taken ? 0 : 1);
 }
 
 int32_t 

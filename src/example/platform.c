@@ -21,7 +21,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#if defined _WIN32 && defined CFG_PLATFORM_ENABLE_WS2
 #include <winsock2.h>
+#endif
 #include "qoraal/example/platform.h"
 #include "qoraal/common/rtclib.h"
 #include "qoraal/common/dictionary.h"
