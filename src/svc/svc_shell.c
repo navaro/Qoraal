@@ -32,9 +32,6 @@
 #include "qoraal/svc/svc_wdt.h"
 #include "qoraal/common/strsub.h"
 
-
-static SVC_WDT_HANDLE_T     _qshell_hwdt ;
-
 #if 1 // !defined CFG_NBOOT
 SVC_SHELL_CMD_DECL( "help", qshell_help, "[filter]");
 SVC_SHELL_CMD_DECL( "?", qshell_help, 0);
@@ -84,14 +81,12 @@ svc_shell_init(void)
 int32_t      
 svc_shell_start (void)
 {
-    svc_wdt_register (&_qshell_hwdt, TIMEOUT_30_SEC) ;
     return SVC_SHELL_CMD_E_OK ;
 }
 
 int32_t      
 svc_shell_stop (void)
 {
-    svc_wdt_unregister (&_qshell_hwdt, TIMEOUT_30_SEC) ;
     return SVC_SHELL_CMD_E_OK ;
 }
 
