@@ -216,22 +216,34 @@ console_logger_cb (void* channel, LOGGERT_TYPE_T type, uint8_t facility, const c
     printf("--- %s\n", msg) ;
 }
 
+typedef struct {
+    SVC_SERVICES_T id ;
+    p_sem_t sem ;
+} CONSOLE_EXIT_T ;
+
 static void 
 status_callback (SVC_SERVICES_T  id, int32_t status, uintptr_t parm)
 {
+    CONSOLE_EXIT_T * pexit = (CONSOLE_EXIT_T *)parm ;
     p_sem_t    stop_sem = (p_sem_t) parm ;
-    if (status == SVC_SERVICE_STATUS_STOPPED && id == _console_service_id) {
-        os_sem_signal (&stop_sem) ;
+    if (status == SVC_SERVICE_STATUS_STOPPED && id == pexit->id) {
+        os_sem_signal (&pexit->sem) ;
     }
 }
 
 void
-console_wait_for_exit (void)
+console_wait_for_exit (SVC_SERVICES_T  id)
 {
+    CONSOLE_EXIT_T exit ;
     p_sem_t    stop_sem ;
     os_sem_create (&stop_sem, 0) ;
+
+    exit.sem = stop_sem ;
+    if (id == SVC_SERVICES_INVALID) id = _console_service_id ;
+    exit.id = id ;
+
     SVC_SERVICE_HANDLER_T  handler ;
-    svc_service_register_handler (&handler, status_callback, (uintptr_t) stop_sem) ;
+    svc_service_register_handler (&handler, status_callback, (uintptr_t) &exit) ;
     os_sem_wait (&stop_sem) ;
     svc_service_unregister_handler (&handler) ;
     os_sem_delete (&stop_sem) ;
