@@ -479,14 +479,17 @@ _service_start (SVC_SERVICE_T* pservice, SVC_SERVICE_COMPLETE_CB cb, uintptr_t c
             break ;
 
         }
+        
 
 
         pservice->cb = cb ;
         pservice->cb_parm = cb_parm ;
+        _service_changed (SVC_SERVICE_STATUS_STARTING, (pservice)) ;
         res = svc_threads_create (&pservice->thd, _service_thread_complete,
                 pservice->stack, pservice->prio, _service_thread, (void *)pservice, pservice->name) ;
 
         pservice->status = res == EOK ? SVC_SERVICE_STATUS_STARTING : SVC_SERVICE_STATUS_STOPPED ;
+        if (res != EOK) _service_changed (SVC_SERVICE_STATUS_STOPPED, (pservice)) ;
 
     } while (0) ;
 
@@ -626,10 +629,14 @@ svc_service_stop (SCV_SERVICE_HANDLE handle, SVC_SERVICE_COMPLETE_CB cb, uintptr
 
         }
 
+        
+
         pservice->cb = cb ;
         pservice->cb_parm = cb_parm ;
+        _service_changed (SVC_SERVICE_STATUS_STOPPING, (pservice)) ;
         res = pservice->ctrl (SVC_SERVICE_CTRL_STOP, pservice->parm) ;
         pservice->status = res == EOK ? SVC_SERVICE_STATUS_STOPPING : SVC_SERVICE_STATUS_STARTED ;
+        if (res != EOK) _service_changed (SVC_SERVICE_STATUS_STARTED, (pservice)) ;
 
     } while (0) ;
 
