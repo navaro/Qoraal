@@ -226,7 +226,8 @@ status_callback (SVC_SERVICES_T  id, int32_t status, uintptr_t parm)
 {
     CONSOLE_EXIT_T * pexit = (CONSOLE_EXIT_T *)parm ;
     p_sem_t    stop_sem = (p_sem_t) parm ;
-    if (status == SVC_SERVICE_STATUS_STOPPED && id == pexit->id) {
+    if (status == SVC_SERVICE_STATUS_STOPPED && 
+        (id == pexit->id || id == _console_service_id)) {
         os_sem_signal (&pexit->sem) ;
     }
 }
@@ -239,7 +240,6 @@ console_wait_for_exit (SVC_SERVICES_T  id)
     os_sem_create (&stop_sem, 0) ;
 
     exit.sem = stop_sem ;
-    if (id == SVC_SERVICES_INVALID) id = _console_service_id ;
     exit.id = id ;
 
     SVC_SERVICE_HANDLER_T  handler ;
