@@ -89,11 +89,9 @@ console_service_ctrl (uint32_t code, uintptr_t arg)
         break ;
 
     case SVC_SERVICE_CTRL_START:
-        svc_logger_channel_add (&_shell_log_channel) ;
         break ;
 
     case SVC_SERVICE_CTRL_STOP: {
-        svc_logger_channel_remove (&_shell_log_channel) ;
         _shell_exit = true;
         int fd = fileno(stdin);
         if (fd >= 0) {
@@ -126,6 +124,8 @@ console_service_ctrl (uint32_t code, uintptr_t arg)
 int32_t
 console_service_run (uintptr_t arg)
 {
+    svc_logger_channel_add (&_shell_log_channel) ;
+
     DBG_MESSAGE_SHELL (DBG_MESSAGE_SEVERITY_INFO, "SHELL : : shell STARTED");
 
     SVC_SHELL_IF_T  qshell_cmd_if ;
@@ -149,6 +149,8 @@ console_service_run (uintptr_t arg)
     } while (!_shell_exit) ;
 
     DBG_MESSAGE_SHELL(DBG_MESSAGE_SEVERITY_LOG, "SHELL : : shell shutting down...");
+
+    svc_logger_channel_remove (&_shell_log_channel) ;
 
     return EOK ;
 }
