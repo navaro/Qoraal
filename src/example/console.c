@@ -141,7 +141,7 @@ console_service_run (uintptr_t arg)
         char line[1024];
         printf (SHELL_PROMPT) ;
         int len = console_get_line (line, sizeof(line)) ;
-        if (len > 0) {
+        if (!_shell_exit && len > 0) {
             svc_shell_script_run (&qshell_cmd_if, "", line, len) ;
             
         }
@@ -192,6 +192,7 @@ console_get_line (char * buffer, uint32_t len)
         buffer[i] = getc (stdin) ;
         if (buffer[i] == '\n') break ;
         if (buffer[i] < 0) break ;
+        if (_shell_exit) break ;
 
     }
 
