@@ -22,6 +22,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 #include "qoraal/qoraal.h"
 #include "qoraal/svc/svc_services.h"
 #include "qoraal/svc/svc_shell.h"
@@ -91,8 +92,16 @@ console_service_ctrl (uint32_t code, uintptr_t arg)
         svc_logger_channel_add (&_shell_log_channel) ;
         break ;
 
-    case SVC_SERVICE_CTRL_STOP:
+    case SVC_SERVICE_CTRL_STOP: {
         svc_logger_channel_remove (&_shell_log_channel) ;
+        _shell_exit = true;
+        int fd = fileno(stdin);
+        if (fd >= 0) {
+            // Write a newline to wake up getc()
+            write(fd, "\n", 1);
+        }
+
+        }
         break ;
 
     case SVC_SERVICE_CTRL_STATUS:
