@@ -38,8 +38,17 @@ strsub_install_handler (STRSUB_INSTANCE_T * instance, strsub_token_t token,
         				STRSUB_HANDLER_T* handler, STRSUB_LOOKUP_CB cb)
 {
     if (instance == 0) instance = &_strsub_instance ;
+
+
     if ((token >= 0) &&
             ((unsigned int)token < StrsubLast)) {
+
+        STRSUB_HANDLER_T * l =  instance->handlers[token] ;
+        for (  ; (l!=0)  ; ) {
+            if (l == handler) return true ;
+            l = l->next;
+
+        }
 
         handler->cb = cb ;
         handler->next = instance->handlers[token] ;
