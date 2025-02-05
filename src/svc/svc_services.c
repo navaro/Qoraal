@@ -479,7 +479,6 @@ _service_start (SVC_SERVICE_T* pservice, SVC_SERVICE_COMPLETE_CB cb, uintptr_t c
             break ;
 
         }
-        
 
 
         pservice->cb = cb ;
@@ -628,8 +627,6 @@ svc_service_stop (SCV_SERVICE_HANDLE handle, SVC_SERVICE_COMPLETE_CB cb, uintptr
             break ;
 
         }
-
-        
 
         pservice->cb = cb ;
         pservice->cb_parm = cb_parm ;

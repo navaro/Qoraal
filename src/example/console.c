@@ -91,15 +91,8 @@ console_service_ctrl (uint32_t code, uintptr_t arg)
     case SVC_SERVICE_CTRL_START:
         break ;
 
-    case SVC_SERVICE_CTRL_STOP: {
+    case SVC_SERVICE_CTRL_STOP: 
         _shell_exit = true;
-        int fd = fileno(stdin);
-        if (fd >= 0) {
-            // Write a newline to wake up getc()
-            write(fd, "\n", 1);
-        }
-
-        }
         break ;
 
     case SVC_SERVICE_CTRL_STATUS:
