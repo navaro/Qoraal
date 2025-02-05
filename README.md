@@ -53,7 +53,6 @@ The demo application will be compiled using the posix port for evaluation.
 Other RTOS suport currently include ChibiOS, FreeRTOS and ThreadX.
 1. Open a Codespace or your development environment.
 2. Execute the ```build_and_run.bat``` or ```build_and_run.sh``` depending on your environment.
-
 3. in the shell that will open:
    ```bash
    . runme.sh
