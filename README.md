@@ -22,7 +22,8 @@ It’s built for embedded systems that demand responsiveness, adaptability, and 
 A framework that moves with your application, rather than forcing your application to conform to it.  
 
 At its core, Qoraal defines an event-driven **Application Framework** designed to handle complexity without the overhead. 
-Instead of rigid, monolithic layers, it offers a set of interwoven, modular services that operate independently but harmoniously.  
+Instead of rigid, monolithic layers, it offers a set of interwoven, 
+modular services that operate independently but harmoniously.  
 
 ### The Layers of Qoraal  
 
@@ -30,9 +31,9 @@ Each layer is a self-sufficient entity, designed to work in sync while maintaini
 
 - **Qoraal OS Abstraction Layer** – The foundation. Handles system calls, threading, and synchronization across ChibiOS, FreeRTOS, ThreadX, and POSIX. Run anywhere, without rewriting core logic.  
 - **Qoraal Service Task System** – A lightweight, priority-driven thread pool that schedules tasks and events dynamically, ensuring efficiency and responsiveness.  
-- **Qoraal Service Threading** – Threading encasulation working accross differetnt architectures.  
+- **Qoraal Service Threading** – Thread creation and cleanup working accross differetnt architectures.  
 - **Qoraal Service Management** – A framework for defining services, starting stopping and keeping services in check, handling dependencies, and ensuring smooth operation.  
-- **Qoraal Service Logging** – Defining log channels for debugging, diagnostics, and traceability, optimized for embedded environments.  
+- **Qoraal Service Logging** – Defining log channels for debugging, diagnostics, and traceability, flexable but optimized for embedded environments.  
 - **Qoraal Service Watchdog Management** – Resilience and fault tolerance, ensuring the system stays alive even when things go south.  
 
 Qoraal doesn’t impose—it enables. It doesn’t dictate structure—it offers freedom. 
@@ -297,8 +298,8 @@ The system provides a configurable thread pool for executing tasks, with predefi
 ### Summary
 
 - **Events** are used to signal and defer work from interrupts.
-- **Tasks** provide a prioritized thread pool for executing work.
-- **Timed tasks** allow delayed execution.
+- **Tasks** provide a prioritized thread pool to schedule tasks for execution on a priority queue.
+- **Timed tasks** allow delayed execution of tasks.
 - **Waitable tasks** enable synchronization.
 
 This system is designed for real-time applications where efficient task management and prioritization are essential.
