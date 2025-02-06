@@ -121,12 +121,12 @@ By using this module, Qoraal-xxx services can run without modification on differ
 
 | Feature           | Windows | Linux | ChibiOS | FreeRTOS | ThreadX |
 |------------------|---------|--------|---------|---------|---------|
-| Threads         | ✅ `pthread` | ✅ `pthread` | ✅ `chThdCreateStatic` | ✅ `xTaskCreate` | ✅ `tx_thread_create` |
-| Mutexes         | ✅ `pthread_mutex` | ✅ `pthread_mutex` | ✅ `chMtxLock` | ✅ `xSemaphoreCreateMutex` | ✅ `tx_mutex_create` |
-| Semaphores      | ✅ `sem_t` | ✅ `sem_t` | ✅ `chSemWait` | ✅ `xSemaphoreGive` | ✅ `tx_semaphore_get` |
-| Events          | ✅ `poll` | ✅ `poll/select` | ✅ `chEvtWaitOne` | ✅ `xEventGroupWaitBits` | ✅ `tx_event_flags_get` |
-| Timers          | ✅ `timer_create` | ✅ `timerfd` | ✅ `chVTSetI` | ✅ `xTimerCreate` | ✅ `tx_timer_create` |
-| IRQ Detection   | ❌ No native | ❌ No native | ✅ `chSysIsInISR` | ✅ `xPortIsInsideInterrupt` | ✅ `tx_interrupt_control` |
+| Threads         | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Mutexes         | ✅ | ✅  | ✅  | ✅  | ✅  |
+| Semaphores      | ✅ | ✅  | ✅  | ✅ | ✅  |
+| Events          | ✅  | ✅  | ✅  | ✅  | ✅  |
+| Timers          | ✅ | ✅ | ✅  | ✅  | ✅  |
+| IRQ Detection   | ❌ No native | ❌ No native | ✅  | ✅  | ✅  |
 
 ---
 
@@ -277,8 +277,8 @@ Waitable tasks block until they are explicitly completed or a timeout occurs.
 ```c
 SVC_WAITABLE_TASKS_DECL(my_waitable_task);
 
-svc_tasks_schedule(&my_waitable_task.task, my_callback, 0, SERVICE_PRIO_QUEUE2, 0);
-svc_tasks_wait(&my_waitable_task.task, TIMEOUT_10_SEC);
+svc_tasks_schedule(&my_waitable_task.task, my_callback, 0, SERVICE_PRIO_QUEUE2, SVC_TASK_S2TICKS(5));
+svc_tasks_wait(&my_waitable_task.task, SVC_TASK_S2TICKS(10));
 ```
 
 ### Thread Pool Configuration
