@@ -121,7 +121,7 @@ By using this module, Qoraal-xxx services can run without modification on differ
 
 | Feature           | Windows | Linux | ChibiOS | FreeRTOS | ThreadX |
 |------------------|---------|--------|---------|---------|---------|
-| Threads         | ✅ |  | ✅ | ✅ | ✅ |
+| Threads         | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Mutexes         | ✅ | ✅  | ✅  | ✅  | ✅  |
 | Semaphores      | ✅ | ✅  | ✅  | ✅ | ✅  |
 | Events          | ✅  | ✅  | ✅  | ✅  | ✅  |
