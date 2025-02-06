@@ -182,10 +182,28 @@ console_get_line (char * buffer, uint32_t len)
     uint32_t i = 0 ;
 
     for (i=0; i<len; i++) {
-        buffer[i] = getc (stdin) ;
-        if (buffer[i] == '\n') break ;
-        if (buffer[i] < 0) break ;
-        if (_shell_exit) break ;
+        int c = getc(stdin);
+
+        if (_shell_exit) break;
+
+        if (c == EOF) {
+            // If EOF is due to `/dev/null`, prevent infinite loop
+            os_thread_sleep (1000);
+
+            if (feof(stdin)) {
+                // Properly handle end-of-file
+                printf("EOF detected, exiting...\n");
+                break;
+            }
+            if (ferror(stdin)) {
+                printf("Input error detected, exiting...\n");
+                break;
+            }
+            continue;
+        }
+
+        if (c == '\n') break;
+        buffer[i] = (char)c;
 
     }
 

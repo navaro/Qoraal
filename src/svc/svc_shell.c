@@ -363,8 +363,9 @@ svc_shell_cmd_run (SVC_SHELL_IF_T * pif, char** argv, int argc)
 
             if (cmd->usage && (usage || (res == SVC_SHELL_CMD_E_PARMS))) {
                 svc_shell_print (pif, SVC_SHELL_OUT_STD,
-                        "usage: '%s %s'" SVC_SHELL_NEWLINE,
+                        "usage: %s %s" SVC_SHELL_NEWLINE,
                         cmd->cmd, cmd->usage) ;
+                res = SVC_SHELL_CMD_E_OK ;
 
             }
 #if CFG_PLATFORM_SVC_SERVICES
