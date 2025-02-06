@@ -277,8 +277,8 @@ Waitable tasks block until they are explicitly completed or a timeout occurs.
 ```c
 SVC_WAITABLE_TASKS_DECL(my_waitable_task);
 
-svc_tasks_schedule(&my_waitable_task.task, my_callback, 0, SERVICE_PRIO_QUEUE2, 0);
-svc_tasks_wait(&my_waitable_task.task, TIMEOUT_10_SEC);
+svc_tasks_schedule(&my_waitable_task.task, my_callback, 0, SERVICE_PRIO_QUEUE2, SVC_TASK_S2TICKS(5));
+svc_tasks_wait(&my_waitable_task.task, SVC_TASK_S2TICKS(10));
 ```
 
 ### Thread Pool Configuration
