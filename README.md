@@ -121,12 +121,12 @@ By using this module, Qoraal-xxx services can run without modification on differ
 
 | Feature           | Windows | Linux | ChibiOS | FreeRTOS | ThreadX |
 |------------------|---------|--------|---------|---------|---------|
-| Threads         | ✅ `pthread` | ✅ `pthread` | ✅ `chThdCreateStatic` | ✅ `xTaskCreate` | ✅ `tx_thread_create` |
-| Mutexes         | ✅ `pthread_mutex` | ✅ `pthread_mutex` | ✅ `chMtxLock` | ✅ `xSemaphoreCreateMutex` | ✅ `tx_mutex_create` |
-| Semaphores      | ✅ `sem_t` | ✅ `sem_t` | ✅ `chSemWait` | ✅ `xSemaphoreGive` | ✅ `tx_semaphore_get` |
-| Events          | ✅ `poll` | ✅ `poll/select` | ✅ `chEvtWaitOne` | ✅ `xEventGroupWaitBits` | ✅ `tx_event_flags_get` |
-| Timers          | ✅ `timer_create` | ✅ `timerfd` | ✅ `chVTSetI` | ✅ `xTimerCreate` | ✅ `tx_timer_create` |
-| IRQ Detection   | ❌ No native | ❌ No native | ✅ `chSysIsInISR` | ✅ `xPortIsInsideInterrupt` | ✅ `tx_interrupt_control` |
+| Threads         | ✅ |  | ✅ | ✅ | ✅ |
+| Mutexes         | ✅ | ✅  | ✅  | ✅  | ✅  |
+| Semaphores      | ✅ | ✅  | ✅  | ✅ | ✅  |
+| Events          | ✅  | ✅  | ✅  | ✅  | ✅  |
+| Timers          | ✅ | ✅ | ✅  | ✅  | ✅  |
+| IRQ Detection   | ❌ No native | ❌ No native | ✅  | ✅  | ✅  |
 
 ---
 
