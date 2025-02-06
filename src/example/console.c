@@ -189,16 +189,6 @@ console_get_line (char * buffer, uint32_t len)
         if (c == EOF) {
             // If EOF is due to `/dev/null`, prevent infinite loop
             os_thread_sleep (1000);
-
-            if (feof(stdin)) {
-                // Properly handle end-of-file
-                printf("EOF detected, exiting...\n");
-                break;
-            }
-            if (ferror(stdin)) {
-                printf("Input error detected, exiting...\n");
-                break;
-            }
             continue;
         }
 
