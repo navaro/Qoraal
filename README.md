@@ -29,19 +29,20 @@ modular services that operate independently but harmoniously.
 
 Each layer is a self-sufficient entity, designed to work in sync while maintaining its own domain:  
 
-- **Qoraal OS Abstraction Layer** – The foundation. Handles system calls, threading, and synchronization across ChibiOS, FreeRTOS, ThreadX, and POSIX. Run anywhere, without rewriting core logic.  
+- **Qoraal OS Abstraction Layer** – The foundation. It abstracts system calls, threading, and synchronization across a variety of environments—including ChibiOS, FreeRTOS, ThreadX, and POSIX—so you can run your core logic anywhere without rewriting a single line.  
 - **Qoraal Service Task System** – A lightweight, priority-driven thread pool that schedules tasks and events dynamically, ensuring efficiency and responsiveness.  
-- **Qoraal Service Threading** – Thread creation and cleanup working accross differetnt architectures.  
+- **Qoraal Service Threading** –  Thread creation and cleanup across multiple architectures. It handles concurrency, letting you focus on building features rather than managing threads.  
 - **Qoraal Service Management** – A framework for defining services, starting stopping and keeping services in check, handling dependencies, and ensuring smooth operation.  
-- **Qoraal Service Logging** – Defining log channels for debugging, diagnostics, and traceability, flexable but optimized for embedded environments.  
-- **Qoraal Service Watchdog Management** – Resilience and fault tolerance, ensuring the system stays alive even when things go south.  
+- **Qoraal Service Logging** – A flexible logging system designed for embedded environments. It establishes dedicated log channels for debugging, diagnostics, and traceability, delivering the insights you need without sacrificing performance.  
+- Qoraal Shell Interface is a lightweight, terminal-independent command shell parser designed to execute commands and scripts with built-in support for simple flow control. It’s not tied to any specific terminal environment, making it perfect for embedding into various systems or running in headless mode 
+- **Qoraal Service Watchdog Management** – Hardware watchdog management interface to ensure resilience and fault tolerance, so that the system stays alive even when issues arise.  
 
 Qoraal doesn’t impose—it enables. It doesn’t dictate structure—it offers freedom. 
 It’s the perfect balance between control and flexibility, letting you build systems that are both **robust and agile**.
 
 
 
-### Lets get into it!
+### Lets get into it.
 
 
 
@@ -58,7 +59,7 @@ Other RTOS suport currently include ChibiOS, FreeRTOS and ThreadX.
    . runme.sh
    ```
 
-> Keep your scanners peeled—there’s more to come.
+
 
 
 ## Qoraal OS Abstraction Layer
