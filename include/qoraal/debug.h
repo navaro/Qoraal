@@ -58,10 +58,11 @@
 #define DBG_MESSAGE_T_REPORT(type, fmt_str, ...)
 #define DBG_MESSAGE_T_LOG(type, fmt_str, ...)
 #define DBG_MESSAGE_T_DEBUG(type, fmt_str, ...)
-#define DBG_MESSAGE_T_ASSERT(type, fmt_str, ...)
-#define DBG_ASSERT_T(cond, fmt_str, ...)
-#define DBG_ASSERT_ISR_T(cond, fmt_str, ...)
-#define DBG_CHECK_T(cond, ret, fmt_str, ...)
+#define DBG_MESSAGE_T_ASSERT(type, facility, fmt_str, ...)  {  if (DBG_MESSAGE_GET_SEVERITY((type)) <= DBG_MESSAGE_SEVERITY_ASSERT)   svc_logger_type_log(type, facility, fmt_str, ##__VA_ARGS__) ; }
+#define DBG_ASSERT_T(cond, fmt_str, ...) 					(void) (cond)
+#define DBG_ASSERT_ISR_T(cond, fmt_str, ...)				(void) (cond)
+#define DBG_CHECK_T(cond, ret, fmtstr, ...)                 { if (!(cond)) { return ret ; } }
+#define DBG_CHECKV_T(cond, fmtstr, ...)                     { if (!(cond)) { return  ; } }
 
 #else
 

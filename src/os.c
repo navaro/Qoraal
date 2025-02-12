@@ -1837,7 +1837,6 @@ os_timer_set (p_timer_t* timer, uint32_t ticks)
 
 #endif
 #if defined CFG_OS_THREADX && CFG_OS_THREADX
-    DBG_CHECKV_T (ticks, "os_thread_tls_alloc out of tls!!") ;
     tx_timer_deactivate ((TX_TIMER *)*timer) ;
     tx_timer_change ((TX_TIMER *)*timer, ticks, 0) ;
     tx_timer_activate ((TX_TIMER *)*timer) ;
@@ -1858,7 +1857,6 @@ os_timer_set_i (p_timer_t* timer, uint32_t ticks)
 
 #endif
 #if defined CFG_OS_THREADX && CFG_OS_THREADX
-    DBG_CHECKV_T (ticks, "os_thread_tls_alloc out of tls!!") ;
     tx_timer_deactivate ((TX_TIMER *)*timer) ;
     tx_timer_change ((TX_TIMER *)*timer, ticks, 0) ;
     tx_timer_activate ((TX_TIMER *)*timer) ;
