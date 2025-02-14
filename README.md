@@ -34,7 +34,7 @@ Each layer is a self-sufficient entity, designed to work in sync while maintaini
 - **Qoraal Service Threading** –  Thread creation and cleanup across multiple architectures. It handles concurrency, letting you focus on building features rather than managing threads.  
 - **Qoraal Service Management** – A framework for defining services, starting stopping and keeping services in check, handling dependencies, and ensuring smooth operation.  
 - **Qoraal Service Logging** – A flexible logging system designed for embedded environments. It establishes dedicated log channels for debugging, diagnostics, and traceability, delivering the insights you need without sacrificing performance.  
-- Qoraal Shell Interface is a lightweight, terminal-independent command shell parser designed to execute commands and scripts with built-in support for simple flow control. It’s not tied to any specific terminal environment, making it perfect for embedding into various systems or running in headless mode 
+- **Qoraal Shell** Interface is a lightweight, terminal-independent command shell parser designed to execute commands and scripts with built-in support for simple flow control. It’s not tied to any specific terminal environment, making it perfect for embedding into various systems or running in headless mode 
 - **Qoraal Service Watchdog Management** – Hardware watchdog management interface to ensure resilience and fault tolerance, so that the system stays alive even when issues arise.  
 
 Qoraal doesn’t impose—it enables. It doesn’t dictate structure—it offers freedom. 
